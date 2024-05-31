@@ -1,1 +1,1 @@
-from appointments import Appointment
+from .appointments import Appointment

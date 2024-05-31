@@ -6,7 +6,7 @@ class Appointment(db.Model):
     __tablename__ = 'appointments'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_crm = db.Column(db.Integer, ForeignKey('users.crm'), nullable=False)
+    # user_crm = db.Column(db.Integer, ForeignKey('users.crm'), nullable=False)
     center = db.Column(db.Text, nullable=False)
     year = db.Column(db.Text, nullable=False)
     month = db.Column(db.Text, nullable=False)
