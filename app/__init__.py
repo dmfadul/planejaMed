@@ -11,6 +11,9 @@ def create_app():
 
     db.init_app(app)
 
+    from app.routes.dashboard.dashboard import dashboard_bp
+    app.register_blueprint(dashboard_bp)
+
     return app
 
 create_app()    
