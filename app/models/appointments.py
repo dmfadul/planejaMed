@@ -12,7 +12,6 @@ class Appointment(db.Model):
     month = db.Column(db.Text, nullable=False)
     month_day = db.Column(db.Integer, nullable=False)
     week_day = db.Column(db.Text, nullable=False)
-    starting_time = db.Column(db.Integer, nullable=False)
-    ending_time = db.Column(db.Integer, nullable=False)
+    hour = db.Column(db.Integer, nullable=False)
     is_holiday = db.Column(db.Boolean, default=False)
     is_locked = db.Column(db.Boolean, default=False)
