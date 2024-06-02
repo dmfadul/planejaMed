@@ -9,6 +9,6 @@ class Appointment(db.Model):
     # user_crm = db.Column(db.Integer, ForeignKey('users.crm'), nullable=False)
     center = db.Column(db.Text, nullable=False)
     date = db.Column(db.Date, nullable=False)
-    # month_of_reference = db.Column(db.Text, ForeignKey('months.name'), nullable=False)
+    month_id = db.Column(db.Integer, ForeignKey('months.id'), nullable=False)
     hour = db.Column(db.Integer, nullable=False)
     is_locked = db.Column(db.Boolean, default=False)
