@@ -1,10 +1,9 @@
 from app import create_app, db
 import migration.funcs as funcs
+import json
 
 
-# data = funcs.load_from_db('Users', 1)
-# print(data)
-
+funcs.migrate_base("CCQ--BASE")
 
 
 # app = create_app()
