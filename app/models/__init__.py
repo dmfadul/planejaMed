@@ -1,1 +1,2 @@
-from .appointments import Appointment
+from .appointment import Appointment
+from .month import Month
