@@ -40,6 +40,19 @@ def load_from_db(table, id_num):
     return values
 
 
+def get_all_ids(table_name):
+    conn = sqlite3.connect(DATABASE)  # Replace with your actual database
+    cursor = conn.cursor()
+
+    query = f"SELECT id FROM {table_name}"  # Adjust this query based on your table schema
+    cursor.execute(query)
+
+    all_ids = [row[0] for row in cursor.fetchall()]
+
+    conn.close()
+    return all_ids
+
+
 def migrate_base(base_id):
     base = load_from_db('Bases', base_id)
     center = base[1]

@@ -3,7 +3,7 @@ import migration.funcs as funcs
 import json
 
 
-funcs.migrate_base("CCQ--BASE")
+# funcs.migrate_base("CCQ--BASE")
 
 
 # app = create_app()
