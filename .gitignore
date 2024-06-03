@@ -1,7 +1,7 @@
 .venv/
 instance/
+old_db.db
 migration/__pycache__/
-migration/old_db.db
 
 app/__pycache__/
 app/routes/__pycache__/

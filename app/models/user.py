@@ -27,7 +27,7 @@ class User(db.Model):
     password = db.Column(db.Text, nullable=False)
 
     appointments = db.relationship('Appointment', back_populates='user', lazy=True)
-    base_appointments = db.relationship('BaseAppointment', backref='user', lazy=True)
+    base_appointments = db.relationship('BaseAppointment', back_populates='user', lazy=True)
 
     requests_sent = db.relationship('Request', foreign_keys='Request.requester_id', back_populates='requester', lazy=True)
     requests_received = db.relationship('Request', foreign_keys='Request.responder_id', back_populates='responder', lazy=True)
@@ -58,14 +58,14 @@ class User(db.Model):
         if new_user.crm in crms:
             db.session.rollback()
             return -1
-        if new_user.full_name() in names:
+        if new_user.full_name in names:
             db.session.rollback()
             return -2
-        try:
-            db.session.commit()
-        except Exception as e:
-            db.session.rollback()
-            raise e
+        # try:
+        #     db.session.commit()
+        # except Exception as e:
+        #     db.session.rollback()
+        #     raise e
 
         return new_user
 

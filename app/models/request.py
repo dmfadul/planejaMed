@@ -24,8 +24,8 @@ class Request(db.Model):
 
     requester = db.relationship('User', foreign_keys=[requester_id], back_populates='requests_sent', lazy=True)
     responder = db.relationship('User', foreign_keys=[responder_id], back_populates='requests_received', lazy=True)
-    existing_appointment = db.relationship('Appointment', foreign_keys=[existing_appointment_id], back_populates='requests_existing', lazy=True)
-    appointment_to_exchange = db.relationship('Appointment', foreign_keys=[appointment_to_exchange_id], back_populates='requests_exchange', lazy=True)
+    existing_appointment = db.relationship('Appointment', foreign_keys=[existing_appointment_id], back_populates='general_requests', lazy=True)
+    appointment_to_exchange = db.relationship('Appointment', foreign_keys=[appointment_to_exchange_id], back_populates='requests_to_exchange', lazy=True)
     doctor_who_will_cover = db.relationship('User', foreign_keys=[doctor_who_will_cover_id], lazy=True)
     doctor_to_include = db.relationship('User', foreign_keys=[doctor_to_include_id], lazy=True)
     

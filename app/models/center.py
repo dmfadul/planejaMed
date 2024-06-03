@@ -11,7 +11,7 @@ class Center(db.Model):
     is_active = db.Column(db.Boolean, default=True)
 
     appointments = db.relationship('Appointment', back_populates='center', lazy=True)   
-    base_appointments = db.relationship('BaseAppointment', backref='center', lazy=True)
+    base_appointments = db.relationship('BaseAppointment', back_populates='center', lazy=True)
 
     def __repr__(self):
         return self.name
