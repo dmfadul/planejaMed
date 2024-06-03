@@ -105,3 +105,36 @@ class User(db.Model):
     def deactivate(self):
         self.is_active = False
         db.session.commit()
+
+    def edit(self,
+             first_name=None,
+             middle_name=None,
+             last_name=None,
+             crm=None,
+             rqe=None,
+             phone=None,
+             email=None,
+             password=None):
+        if first_name is not None:
+            self.first_name = first_name
+        if middle_name is not None:
+            self.middle_name = middle_name
+        if last_name is not None:
+            self.last_name = last_name
+        if crm is not None:
+            self.crm = crm
+        if rqe is not None:
+            self.rqe = rqe
+        if phone is not None:
+            self.phone = phone
+        if email is not None:
+            self.email = email
+        if password is not None:
+            self.password = password
+
+        try:
+            db.session.commit()
+            return 0
+        except Exception as e:
+            db.session.rollback()
+            raise e

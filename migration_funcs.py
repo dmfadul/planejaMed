@@ -1,10 +1,8 @@
 from app import create_app, db
 from app.models import User
-import migration.funcs as funcs
 from datetime import datetime
 import sqlite3
 import json
-
 
 DATABASE = 'migration/old_db.db'
 
@@ -98,13 +96,13 @@ def migrate_base(base_id):
             
 
 def transfer_users():
-    user_ids = funcs.get_all_ids("users")
+    user_ids = get_all_ids("users")
     app = create_app()
 
     for user_id in user_ids:
         if int(user_id) < 5000:
             continue
-        old_user = funcs.migrate_users(user_id=user_id)
+        old_user = migrate_users(user_id=user_id)
         print('ou', old_user)
         date_joined = old_user.pop("date_joined")
 
