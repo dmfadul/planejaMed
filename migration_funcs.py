@@ -93,7 +93,6 @@ def migrate_base(base_id):
             date = (data[0][j], data[1][j])
             print(date, data[i][j])
 
-            
 
 def transfer_users():
     user_ids = get_all_ids("users")
