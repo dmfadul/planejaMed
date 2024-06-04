@@ -14,7 +14,7 @@ class User(db.Model):
     last_name = db.Column(db.Text, nullable=False)
 
     crm = db.Column(db.Integer, nullable=False, unique=True)
-    rqe = db.Column(db.Integer, nullable=False, unique=True)
+    rqe = db.Column(db.Integer, nullable=False, unique=False)
 
     phone = db.Column(db.Text, nullable=False)
     email = db.Column(db.Text, nullable=False)
@@ -39,7 +39,7 @@ class User(db.Model):
     def add_entry(cls, first_name, middle_name, last_name, crm, rqe, phone, email, password):
         users = cls.query.all()
         crms = [user.crm for user in users]
-        names = [user.full_name() for user in users]
+        names = [user.full_name for user in users]
 
         # Create a new instance of Appointments
         new_user = cls(

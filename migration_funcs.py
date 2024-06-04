@@ -1,10 +1,10 @@
 from app import create_app, db
-from app.models import User
+from app.models import User, Center
 from datetime import datetime
 import sqlite3
 import json
 
-DATABASE = 'migration/old_db.db'
+DATABASE = 'old_db.db'
 
 
 def get_tables_names():
@@ -56,7 +56,7 @@ def get_all_ids(table_name):
     return all_ids
 
 
-def migrate_users(user_id):
+def migrate_user(user_id):
     user = load_from_db('Users', user_id)
 
     user_dict = {}
@@ -71,6 +71,48 @@ def migrate_users(user_id):
     user_dict["date_joined"] = datetime.strptime(user[9], "%Y-%m-%d")
 
     return user_dict
+
+
+def migrate_users():
+    user_ids = get_all_ids("users")
+    app = create_app()
+
+    for user_id in user_ids:
+        if int(user_id) < 5000:
+            continue
+        old_user = migrate_user(user_id=user_id)
+        print('ou', old_user)
+        date_joined = old_user.pop("date_joined")
+
+        with app.app_context():
+            new_user = User.add_entry(**old_user)
+
+            if new_user == -1:
+                print(f"{old_user.get("full_name")} crm already exists")
+                continue
+            if new_user == -2:
+                print(f"{old_user.get("full_name")} name already exists")
+                continue
+            new_user.date_joined = date_joined
+
+
+def add_centers():
+    centers = [
+               {"name": "CENTRO CIRÚRGICO GERAL", "abbreviation": "CCG"},
+               {"name": "CENTRO CIRÚRGICO OBSTÉTRICO", "abbreviation": "CCO"},
+               {"name": "CENTRO CIRÚGICO DE QUEIMADOS", "abbreviation": "CCQ"},
+              ]
+    
+    app = create_app()
+    for center in centers:
+        with app.app_context():
+            new_center = Center.add_entry(**center)
+            if new_center == -1:
+                print(f"{new_center.name} name already exists")
+                continue
+            if new_center == -2:
+                print(f"{new_center.abbreviation} abbreviation already exists")
+                continue
 
 
 def migrate_base(base_id):
@@ -92,40 +134,3 @@ def migrate_base(base_id):
 
             date = (data[0][j], data[1][j])
             print(date, data[i][j])
-
-
-def transfer_users():
-    user_ids = get_all_ids("users")
-    app = create_app()
-
-    for user_id in user_ids:
-        if int(user_id) < 5000:
-            continue
-        old_user = migrate_users(user_id=user_id)
-        print('ou', old_user)
-        date_joined = old_user.pop("date_joined")
-
-        with app.app_context():
-            new_user = User.add_entry(**old_user)
-
-            if new_user == -1:
-                print(f"{new_user.full_name} crm already exists")
-                continue
-            if new_user == -2:
-                print(f"{new_user.full_name} name already exists")
-                continue
-            new_user.date_joined = date_joined
-
-
-
-# funcs.migrate_base("CCQ--BASE")
-
-
-# app = create_app()
-
-# with app.app_context():
-#     db.create_all()
-#     # db.session.commit()
-#     # print('Database created!')
-
-#     pass
