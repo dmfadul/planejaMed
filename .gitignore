@@ -1,6 +1,7 @@
 .venv/
 instance/
 old_db.db
+__pycache__/
 migration/__pycache__/
 
 app/__pycache__/

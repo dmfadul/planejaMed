@@ -1,5 +1,5 @@
 from app import create_app, db
-from app.models import User, Center
+from app.models import User, Center, BaseAppointment
 from datetime import datetime
 import sqlite3
 import json
@@ -120,6 +120,7 @@ def migrate_base(base_id):
     base = load_from_db('Bases', base_id)
     center = base[1]
     data = json.loads(base[2])
+    print(center)
 
     for i in range(len(data)):
         if i in [0, 1]:
@@ -137,3 +138,6 @@ def migrate_base(base_id):
         
             date = (data[0][j], data[1][j])
             print(date, data[i][j])
+
+        # with app.app_context():
+            # BaseAppointment.add_entry(user_id, center_id, week_day, week_index, hour)
