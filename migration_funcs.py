@@ -118,9 +118,7 @@ def add_centers():
 def migrate_base(base_id):
     app = create_app()
     base = load_from_db('Bases', base_id)
-    center = base[1]
     data = json.loads(base[2])
-    print(center)
 
     for i in range(len(data)):
         if i in [0, 1]:
@@ -128,7 +126,7 @@ def migrate_base(base_id):
         doctor_name = data[i][0]
         with app.app_context():
             doctor = User.get_by_name(doctor_name)
-            print(doctor_name, doctor.id)
+            center = Center.query.filter_by(abbreviation=base[1]).first()
 
         for j in range(len(data[i])):
             if j == 0:
@@ -136,8 +134,8 @@ def migrate_base(base_id):
             if data[i][j] == '' or data[i][j] is None:
                 continue
         
-            date = (data[0][j], data[1][j])
-            print(date, data[i][j])
+            week_day, week_index = data[0][j], data[1][j]
+            print(doctor.id, center.id, week_day, week_index, data[i][j])
 
         # with app.app_context():
             # BaseAppointment.add_entry(user_id, center_id, week_day, week_index, hour)
