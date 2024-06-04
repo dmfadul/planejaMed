@@ -116,6 +116,7 @@ def add_centers():
 
 
 def migrate_base(base_id):
+    app = create_app()
     base = load_from_db('Bases', base_id)
     center = base[1]
     data = json.loads(base[2])
@@ -124,13 +125,15 @@ def migrate_base(base_id):
         if i in [0, 1]:
             continue
         doctor_name = data[i][0]
-        print(doctor_name)
+        with app.app_context():
+            doctor = User.get_by_name(doctor_name)
+            print(doctor_name, doctor.id)
 
         for j in range(len(data[i])):
             if j == 0:
                 continue
             if data[i][j] == '' or data[i][j] is None:
                 continue
-
+        
             date = (data[0][j], data[1][j])
             print(date, data[i][j])

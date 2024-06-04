@@ -61,34 +61,34 @@ class User(db.Model):
         if new_user.full_name in names:
             db.session.rollback()
             return -2
-        # try:
-        #     db.session.commit()
-        # except Exception as e:
-        #     db.session.rollback()
-        #     raise e
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            raise e
 
         return new_user
 
     @classmethod
-    def get_crm(cls, full_name):
+    def get_by_name(cls, full_name):
         full_name_clean = unidecode(' '.join([part.strip().lower() for part in full_name.split()]))
         users = cls.query.all()
-        names = [unidecode(user.full_name().lower()) for user in users]
+        names = [unidecode(user.full_name.lower()) for user in users]
 
         if names.count(full_name_clean) == 0:
-            print(full_name_clean)
             return -1
         
         if names.count(full_name_clean) == 1:
             for user in users:
-                if unidecode(user.full_name().lower()) == full_name_clean:
-                    return user.crm
+                if unidecode(user.full_name.lower()) == full_name_clean:
+                    return user
                 
         return -2
     
     @property
     def full_name(self):
-        return f'{self.first_name} {self.middle_name} {self.last_name}'
+        name = f'{self.first_name} {self.middle_name} {self.last_name}'
+        return ' '.join(name.split())
     
     def lock(self):
         self.is_locked = True
