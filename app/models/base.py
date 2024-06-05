@@ -9,7 +9,7 @@ class BaseAppointment(db.Model):
 
     user_id = db.Column(db.Integer, ForeignKey('users.id'), nullable=False)
     center_id = db.Column(db.Integer, ForeignKey('centers.id'), nullable=False)
-    week_day = db.Column(db.Text, nullable=False)
+    week_day = db.Column(db.Integer, nullable=False)
     week_index = db.Column(db.Integer, nullable=False)
     hour = db.Column(db.Integer, nullable=False)
 
@@ -43,7 +43,7 @@ class BaseAppointment(db.Model):
         same_index = new_base_appointment.week_index in week_indexes
         same_hour = new_base_appointment.hour in hours
 
-        if same_user and same_center and same_day and same_index and same_hour:
+        if same_user and same_day and same_index and same_hour:
             db.session.rollback()
             return -1
         db.session.commit()
