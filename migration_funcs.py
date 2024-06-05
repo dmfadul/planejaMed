@@ -1,6 +1,7 @@
 from app import create_app, db
 from app.models import User, Center, BaseAppointment
 from datetime import datetime
+import instance.global_vars as global_vars
 import sqlite3
 import json
 
@@ -133,9 +134,14 @@ def migrate_base(base_id):
                 continue
             if data[i][j] == '' or data[i][j] is None:
                 continue
-        
-            week_day, week_index = data[0][j], data[1][j]
-            print(doctor.id, center.id, week_day, week_index, data[i][j])
+            
+            week_day, week_index = [d[:3] for d in global_vars.DIAS_SEMANA].index(data[0][j]), data[1][j]
+            hours = global_vars.HOURS_MAP.get(data[i][j])
 
-        # with app.app_context():
-            # BaseAppointment.add_entry(user_id, center_id, week_day, week_index, hour)
+            if hours is None:
+                continue
+            
+            for hour in range(hours[0], hours[1]):
+                with app.app_context():
+                    flag = BaseAppointment.add_entry(doctor.id, center.id, week_day, week_index, hour)
+                    print(flag, doctor.id, center.id, week_day, week_index, hour)
