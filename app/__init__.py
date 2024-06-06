@@ -15,7 +15,9 @@ def create_app(config_filename=None):
     db.init_app(app)
 
     from app.routes.dashboard.dashboard import dashboard_bp
+    from app.routes.dataview.dataview import dataview_bp
     app.register_blueprint(dashboard_bp)
+    app.register_blueprint(dataview_bp)
 
     return app
 

@@ -9,3 +9,4 @@ app/routes/__pycache__/
 app/models/__pycache__/
 
 app/routes/dashboard/__pycache__/
+app/routes/dataview/__pycache__/

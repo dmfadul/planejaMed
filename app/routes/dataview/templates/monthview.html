@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block head_links %}
+{% endblock %}
+
+{% block outsideContent %}
+    {% if year == 0 %}
+        <div><header>BASE {{center}}</header></div>
+    {% else %}
+        <div><header>{{center}} - {{month}}/{{year}}</header></div>
+    {% endif %}
+
+    <div class="keep-in-window">
+        <div class="backdrop">
+            <div id="button-container">
+                <div id="default-buttons">
+                    {% if is_admin %}
+                        <button type="button" id="edit-button" onclick="startEditing()">Editar</button>
+                    {% endif %}
+                    <a href="/print-table" target="_blank"><button type="button" id="print-table">Imprimir</button></a>
+    
+                    <a href="/table/display?action=sum-hours"><button type="button">Somar Horas</button></a>
+                    {% if year != '0' %}
+                        <button type="button" id="gen-report" onclick="">Gerar Relatório</button>
+                    {% endif %}   
+                </div>
+    
+                <div id="edit-buttons" style="display: none;">
+                    <button id="add-button" onclick="executeEdit('add')">Adicionar</button>
+                    <button id="delete-button" onclick="executeEdit('delete')">Apagar</button>
+                    {% if year == '0' %}
+                        <button type="button" id="add-doctor" onclick="updateDoctor('add')">Incluir Médico</button>
+                        <button type="button" id="remove-doctor" onclick="updateDoctor('remove')">Excluir Médico</button>
+                    {% else %}
+                        <button type="button" id="add-freelancer" onclick="updateDoctor('add_f')">Incluir Freelancer</button>
+                        <button type="button" id="remove-freelancer" onclick="updateDoctor('remove_f')">Excluir Freelancer</button>
+                        <button type="button" id="add-holiday" onclick="addHoliday()">Incluir Feriado</button>
+                        <button type="button" id="remove-holiday" onclick="">Excluir Feriado</button>
+                    {% endif %}
+                    <button id="exit-edit-button" onclick="finishEditing()">Sair da Edição</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="doctorModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Selecione o Médico</h2>
+                <div id="doctorOptions"></div>
+                <button id="submitDoctors">Submit</button>
+            </div>
+        </div>
+
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Confirm Action</h2>
+                <!-- Dynamic content will be loaded here -->
+                <div id="modalBody"></div>
+                <button id="cancelButton">Cancel</button>
+                <button id="saveButton">Save</button>
+            </div>
+        </div>
+
+        <div id="hours_table">
+            <table>
+                <tbody>
+                    {% set month_days = data[1] %}
+    
+                    {% for row in data %}
+                        {% if loop.index0 == 0 or loop.index0 == 1 %}
+                            {% set first_rows = True %}
+                        {% endif %}
+    
+                        <tr>
+                        {% for c in row %}
+                            {% if loop.index0 == 0 or first_rows %}
+                                <td class="_col_{{ month_days[loop.index0] }}">{{ c }}</td>
+                            {% else %}
+                                <td class="col_{{ month_days[loop.index0] }}" onclick="cellClicked(this)">{{ c }}</td>
+                            {% endif %}
+                        {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+{% endblock %}
