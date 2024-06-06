@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Anestesio</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  {% block head_links %}
+  {% endblock %}
+</head>
+<body>
+  <header onclick="window.location.href='/'">
+    <div class="header-content">
+      <h1>Grupo de Anestesia Mackenzie</h1>
+      <img src="/static/logo.png" alt="Mackenzie Doctors Logo" id="logo">
+    </div>
+    
+    {% if dont_show_logout %}
+    {% else %}
+      <form id="logout" action="/logout" method="post" style="float: right;">
+        <button type="submit">Sign Out</button>
+      </form>
+    {% endif %}
+
+    <div>
+      <a href="/profile" style="color: #add8e6; ">
+        {{ user_name }}
+      </a>
+    </div>
+  </header>
+
+  <!-- Display Flash Messages -->
+  <div class="flash-messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+  </div>
+
+    {% block outsideContent %}
+    {% endblock %}
+  <main id="main-container">
+    {% block mainContent %}
+    {% endblock %}
+  </main>
+</body>
+</html>
