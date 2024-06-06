@@ -1,3 +1,5 @@
+import instance.global_vars as global_vars
+import math
 from app import db
 from sqlalchemy import ForeignKey
 
@@ -48,3 +50,17 @@ class BaseAppointment(db.Model):
             return -1
         db.session.commit()
         return new_base_appointment
+    
+    def delete_entry(self):
+        db.session.delete(self)
+        db.session.commit()
+    
+    @classmethod
+    def gen_grid(cls, center_id):
+        weekdays = [day[:3] for day in global_vars.DIAS_SEMANA] * 5
+        weekindexes = [math.ceil(int(x)/7) for x in range(1, 36)]
+        table_header = [['']+weekdays, ['']+weekindexes]
+
+        table = table_header
+
+        return table
