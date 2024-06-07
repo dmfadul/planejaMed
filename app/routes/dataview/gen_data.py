@@ -9,7 +9,7 @@ def gen_base(center_id):
     table_header = [['']+weekdays, ['']+weekindexes]
 
     table = table_header
-    users = sorted(User.query.all(), key=lambda x: x.full_name)
+    users = sorted(User.query.filter_by(is_active=True).all(), key=lambda x: x.full_name)
     for user in users:
         row = [(user.full_name, user.crm)] + ['']*(len(weekdays))
         table.append(row)
