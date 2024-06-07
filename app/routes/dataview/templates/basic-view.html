@@ -67,8 +67,11 @@
     
                         <tr>
                         {% for c in row %}
-                            {% if loop.index0 == 0 or first_rows %}
+                            {% if loop.index0 == 0 %}
+                                <td id="{{ c[1] }}" class="_col_{{ month_days[loop.index0] }}">{{ c[0] }}</td>
+                            {% elif first_rows %}
                                 <td class="_col_{{ month_days[loop.index0] }}">{{ c }}</td>
+
                             {% else %}
                                 <td class="col_{{ month_days[loop.index0] }}" onclick="cellClicked(this)">{{ c }}</td>
                             {% endif %}
