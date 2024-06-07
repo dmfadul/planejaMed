@@ -11,7 +11,7 @@ def gen_base(center_id):
     table = table_header
     users = sorted(User.query.filter_by(is_active=True).all(), key=lambda x: x.full_name)
     for user in users:
-        row = [(user.full_name, user.crm)] + ['']*(len(weekdays))
+        row = [(user.abbreviated_name, user.crm)] + ['']*(len(weekdays))
         table.append(row)
 
     return table

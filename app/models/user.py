@@ -90,6 +90,11 @@ class User(db.Model):
         name = f'{self.first_name} {self.middle_name} {self.last_name}'
         return ' '.join(name.split())
     
+    @property
+    def abbreviated_name(self):
+        name = f'{self.first_name} {self.last_name}'
+        return ' '.join(name.split())
+    
     def lock(self):
         self.is_locked = True
         db.session.commit()
