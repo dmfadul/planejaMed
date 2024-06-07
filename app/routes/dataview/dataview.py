@@ -23,3 +23,12 @@ def baseview():
                            month="January",
                            year="2020",
                            is_admin=True)
+
+@dataview_bp.route("/monthview/")
+def monthview():
+    return "Month View"
+
+
+@dataview_bp.route("/overview/")
+def overview():
+    return "Overview"
