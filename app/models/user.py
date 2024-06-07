@@ -96,6 +96,7 @@ class User(db.Model):
         return ' '.join(name.split())
     
     def base_row(self, center_id):
+        from ._funcs import unify_appointments
         base_appointments = [app for app in self.base_appointments if app.center_id == center_id]
         
         app_dict = {}
@@ -105,6 +106,9 @@ class User(db.Model):
                 app_dict[key] = [app.hour]
             else:
                 app_dict[key].append(app.hour)
+
+        for key in app_dict:
+            app_dict[key] = unify_appointments(app_dict[key])
 
         return app_dict
         
