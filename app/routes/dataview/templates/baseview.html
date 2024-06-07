@@ -1,0 +1,11 @@
+{% extends 'basic-view.html' %}
+
+{% block title %}
+    <div><header>BASE {{center}}</header></div>
+{% endblock %}
+
+
+{% block addRemoveDoctors %}
+    <button type="button" id="add-doctor" onclick="updateDoctor('add')">Incluir Médico</button>
+    <button type="button" id="remove-doctor" onclick="updateDoctor('remove')">Excluir Médico</b
+{% endblock %}
