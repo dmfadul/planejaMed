@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request
 from app.models import BaseAppointment, Center
+from .gen_data import gen_base
 
 dataview_bp = Blueprint(
                         "dataview",
@@ -16,7 +17,7 @@ def baseview():
     center_id = Center.query.filter_by(abbreviation=center).first().id
 
 
-    data = BaseAppointment.gen_grid(center_id)
+    data = gen_base(center_id)
 
     return render_template("baseview.html",
                            data=data,

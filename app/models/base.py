@@ -56,11 +56,6 @@ class BaseAppointment(db.Model):
         db.session.commit()
     
     @classmethod
-    def gen_grid(cls, center_id):
-        weekdays = [day[:3] for day in global_vars.DIAS_SEMANA] * 5
-        weekindexes = [math.ceil(int(x)/7) for x in range(1, 36)]
-        table_header = [['']+weekdays, ['']+weekindexes]
-
-        table = table_header
-
-        return table
+    def appointments_dict(cls, center_id):
+        appointments = cls.query.filter_by(center_id=center_id).all()
+        return {}
