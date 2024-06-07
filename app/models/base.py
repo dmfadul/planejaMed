@@ -19,7 +19,7 @@ class BaseAppointment(db.Model):
     center = db.relationship('Center', back_populates='base_appointments')
     
     def __repr__(self):
-        return f'{self.user.full_name} - {self.center.name} - {self.week_day} - {self.hour}'
+        return f'{self.week_day} - {self.week_index} - {self.hour}'
     
     @classmethod
     def add_entry(cls, user_id, center_id, week_day, week_index, hour):

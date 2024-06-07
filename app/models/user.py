@@ -95,6 +95,21 @@ class User(db.Model):
         name = f'{self.first_name} {self.last_name}'
         return ' '.join(name.split())
     
+    def base_row(self, center_id):
+        base_appointments = [app for app in self.base_appointments if app.center_id == center_id]
+        
+        app_dict = {}
+        for app in base_appointments:
+            key = (app.week_day, app.week_index)
+            if key not in app_dict:
+                app_dict[key] = [app.hour]
+            else:
+                app_dict[key].append(app.hour)
+
+        return app_dict
+        
+ 
+    
     def lock(self):
         self.is_locked = True
         db.session.commit()
