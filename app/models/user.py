@@ -110,7 +110,16 @@ class User(db.Model):
         for key in app_dict:
             app_dict[key] = unify_appointments(app_dict[key])
 
-        return app_dict
+        base_row = []
+        for weekindex in list(range(1, 6)):
+            for weekday in list(range(7)):
+                print(weekday, weekindex)
+                if (weekday, weekindex) in app_dict:
+                    base_row.append(app_dict[(weekday, weekindex)])
+                else:
+                    base_row.append('')
+
+        return base_row
         
  
     

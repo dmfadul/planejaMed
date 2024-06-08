@@ -21,7 +21,7 @@ def unify_appointments(appointments):
 
     unified_appointments = sorted(unified_appointments, key=lambda x: ['d', 'm', 't', 'n', 'c', 'v'].index(x))
 
-    if not unified_appointments:
+    if not appointments:
         return ''.join(unified_appointments)
 
     for letter, hour in list(hours_map.items())[::-1]:
