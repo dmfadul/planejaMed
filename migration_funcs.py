@@ -141,7 +141,12 @@ def migrate_base(base_id):
             if hours is None:
                 continue
             
-            for hour in range(hours[0], hours[1]):
+            if hours[0] < hours[1]:
+                hour_list = list(range(hours[0], hours[1]+1))
+            else:
+                hour_list = [h for h in range(hours[0], 25)] + [h for h in range(1, hours[1]+1)]
+
+            for hour in hour_list:
                 with app.app_context():
                     flag = BaseAppointment.add_entry(doctor.id, center.id, week_day, week_index, hour)
                     print(flag, doctor.id, center.id, week_day, week_index, hour)
