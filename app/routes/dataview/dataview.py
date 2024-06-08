@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, request, render_template, jsonify, flash
 from app.models import BaseAppointment, Center
 from .gen_data import gen_base
+from .resolve_data import resolve_data
 
 dataview_bp = Blueprint(
                         "dataview",
@@ -42,6 +43,11 @@ def overview():
 
 @dataview_bp.route("/update-appointments", methods=["POST"])
 def update_appointments():
-    data = request.get_json()
-    print("data: ", data)
+    flag = resolve_data(request.get_json())
+    if flag == 1:
+        return jsonify({"status": "error", 'message': 'An unexpected error occurred'})
+    if flag == -1:
+        flash("Horários conflitantes", "danger")
+        return jsonify({"status": "error", 'message': 'Conflicting hours'})
+    
     return jsonify({"status": "success", 'message': 'Database updated successfully'})

@@ -55,12 +55,14 @@
         <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/panelControl.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/cellHighlight.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/resolveData.js') }}"></script>
+        {% block otherScripts %}
+        {% endblock %}
 
         <script>
             var centerValue = {{ center | tojson | safe }};
-            {% block otherVariables %}
-            {% endblock %}
         </script>
+        {% block otherScriptVariables %}
+        {% endblock %}
 
         <div id="hours_table">
             <table>
