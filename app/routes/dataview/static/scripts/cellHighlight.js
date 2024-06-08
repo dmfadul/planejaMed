@@ -17,6 +17,7 @@ function cellClicked(cell) {
         var weekDay = cell.closest("table").querySelectorAll("tr")[0].cells[cell.cellIndex].textContent;
         var monthDay = cell.closest("table").querySelectorAll("tr")[1].cells[cell.cellIndex].textContent;
         var doctorName = cell.closest("tr").querySelector("td").textContent;
+        var doctorCRM = cell.closest("tr").querySelector("td").getAttribute("id");
         var hourValue = cell.textContent;
 
         // Add to state
@@ -24,6 +25,7 @@ function cellClicked(cell) {
             weekDay: weekDay,
             monthDay: monthDay,
             doctorName: doctorName,
+            doctorCRM: doctorCRM,
             hourValue: hourValue,
             cell: cell
         });

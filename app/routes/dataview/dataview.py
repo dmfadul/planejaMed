@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, jsonify
 from app.models import BaseAppointment, Center
 from .gen_data import gen_base
 
@@ -38,3 +38,10 @@ def monthview():
 @dataview_bp.route("/overview/")
 def overview():
     return "Overview"
+
+
+@dataview_bp.route("/update-appointments", methods=["POST"])
+def update_appointments():
+    data = request.get_json()
+    print("data: ", data)
+    return jsonify({"status": "success", 'message': 'Database updated successfully'})

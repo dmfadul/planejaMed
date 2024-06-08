@@ -43,7 +43,7 @@
 
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
-                <span class="close">&times;</span>
+                <span id="close" class="close">&times;</span>
                 <h2>Confirm Action</h2>
                 <!-- Dynamic content will be loaded here -->
                 <div id="modalBody"></div>
@@ -55,6 +55,12 @@
         <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/panelControl.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/cellHighlight.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/resolveData.js') }}"></script>
+
+        <script>
+            var centerValue = {{ center | tojson | safe }};
+            {% block otherVariables %}
+            {% endblock %}
+        </script>
 
         <div id="hours_table">
             <table>

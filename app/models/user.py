@@ -113,15 +113,12 @@ class User(db.Model):
         base_row = []
         for weekindex in list(range(1, 6)):
             for weekday in list(range(7)):
-                print(weekday, weekindex)
                 if (weekday, weekindex) in app_dict:
                     base_row.append(app_dict[(weekday, weekindex)])
                 else:
                     base_row.append('')
 
         return base_row
-        
- 
     
     def lock(self):
         self.is_locked = True

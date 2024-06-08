@@ -1,6 +1,6 @@
-function executeEdit(action){
-    if (state.mode == null || state.selectedCells.length == 0) {
-        return
+function executeEdit(action) {
+    if (!state.mode || state.selectedCells.length === 0) {
+        return;
     }
     state.action = action;
 
@@ -10,119 +10,128 @@ function executeEdit(action){
     sendData();
 }
 
-
 function sendData() {
     confirmData()
         .then(() => {
-            fetch('/update-database', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(state)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                sessionStorage.setItem("clickButton", true)
-                window.location.reload();
-            })
+            return fetch('/update-appointments', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(state)
+            });
         })
-        .catch((error) => {
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            sessionStorage.setItem("clickButton", true);
+            window.location.reload();
+        })
+        .catch(error => {
             console.error('Error:', error);
         })
         .finally(() => {
-            // Remove 'selected' class from all cells
-            document.querySelectorAll('.selected').forEach(cell => {
-                cell.classList.remove('selected');
-                cell.style.backgroundColor = ""; // Reset background color if needed
-                state.selectedCells = [];
-                state.action = null;
-            });
+            clearSelection();
         });
 }
 
+function clearSelection() {
+    document.querySelectorAll('.selected').forEach(cell => {
+        cell.classList.remove('selected');
+        cell.style.backgroundColor = ""; // Reset background color if needed
+    });
+    state.selectedCells = [];
+    state.action = null;
+}
 
 function confirmData() {
     return new Promise((resolve, reject) => {
-        if (state.action == "delete") {
+        if (state.action === "delete") {
             setTimeout(resolve, 500);
             return;
         }
 
-        // Show the modal
         const modal = document.getElementById('confirmationModal');
         const modalBody = document.getElementById('modalBody');
         modal.style.display = 'block';
-
-        // Clear previous content
         modalBody.innerHTML = '';
 
-        const numberOfElements = state.selectedCells.length;
-        for (let i = 0; i < numberOfElements; i++) {
-            let message = `${state.selectedCells[i]['doctorName']}: ${state.selectedCells[i]['monthDay']}, ${state.selectedCells[i]['weekDay']}`;
+        state.selectedCells.forEach((cell, index) => {
+            let message = `${cell.doctorName}: ${cell.weekDay}, ${cell.monthDay}    `;
             let div = document.createElement('div');
             div.className = 'message-container';
-            div.innerHTML = `<span class="message">${message} ${i + 1}</span>`;
+            div.innerHTML = `<span class="message">${message}</span>`;
 
-            // Create and append the first dropdown for hour letter
-            let firstDropdown = document.createElement('select');
-            firstDropdown.id = `firstDropdown${i}`;
-            firstDropdown.className = 'dropdown';
-            let options = ['-', 'd', 'm', 't', 'n', 'c', 'dn'];
-            options.forEach(option => {
-                let optionElement = document.createElement('option');
-                optionElement.value = option;
-                optionElement.textContent = option;
-                firstDropdown.appendChild(optionElement);
-            });
-            div.appendChild(firstDropdown);
-
-            // Create and append the second and third dropdowns for start and end times
-            for (let dropdown = 2; dropdown <= 3; dropdown++) {
-                let timeDropdown = document.createElement('select');
-                timeDropdown.id = `dropdown${dropdown}_${i}`;
-                timeDropdown.className = 'dropdown';
-                for (let hour = 0; hour <= 23; hour++) { // Assuming hours from 07:00 to 18:00
-                    let hourString = `${hour < 10 ? '0' : ''}${hour}:00`;
-                    let optionElement = document.createElement('option');
-                    optionElement.value = hourString;
-                    optionElement.textContent = hourString;
-                    timeDropdown.appendChild(optionElement);
-                }
-                div.appendChild(timeDropdown);
-            }
+            div.appendChild(createDropdown(`firstDropdown${index}`, ['-', 'd', 'm', 't', 'n', 'c', 'v', 'dn']));
+            div.appendChild(createTimeDropdown(`dropdown2_${index}`));
+            div.appendChild(createTimeDropdown(`dropdown3_${index}`));
 
             modalBody.appendChild(div);
-        }
+        });
 
-        // Close modal events
-        document.querySelector('.close').onclick = function() {
-            modal.style.display = 'none';
-            reject('User cancelled the operation');
-        };
-        document.getElementById('cancelButton').onclick = function() {
-            modal.style.display = 'none';
-            reject('User cancelled the operation');
-        };
-        document.getElementById('saveButton').onclick = function() {
-            // Collect data from dropdowns and resolve promise
-            for (let i = 0; i < numberOfElements; i++) {
-                let hour_letter = document.getElementById(`firstDropdown${i}`).value;
-                let hour_init = document.getElementById(`dropdown2_${i}`).value;
-                let hour_end = document.getElementById(`dropdown3_${i}`).value;
-                state.selectedCells[i]["hourValue"] = [hour_letter, hour_init, hour_end];
-            }
-            modal.style.display = 'none';
-            resolve();
-        };
-
-        // Handle clicking outside the modal
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = 'none';
-                reject('User cancelled the operation');
-            }
-        };
+        setupModalEvents(resolve, reject);
     });
+}
+
+function createDropdown(id, options) {
+    let dropdown = document.createElement('select');
+    dropdown.id = id;
+    dropdown.className = 'dropdown';
+    options.forEach(option => {
+        let optionElement = document.createElement('option');
+        optionElement.value = option;
+        optionElement.textContent = option;
+        dropdown.appendChild(optionElement);
+    });
+    return dropdown;
+}
+
+function createTimeDropdown(id) {
+    let dropdown = document.createElement('select');
+    dropdown.id = id;
+    dropdown.className = 'dropdown';
+    for (let hour = 0; hour <= 23; hour++) {
+        let hourString = `${hour < 10 ? '0' : ''}${hour}:00`;
+        let optionElement = document.createElement('option');
+        optionElement.value = hourString;
+        optionElement.textContent = hourString;
+        dropdown.appendChild(optionElement);
+    }
+    return dropdown;
+}
+
+function setupModalEvents(resolve, reject) {
+    const modal = document.getElementById('confirmationModal');
+
+    function closeModal() {
+        modal.style.display = 'none';
+        reject('User cancelled the operation');
+    }
+
+    document.getElementById('close').onclick = closeModal;
+
+    document.getElementById('cancelButton').onclick = closeModal;
+
+    document.getElementById('saveButton').onclick = () => {
+        state.selectedCells.forEach((cell, index) => {
+            let hour_letter = document.getElementById(`firstDropdown${index}`).value;
+            let hour_init = document.getElementById(`dropdown2_${index}`).value;
+            let hour_end = document.getElementById(`dropdown3_${index}`).value;
+            cell.hourValue = [hour_letter, hour_init, hour_end];
+        });
+        modal.style.display = 'none';
+        resolve();
+    };
+
+    window.onclick = event => {
+        if (event.target == modal) {
+            closeModal();
+        }
+    };
+
+    window.onkeydown = event => {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    };
 }
