@@ -89,6 +89,12 @@
                     {% endfor %}
                 </tbody>
 
+                <script>
+                    if(sessionStorage.getItem('clickButton')) {
+                        sessionStorage.removeItem('clickButton');
+                        document.getElementById("edit-button").click();
+                    }
+                </script>
             </table>
         </div>
     </div>

@@ -62,7 +62,7 @@ function confirmData() {
             div.className = 'message-container';
             div.innerHTML = `<span class="message">${message} ${index + 1}</span>`;
 
-            let firstDropdown = createDropdown(`firstDropdown${index}`, ['-', 'd', 'm', 't', 'n', 'c', 'dn']);
+            let firstDropdown = createDropdown(`firstDropdown${index}`, ['-', 'd', 'm', 't', 'n', 'c', 'v', 'dn']);
             let dropdown2 = createTimeDropdown(`dropdown2_${index}`);
             let dropdown3 = createTimeDropdown(`dropdown3_${index}`);
 
@@ -108,15 +108,28 @@ function createTimeDropdown(id) {
     let dropdown = document.createElement('select');
     dropdown.id = id;
     dropdown.className = 'dropdown';
-    for (let hour = 0; hour <= 23; hour++) {
+
+    // Add options from 07:00 to 23:00
+    for (let hour = 7; hour <= 23; hour++) {
         let hourString = `${hour < 10 ? '0' : ''}${hour}:00`;
         let optionElement = document.createElement('option');
         optionElement.value = hourString;
         optionElement.textContent = hourString;
         dropdown.appendChild(optionElement);
     }
+
+    // Add options from 00:00 to 06:00
+    for (let hour = 0; hour < 7; hour++) {
+        let hourString = `${hour < 10 ? '0' : ''}${hour}:00`;
+        let optionElement = document.createElement('option');
+        optionElement.value = hourString;
+        optionElement.textContent = hourString;
+        dropdown.appendChild(optionElement);
+    }
+
     return dropdown;
 }
+
 
 function setupModalEvents(resolve, reject) {
     const modal = document.getElementById('confirmationModal');

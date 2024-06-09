@@ -23,12 +23,16 @@ class BaseAppointment(db.Model):
     
     @classmethod
     def add_entry(cls, user_id, center_id, week_day, week_index, hour):
-        base_appointments = cls.query.all()
-        user_ids = [appointment.user_id for appointment in base_appointments]
-        center_ids = [appointment.center_id for appointment in base_appointments]
-        week_days = [appointment.week_day for appointment in base_appointments]
-        week_indexes = [appointment.week_index for appointment in base_appointments]
-        hours = [appointment.hour for appointment in base_appointments]
+        existing_apps = cls.query.all()
+
+        existing_apps = [app for app in existing_apps if app.user_id == user_id]
+        existing_apps = [app for app in existing_apps if app.week_day == week_day]
+        existing_apps = [app for app in existing_apps if app.week_index == week_index]
+        existing_apps = [app for app in existing_apps if app.hour == hour]
+
+        if existing_apps:
+            print("Conflicting hours")
+            return -1
 
         new_base_appointment = cls(
             user_id = user_id,
@@ -39,16 +43,8 @@ class BaseAppointment(db.Model):
         )
 
         db.session.add(new_base_appointment)
-        same_user = new_base_appointment.user_id in user_ids
-        same_center = new_base_appointment.center_id in center_ids
-        same_day = new_base_appointment.week_day in week_days
-        same_index = new_base_appointment.week_index in week_indexes
-        same_hour = new_base_appointment.hour in hours
-
-        if same_user and same_day and same_index and same_hour:
-            db.session.rollback()
-            return -1
         db.session.commit()
+
         return new_base_appointment
     
     def delete_entry(self):
