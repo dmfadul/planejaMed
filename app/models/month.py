@@ -19,7 +19,6 @@ class Month(db.Model):
     center = db.relationship('Center', back_populates='months', lazy=True)
     days = db.relationship('Day', secondary=month_day_association, back_populates='months', lazy=True)
 
-
     __table_args__ = (
         UniqueConstraint('center_id', 'number', 'year', name='uq_center_month_year'),
     )
@@ -64,17 +63,30 @@ class Month(db.Model):
         
         return dates_row
     
-    def populate_month(self):
+    def populate(self):
         from app.models.day import Day
+
         if self.is_populated:
             return -1
 
         for date in self.dates_row:
-            flag = Day.add_entry(month_id=self.id, date=date)
+            day = Day.add_entry(date=date, month_ids=[self.id])
 
-            if flag == -1:
+            if day == -1:
                 print(f"Data {date} já existe.")
-                continue
+        
+            if date.weekday() in [5, 6]:
+                day.is_holiday = True
+                db.session.commit()
 
         self.is_populated = True
+        db.session.commit()
         return 0
+    
+    def depopulate(self):
+        for day in self.days[:]:
+            self.days.remove(day)
+        self.is_populated = False
+        db.session.commit()
+        return 0
+    

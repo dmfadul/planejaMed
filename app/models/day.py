@@ -14,22 +14,44 @@ class Day(db.Model):
     appointments = db.relationship('Appointment', back_populates='day', lazy=True)
 
     def __repr__(self):
-        return self.date
+        return f"{self.date}"
     
-
     @classmethod
-    def add_entry(cls, month_id, date):
+    def add_entry(cls, date, month_ids=None):
+        from app.models import Month
+        month_ids = month_ids or []
+
         existing_dates = [day.date for day in Day.query.filter_by().all()]
         if date in existing_dates:
             return -1
         
         new_day = cls(
-            month_id = month_id,
             date = date
         )
+        
+        for month_id in month_ids:
+            month = Month.query.get(month_id)
+            if month:
+                new_day.months.append(month)
 
         db.session.add(new_day)
         db.session.commit()
 
         return new_day
+    
+    @property
+    def make_holiday(self):
+        self.is_holiday = True
+        db.session.commit()
+        return 0
+    
+    def add_month(self, month_id):
+        from app.models import Month
+
+        month = Month.query.get(month_id)
+        if month and month not in self.months:
+            self.months.append(month)
+            db.session.commit()
+            return self
+        return 1
     
