@@ -1,6 +1,6 @@
 import math
 from instance import global_vars
-from app.models import BaseAppointment, User
+from app.models import BaseAppointment, User, Month
 
 
 def gen_base(center_id):
@@ -15,3 +15,9 @@ def gen_base(center_id):
         table.append(row)
 
     return table
+
+
+def gen_month(month_id):
+    month = Month.query.get(month_id)
+    print(month.dates_row)
+    return []

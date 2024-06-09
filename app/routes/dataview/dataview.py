@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, jsonify, flash
-from app.models import BaseAppointment, Center
+from app.models import BaseAppointment, Center, Month
 from .resolve_data import resolve_data
-from .gen_data import gen_base
+from .gen_data import gen_base, gen_month
 import instance.global_vars as global_vars
 
 dataview_bp = Blueprint(
@@ -29,11 +29,14 @@ def baseview():
 @dataview_bp.route("/monthview/", methods=["GET", "POST"])
 def monthview():
     center_abbr = request.form.get("center")
-    center_id = Center.query.filter_by(abbreviation=center_abbr).first().id
-    data = gen_base(center_id)
-
     month = [m for m in global_vars.MESES if request.form.get("month") in m][0]
     year = request.form.get("year")
+
+    center_id = Center.query.filter_by(abbreviation=center_abbr).first().id
+    month_id = Month.query.filter_by(center_id=center_id,
+                                     number=global_vars.MESES.index(month)+1,
+                                     year=year).first().id
+    data = gen_month(month_id)
 
     return render_template("monthview.html",
                            data=data,
