@@ -57,14 +57,32 @@ function confirmData() {
         modalBody.innerHTML = '';
 
         state.selectedCells.forEach((cell, index) => {
-            let message = `${cell.doctorName}: ${cell.weekDay}, ${cell.monthDay}    `;
+            let message = `${cell.doctorName}: ${cell.monthDay}, ${cell.weekDay}`;
             let div = document.createElement('div');
             div.className = 'message-container';
-            div.innerHTML = `<span class="message">${message}</span>`;
+            div.innerHTML = `<span class="message">${message} ${index + 1}</span>`;
 
-            div.appendChild(createDropdown(`firstDropdown${index}`, ['-', 'd', 'm', 't', 'n', 'c', 'v', 'dn']));
-            div.appendChild(createTimeDropdown(`dropdown2_${index}`));
-            div.appendChild(createTimeDropdown(`dropdown3_${index}`));
+            let firstDropdown = createDropdown(`firstDropdown${index}`, ['-', 'd', 'm', 't', 'n', 'c', 'dn']);
+            let dropdown2 = createTimeDropdown(`dropdown2_${index}`);
+            let dropdown3 = createTimeDropdown(`dropdown3_${index}`);
+
+            firstDropdown.addEventListener('change', () => {
+                if (firstDropdown.value !== '-') {
+                    dropdown2.disabled = true;
+                    dropdown3.disabled = true;
+                    dropdown2.style.backgroundColor = "#e9e9e9"; // Gray out the dropdown
+                    dropdown3.style.backgroundColor = "#e9e9e9"; // Gray out the dropdown
+                } else {
+                    dropdown2.disabled = false;
+                    dropdown3.disabled = false;
+                    dropdown2.style.backgroundColor = ""; // Reset background color
+                    dropdown3.style.backgroundColor = ""; // Reset background color
+                }
+            });
+
+            div.appendChild(firstDropdown);
+            div.appendChild(dropdown2);
+            div.appendChild(dropdown3);
 
             modalBody.appendChild(div);
         });
@@ -109,7 +127,6 @@ function setupModalEvents(resolve, reject) {
     }
 
     document.getElementById('close').onclick = closeModal;
-
     document.getElementById('cancelButton').onclick = closeModal;
 
     document.getElementById('saveButton').onclick = () => {
