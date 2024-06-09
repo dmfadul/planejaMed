@@ -1,5 +1,6 @@
 from app import db
 from sqlalchemy import ForeignKey, UniqueConstraint
+from .associations import month_day_association
 from datetime import datetime, timedelta
 import instance.global_vars as global_vars
 
@@ -16,7 +17,8 @@ class Month(db.Model):
     is_current = db.Column(db.Boolean, default=False)
 
     center = db.relationship('Center', back_populates='months', lazy=True)
-    days = db.relationship('Day', back_populates='month', lazy=True)
+    days = db.relationship('Day', secondary=month_day_association, back_populates='months', lazy=True)
+
 
     __table_args__ = (
         UniqueConstraint('center_id', 'number', 'year', name='uq_center_month_year'),
@@ -56,7 +58,6 @@ class Month(db.Model):
         end_date = datetime(self.year, self.number, global_vars.STR_DAY-1)
 
         dates_row = []
-        print(start_date, end_date)
         while start_date <= end_date:
             dates_row.append(start_date)
             start_date += timedelta(days=1)
@@ -69,9 +70,11 @@ class Month(db.Model):
             return -1
 
         for date in self.dates_row:
-            day = Day(month_id=self.id, date=date)
-            db.session.add(day)
+            flag = Day.add_entry(month_id=self.id, date=date)
 
-        # self.is_populated = True
-        # db.session.commit()
-        return 1
+            if flag == -1:
+                print(f"Data {date} já existe.")
+                continue
+
+        self.is_populated = True
+        return 0
