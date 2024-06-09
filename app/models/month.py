@@ -36,10 +36,6 @@ class Month(db.Model):
         return month
 
     @property
-    def holidays(self):
-        return []
-
-    @property
     def previous_month(self):
         if self.number == 1:
             return 12, self.year - 1
@@ -62,6 +58,10 @@ class Month(db.Model):
             start_date += timedelta(days=1)
         
         return dates_row
+    
+    @property
+    def holidays(self):
+        return [day for day in self.days if day.is_holiday]
     
     def populate(self):
         from app.models.day import Day
@@ -87,6 +87,48 @@ class Month(db.Model):
         for day in self.days[:]:
             self.days.remove(day)
         self.is_populated = False
+        db.session.commit()
+        return 0
+    
+    def gen_appointments(self):
+        from app.models.appointment import Appointment
+        from app.models.base import BaseAppointment
+
+        if not self.is_populated:
+            return -1
+        
+        base_appointments = BaseAppointment.query.filter_by(center_id=self.center_id).all()
+        if not base_appointments:
+            return -2
+
+        # for base_appointment in base_appointments:
+        #     for day in self.days:
+        #         if not day.is_holiday:
+        #             appointment = Appointment(
+        #                 base_appointment_id = base_appointment.id,
+        #                 day_id = day.id
+        #             )
+        #             db.session.add(appointment)
+        
+        # db.session.commit()
+        return 0
+
+    def lock(self):
+        self.is_locked = True
+        db.session.commit()
+        return 0
+    
+    def unlock(self):
+        self.is_locked = False
+        db.session.commit()
+        return 0
+
+    def make_current(self):
+        existing_current = Month.query.filter_by(center_id=self.center_id, is_current=True).first()
+        if existing_current:
+            existing_current.is_current = False
+            db.session.commit()
+        self.is_current = True
         db.session.commit()
         return 0
     

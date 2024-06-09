@@ -40,12 +40,21 @@ class Day(db.Model):
         return new_day
     
     @property
-    def make_holiday(self):
+    def key(self):
+        weekindex = ((self.date - self.date.replace(day=1)).days // 7) + 1
+        return self.date.weekday(), weekindex
+
+    def add_holiday(self):
         self.is_holiday = True
         db.session.commit()
         return 0
     
-    def add_month(self, month_id):
+    def remove_holiday(self):
+        self.is_holiday = False
+        db.session.commit()
+        return 0
+    
+    def add_to_month(self, month_id):
         from app.models import Month
 
         month = Month.query.get(month_id)

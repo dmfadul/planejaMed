@@ -12,7 +12,6 @@ app = create_app()
 with app.app_context():
     center = Center.query.filter_by(abbreviation="CCG").first()
     month = Month.query.first()
-    # month.populate()
-    # month.depopulate()
-    print(month.days)
-    print(month.is_populated)
+
+    for day in month.days:
+        print(day.date, day.key)
