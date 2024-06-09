@@ -88,7 +88,9 @@
                         </tr>
                     {% endfor %}
                 </tbody>
-
+                
+                {% block holidayScript %}
+                {% endblock %}
                 <script>
                     if(sessionStorage.getItem('clickButton')) {
                         sessionStorage.removeItem('clickButton');

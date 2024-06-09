@@ -15,7 +15,6 @@
 
 {% block otherScripts %}
     <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/holidays.js') }}"></script>
-    <script> showAllHolidays({{ hdays }}); </script>
 {% endblock %}
 
 {% block otherScriptVariables %}
@@ -23,4 +22,8 @@
         var monthValue = {{ month | tojson | safe }};
         var yearValue = {{ year | tojson | safe }};
     </script>
+{% endblock %}
+
+{% block holidayScript %}
+    <script> showAllHolidays({{ hdays }}); </script>
 {% endblock %}

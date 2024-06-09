@@ -37,7 +37,7 @@ def monthview():
 
     return render_template("monthview.html",
                            data=data,
-                           hdays=[1],
+                           hdays=[],
                            center=center_abbr,
                            month=month,
                            year=year,
