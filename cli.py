@@ -12,6 +12,4 @@ app = create_app()
 with app.app_context():
     center = Center.query.filter_by(abbreviation="CCG").first()
     month = Month.query.first()
-
-    for day in month.days:
-        print(day.date, day.key)
+    # month.gen_appointments()

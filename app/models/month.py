@@ -96,21 +96,20 @@ class Month(db.Model):
 
         if not self.is_populated:
             return -1
-        
-        base_appointments = BaseAppointment.query.filter_by(center_id=self.center_id).all()
-        if not base_appointments:
-            return -2
 
-        # for base_appointment in base_appointments:
-        #     for day in self.days:
-        #         if not day.is_holiday:
-        #             appointment = Appointment(
-        #                 base_appointment_id = base_appointment.id,
-        #                 day_id = day.id
-        #             )
-        #             db.session.add(appointment)
-        
-        # db.session.commit()
+        for day in self.days:
+            base_appointments = BaseAppointment.query.filter_by(
+                                                                center_id=self.center_id,
+                                                                week_day=day.key[0],
+                                                                week_index=day.key[1]
+                                                                ).all()
+            
+            for b_app in base_appointments:
+                print(b_app.user.name, b_app.center.abbreviation, day.date, b_app.hour)
+                Appointment.add_entry(user_id=b_app.user_id,
+                                      center_id=b_app.center_id,
+                                      day_id=day.id,
+                                      hour=b_app.hour)
         return 0
 
     def lock(self):

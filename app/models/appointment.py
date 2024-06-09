@@ -10,7 +10,6 @@ class Appointment(db.Model):
     user_id = db.Column(db.Integer, ForeignKey('users.id'), nullable=False)
     center_id = db.Column(db.Integer, ForeignKey('centers.id'), nullable=False)
     day_id = db.Column(db.Integer, ForeignKey('days.id'), nullable=False)
-
     hour = db.Column(db.Integer, nullable=False)
 
     user = db.relationship('User', back_populates='appointments', lazy=True)
@@ -20,7 +19,7 @@ class Appointment(db.Model):
     requests_to_exchange = db.relationship('Request', foreign_keys='Request.appointment_to_exchange_id', back_populates='appointment_to_exchange', lazy=True)
 
     @classmethod
-    def add_entry(cls, user_id, center_id, day_id, hour):       
+    def add_entry(cls, user_id, center_id, day_id, hour):
         appointment = cls(user_id=user_id,
                           center_id=center_id,
                           day_id=day_id,
