@@ -26,8 +26,10 @@ class Month(db.Model):
         return f"{self.number}/{self.year}"  
 
     @classmethod
-    def gen_new_month(cls, center_id, number, year):
+    def create_new_month(cls, center_id, number, year):
         month = cls(center_id=center_id, number=number, year=year)
+        month.is_locked = True
+
         db.session.add(month)
         db.session.commit()
         return month
@@ -39,15 +41,37 @@ class Month(db.Model):
     @property
     def previous_month(self):
         if self.number == 1:
-            return f"12/{self.year - 1}"
-        return f"{self.number - 1}/{self.year}"
+            return 12, self.year - 1
+        return self.number - 1, self.year
 
     @property
     def next_month(self):
         if self.number == 12:
-            return f"1/{self.year + 1}"
-        return f"{self.number + 1}/{self.year}"
+            return 1, self.year + 1
+        return self.number + 1, self.year
 
     @property
-    def dates_row():
-        return []
+    def dates_row(self):
+        start_date = datetime(self.previous_month[1], self.previous_month[0], global_vars.STR_DAY)
+        end_date = datetime(self.year, self.number, global_vars.STR_DAY-1)
+
+        dates_row = []
+        print(start_date, end_date)
+        while start_date <= end_date:
+            dates_row.append(start_date)
+            start_date += timedelta(days=1)
+        
+        return dates_row
+    
+    def populate_month(self):
+        from app.models.day import Day
+        if self.is_populated:
+            return -1
+
+        for date in self.dates_row:
+            day = Day(month_id=self.id, date=date)
+            db.session.add(day)
+
+        # self.is_populated = True
+        # db.session.commit()
+        return 1

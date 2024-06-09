@@ -7,7 +7,7 @@ class Day(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     month_id = db.Column(db.Integer, ForeignKey('months.id'), nullable=False)
-    date = db.Column(db.Date, nullable=False)
+    date = db.Column(db.Date, nullable=False, unique=True)
     is_holiday = db.Column(db.Boolean, default=False)
 
     appointments = db.relationship('Appointment', back_populates='day', lazy=True)
