@@ -34,6 +34,29 @@ class Month(db.Model):
         db.session.add(month)
         db.session.commit()
         return month
+    
+    @classmethod
+    def set_current(cls, month_number, year):
+        from app.models.month import Center
+
+        existing_currents = Month.query.filter_by(is_current=True).all()
+        new_currents = Month.query.filter_by(number=month_number, year=year).all()
+
+        if not len(new_currents) == len(Center.query.filter_by(is_active=True).all()):
+            return -1
+
+        for month in existing_currents:
+            month.is_current = False
+            db.session.commit()
+        
+        for month in new_currents:
+            month.is_current = True
+            db.session.commit()
+        return 0
+    
+    @classmethod
+    def get_current(cls, center_id):
+        return cls.query.filter_by(center_id=center_id, is_current=True).first()
 
     @property
     def previous_month(self):
@@ -120,13 +143,3 @@ class Month(db.Model):
         self.is_locked = False
         db.session.commit()
         return 0
-
-    def make_current(self):
-        existing_current = Month.query.filter_by(center_id=self.center_id, is_current=True).first()
-        if existing_current:
-            existing_current.is_current = False
-            db.session.commit()
-        self.is_current = True
-        db.session.commit()
-        return 0
-    
