@@ -11,5 +11,8 @@ from app.models._funcs import unify_appointments
 app = create_app()
 with app.app_context():
     center = Center.query.filter_by(abbreviation="CCG").first()
-    month = Month.query.first()
+    # month = Month.create_new_month(center_id=center.id, number=12, year=2023)
+    month = Month.query.filter_by(center_id=center.id, number=12, year=2023).first()
+    # month.populate()
     # month.gen_appointments()
+    

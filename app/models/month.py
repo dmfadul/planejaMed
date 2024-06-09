@@ -105,9 +105,8 @@ class Month(db.Model):
                                                                 ).all()
             
             for b_app in base_appointments:
-                print(b_app.user.name, b_app.center.abbreviation, day.date, b_app.hour)
+                print(b_app.user.full_name, b_app.center.abbreviation, day.date, b_app.hour)
                 Appointment.add_entry(user_id=b_app.user_id,
-                                      center_id=b_app.center_id,
                                       day_id=day.id,
                                       hour=b_app.hour)
         return 0
