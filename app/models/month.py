@@ -1,6 +1,6 @@
 from app import db
 from sqlalchemy import ForeignKey, UniqueConstraint
-from .associations import month_day_association
+# from .associations import month_day_association
 from datetime import datetime, timedelta
 import instance.global_vars as global_vars
 
@@ -9,54 +9,37 @@ class Month(db.Model):
     __tablename__ = 'months'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    center_id = db.Column(db.Integer, db.ForeignKey('centers.id'), nullable=False)
     number = db.Column(db.Integer, nullable=False)
     year = db.Column(db.Integer, nullable=False)
     is_populated = db.Column(db.Boolean, default=False)
     is_locked = db.Column(db.Boolean, default=False)
     is_current = db.Column(db.Boolean, default=False)
 
-    center = db.relationship('Center', back_populates='months', lazy=True)
-    days = db.relationship('Day', secondary=month_day_association, back_populates='months', lazy=True)
+    days = db.relationship('Day', back_populates='month', lazy=True)
 
     __table_args__ = (
-        UniqueConstraint('center_id', 'number', 'year', name='uq_center_month_year'),
+        UniqueConstraint('number', 'year', name='uq_month_year'),
     )
 
     def __repr__(self):
         return f"{self.number}/{self.year}"  
 
     @classmethod
-    def create_new_month(cls, center_id, number, year):
-        month = cls(center_id=center_id, number=number, year=year)
+    def create_new_month(cls, number, year):
+        existing_months = cls.query.filter_by(number=number, year=year).all()
+        if existing_months:
+            return -1
+        
+        month = cls(number=number, year=year)
         month.is_locked = True
 
         db.session.add(month)
         db.session.commit()
         return month
-    
-    @classmethod
-    def set_current(cls, month_number, year):
-        from app.models.month import Center
-
-        existing_currents = Month.query.filter_by(is_current=True).all()
-        new_currents = Month.query.filter_by(number=month_number, year=year).all()
-
-        if not len(new_currents) == len(Center.query.filter_by(is_active=True).all()):
-            return -1
-
-        for month in existing_currents:
-            month.is_current = False
-            db.session.commit()
         
-        for month in new_currents:
-            month.is_current = True
-            db.session.commit()
-        return 0
-    
     @classmethod
-    def get_current(cls, center_id):
-        return cls.query.filter_by(center_id=center_id, is_current=True).first()
+    def get_current(cls):
+        return cls.query.filter_by(is_current=True).first()
 
     @property
     def previous_month(self):
@@ -122,7 +105,6 @@ class Month(db.Model):
 
         for day in self.days:
             base_appointments = BaseAppointment.query.filter_by(
-                                                                center_id=self.center_id,
                                                                 week_day=day.key[0],
                                                                 week_index=day.key[1]
                                                                 ).all()
@@ -142,4 +124,18 @@ class Month(db.Model):
     def unlock(self):
         self.is_locked = False
         db.session.commit()
+        return 0
+
+    def set_current(self):
+        if self.is_current:
+            return -1
+        
+        existing_current = Month.query.filter_by(is_current=True).first()
+        if existing_current:
+            existing_current.is_current = False
+            db.session.commit()      
+
+        self.is_current = True
+        db.session.commit()
+
         return 0

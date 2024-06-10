@@ -12,8 +12,8 @@ app = create_app()
 with app.app_context():
     center = Center.query.filter_by(abbreviation="CCG").first()
     # month = Month.create_new_month(center_id=center.id, number=12, year=2023)
-    month = Month.query.filter_by(center_id=center.id, number=12, year=2023).first()
+    # month = Month.query.filter_by(center_id=center.id, number=12, year=2023).first()
     # month.make_current()
-    # month.populate()
+    # month.depopulate()
     # month.gen_appointments()
     
