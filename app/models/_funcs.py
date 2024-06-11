@@ -19,7 +19,7 @@ def unify_appointments(appointments):
             unified_appointments.append(letter)
             appointments = [app for app in appointments if app not in hour_list]
 
-    unified_appointments = sorted(unified_appointments, key=lambda x: ['d', 'm', 't', 'n', 'c', 'v'].index(x))
+    unified_appointments = sorted(unified_appointments, key=lambda x: ['dn', 'd', 'm', 't', 'n', 'c', 'v'].index(x))
 
     if not appointments:
         return ''.join(unified_appointments)

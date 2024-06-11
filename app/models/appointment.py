@@ -35,6 +35,6 @@ class Appointment(db.Model):
         
         return appointment
     
-    def remove_entry(self):
+    def delete_entry(self):
         db.session.delete(self)
         db.session.commit()

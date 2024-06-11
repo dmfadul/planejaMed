@@ -16,12 +16,18 @@ def convert_hours(hour_list):
             return 2 
         
         if start_hour > end_hour:
-            hours = list(range(start_hour, 24)) + list(range(0, end_hour))
+            hours = list(range(start_hour, 25)) + list(range(1, end_hour))
         else:
             hours = list(range(start_hour, end_hour))
     else:
         start_hour, end_hour = hours_map[hour_list[0]]
-        hours = list(range(start_hour, end_hour + 1))
+        print(start_hour, end_hour)
+        
+        if start_hour > end_hour:
+            hours = list(range(start_hour, 25)) + list(range(1, end_hour + 1))
+            print(hours)
+        else:
+            hours = list(range(start_hour, end_hour + 1))
 
     return hours
 
@@ -69,7 +75,6 @@ def resolve_base_appointments(data):
             app = create_app()
             with app.app_context():
                 for hour in hours:
-                    print("hour: ", hour)
                     BaseAppointment.add_entry(doctor.id, center.id, weekday, weekindex, hour)
 
         else:
@@ -104,4 +109,20 @@ def resolve_month_appointments(data):
 
                 for appointment in appointments:
                     print("appointment: ", appointment.hour)
-                    appointment.remove_entry()
+                    appointment.delete_entry()
+
+        elif action == "add":
+            hour_list = cell.get("hourValue") # Hour_list has the format ["-", "00:00", "00:00"]
+            hours = convert_hours(hour_list)
+            if hours == 1:
+                print("A hora inicial e final são iguais")
+            if hours == 2:
+                print("Horário final passa para o dia seguinte")
+
+            app = create_app()
+            with app.app_context():
+                for hour in hours:
+                    Appointment.add_entry(doctor.id, center.id, day.id, hour)
+
+        else:
+            print("Erro")
