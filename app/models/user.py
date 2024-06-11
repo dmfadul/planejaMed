@@ -21,6 +21,9 @@ class User(db.Model):
 
     date_joined = db.Column(db.Date, default=datetime.now())
     is_admin = db.Column(db.Boolean, default=False)
+    # is_sudo = db.Column(db.Boolean, default=False)
+    # is_root = db.Column(db.Boolean, default=False)
+
     is_active = db.Column(db.Boolean, default=True)
     is_locked = db.Column(db.Boolean, default=True)
     
