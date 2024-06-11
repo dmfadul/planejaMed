@@ -32,11 +32,10 @@ def gen_month(center_abbr, month, year):
     table = table_header
     users = sorted(month.users, key=lambda x: x.full_name)
     for user in users:
-        row = [(user.abbreviated_name, user.crm)] + [""]*len(monthdays)
+        row = [(user.abbreviated_name, user.crm)]
+        for day in month.days:
+            appointments = user.filtered_appointments(center.id, day.id, unified=True)
+            row.append(appointments)
         table.append(row)
-
-    for i in len(users):
-        for j in len(monthdays):
-            pass
 
     return table
