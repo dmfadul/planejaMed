@@ -1,6 +1,6 @@
 import migration_funcs
 from app.models import User, Center, Month
-from app import create_app
+from app import create_app, db
 from app.models._funcs import unify_appointments
 
 
@@ -10,10 +10,10 @@ from app.models._funcs import unify_appointments
 
 app = create_app()
 with app.app_context():
-    center = Center.query.filter_by(abbreviation="CCG").first()
-    # month = Month.create_new_month(center_id=center.id, number=12, year=2023)
-    # month = Month.query.filter_by(center_id=center.id, number=12, year=2023).first()
-    # month.make_current()
-    # month.depopulate()
+    # month = Month.create_new_month(number=12, year=2023)
+    # month = Month.query.filter_by(number=12, year=2023).first()
+    # month.set_current()
+    # month.populate()
     # month.gen_appointments()
-    
+    # month.unlock()
+    pass

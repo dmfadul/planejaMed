@@ -10,7 +10,7 @@ class Day(db.Model):
     date = db.Column(db.Date, nullable=False, unique=True)
     is_holiday = db.Column(db.Boolean, default=False)
 
-    months = db.relationship('Month', back_populates='days', lazy=True)
+    month = db.relationship('Month', back_populates='days', lazy=True)
     appointments = db.relationship('Appointment', back_populates='day', lazy=True)
 
     def __repr__(self):

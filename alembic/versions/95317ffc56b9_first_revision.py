@@ -1,8 +1,8 @@
 """first revision
 
-Revision ID: 710fce22ccb9
+Revision ID: 95317ffc56b9
 Revises: 
-Create Date: 2024-06-02 22:14:48.079016
+Create Date: 2024-06-10 19:39:59.595771
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '710fce22ccb9'
+revision: str = '95317ffc56b9'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -31,9 +31,11 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('number', sa.Integer(), nullable=False),
     sa.Column('year', sa.Integer(), nullable=False),
-    sa.Column('is_current', sa.Boolean(), nullable=True),
+    sa.Column('is_populated', sa.Boolean(), nullable=True),
     sa.Column('is_locked', sa.Boolean(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('is_current', sa.Boolean(), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('number', 'year', name='uq_month_year')
     )
     op.create_table('users',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -50,14 +52,13 @@ def upgrade() -> None:
     sa.Column('is_locked', sa.Boolean(), nullable=True),
     sa.Column('password', sa.Text(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('crm'),
-    sa.UniqueConstraint('rqe')
+    sa.UniqueConstraint('crm')
     )
     op.create_table('base_appointments',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('center_id', sa.Integer(), nullable=False),
-    sa.Column('week_day', sa.Text(), nullable=False),
+    sa.Column('week_day', sa.Integer(), nullable=False),
     sa.Column('week_index', sa.Integer(), nullable=False),
     sa.Column('hour', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['center_id'], ['centers.id'], ),
@@ -70,7 +71,8 @@ def upgrade() -> None:
     sa.Column('date', sa.Date(), nullable=False),
     sa.Column('is_holiday', sa.Boolean(), nullable=True),
     sa.ForeignKeyConstraint(['month_id'], ['months.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('date')
     )
     op.create_table('appointments',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
