@@ -35,16 +35,6 @@ class Appointment(db.Model):
         
         return appointment
     
-    @classmethod
-    def remove_entry(cls, user_id, center_id, day_id, hour):
-        appointment = cls.query.filter_by(user_id=user_id,
-                                          center_id=center_id,
-                                          day_id=day_id,
-                                          hour=hour).first()
-
-        if appointment:
-            db.session.delete(appointment)
-            db.session.commit()
-            return 0
-        else:
-            return -1
+    def remove_entry(self):
+        db.session.delete(self)
+        db.session.commit()

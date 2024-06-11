@@ -1,9 +1,11 @@
 from app import create_app
-from app.models import User, BaseAppointment, Center
+from app.models import User, Center, Day, Month, BaseAppointment, Appointment
+from datetime import datetime
 import instance.global_vars as global_vars
 
 
 def convert_hours(hour_list):
+    # convert the string hour list from the frontend to a list of integers
     hours_map = global_vars.HOURS_MAP
 
     if hour_list[0] == "-":
@@ -25,14 +27,10 @@ def convert_hours(hour_list):
 
 
 def resolve_data(data):
-
-
     if data.get("year") is None:
         resolve_base_appointments(data)
-
     else:
-        resolve_month_appointments(data)
-        
+        resolve_month_appointments(data)  
 
     return 0
 
@@ -80,7 +78,30 @@ def resolve_base_appointments(data):
 
 def resolve_month_appointments(data):
     action = data.get("action")
-    center = data.get("center")
-    month = data.get("month")
-    year = data.get("year")
+    center = Center.query.filter_by(abbreviation=data.get("center")).first()
+    year = int(data.get("year"))
+    month = Month.query.filter_by(number=global_vars.MESES.index(data.get("month"))+1).first()
+
     selected_cells = data.get("selectedCells")
+    for cell in selected_cells:
+        doctor = User.query.filter_by(crm=cell.get("doctorCRM")).first()
+        monthday = int(cell.get("monthDay"))
+        day = [day for day in month.days if day.date.day == monthday]
+            
+        if not day:
+            print("erro")
+        else:
+            day = day[0]
+        
+        if action == "delete":
+            app = create_app()
+            with app.app_context():
+                appointments = Appointment.query.filter_by(
+                    user_id=doctor.id,
+                    center_id=center.id,
+                    day_id = day.id,
+                ).all()
+
+                for appointment in appointments:
+                    print("appointment: ", appointment.hour)
+                    appointment.remove_entry()
