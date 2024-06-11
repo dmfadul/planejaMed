@@ -1,9 +1,11 @@
 import math
 from instance import global_vars
-from app.models import BaseAppointment, User, Month
+from app.models import Center, User, Month
 
 
-def gen_base(center_id):
+def gen_base(center_abbr):
+    center_id = Center.query.filter_by(abbreviation=center_abbr).first().id
+
     weekdays = [day[:3] for day in global_vars.DIAS_SEMANA] * 5
     weekindexes = [math.ceil(int(x)/7) for x in range(1, 36)]
     table_header = [['']+weekdays, ['']+weekindexes]
@@ -17,7 +19,15 @@ def gen_base(center_id):
     return table
 
 
-def gen_month(month_id):
-    month = Month.query.get(month_id)
-    print(month.dates_row)
-    return []
+def gen_month(center_abbr, month, year):
+    month_num = global_vars.MESES.index(month)+1
+    center = Center.query.filter_by(abbreviation=center_abbr).first()
+    month = Month.query.filter_by(number=month_num, year=year).first()
+
+    weekdays = [global_vars.DIAS_SEMANA[day.date.weekday()][:3] for day in month.days]
+    monthdays = [day.date.day for day in month.days]
+    table_header = [['']+weekdays, ['']+monthdays]
+
+    table = table_header
+
+    return table

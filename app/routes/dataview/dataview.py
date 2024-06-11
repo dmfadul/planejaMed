@@ -16,9 +16,7 @@ dataview_bp = Blueprint(
 @dataview_bp.route("/baseview/", methods=["GET", "POST"])
 def baseview():
     center_abbr = request.form.get("center")
-    center_id = Center.query.filter_by(abbreviation=center_abbr).first().id
-
-    data = gen_base(center_id)
+    data = gen_base(center_abbr)
 
     return render_template("baseview.html",
                            data=data,
@@ -29,14 +27,10 @@ def baseview():
 @dataview_bp.route("/monthview/", methods=["GET", "POST"])
 def monthview():
     center_abbr = request.form.get("center")
-    month = [m for m in global_vars.MESES if request.form.get("month") in m][0]
+    month = request.form.get("month")
     year = request.form.get("year")
 
-    center_id = Center.query.filter_by(abbreviation=center_abbr).first().id
-    month_id = Month.query.filter_by(center_id=center_id,
-                                     number=global_vars.MESES.index(month)+1,
-                                     year=year).first().id
-    data = gen_month(month_id)
+    data = gen_month(center_abbr, month, year)
 
     return render_template("monthview.html",
                            data=data,
