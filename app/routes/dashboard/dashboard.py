@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, url_for, render_template
 import instance.global_vars as global_vars
-from app.models import Center
+from app.models import Center, Month
 
 dashboard_bp = Blueprint(
                         'dashboard',
@@ -19,10 +19,10 @@ def index():
 
 @dashboard_bp.route('/dashboard/')
 def dashboard():
-    months = [m[:3] for m in global_vars.MESES]
-    current_month_number, current_year = 7, 2024
-    current_month = "JUL"
-    next_month = "AGOSTO"
+    months = global_vars.MESES
+    current_year = Month.get_current().year
+    current_month = Month.get_current().name
+    next_month = Month.get_current().next_month_name
     pending_requests = None
     centers = [center.abbreviation for center in Center.query.all()]
 

@@ -1,6 +1,5 @@
 from app import db
 from sqlalchemy import ForeignKey, UniqueConstraint
-# from .associations import month_day_association
 from datetime import datetime, timedelta
 import instance.global_vars as global_vars
 
@@ -42,6 +41,10 @@ class Month(db.Model):
         return cls.query.filter_by(is_current=True).first()
 
     @property
+    def name(self):
+        return global_vars.MESES[self.number-1]
+    
+    @property
     def previous_month(self):
         if self.number == 1:
             return 12, self.year - 1
@@ -52,6 +55,12 @@ class Month(db.Model):
         if self.number == 12:
             return 1, self.year + 1
         return self.number + 1, self.year
+    
+    @property
+    def next_month_name(self):
+        if self.number == 12:
+            return global_vars.MESES[0]
+        return global_vars.MESES[self.number]
 
     @property
     def dates_row(self):
