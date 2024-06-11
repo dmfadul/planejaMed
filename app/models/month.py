@@ -78,6 +78,10 @@ class Month(db.Model):
     def holidays(self):
         return [day for day in self.days if day.is_holiday]
     
+    @property
+    def users(self):
+        return list(set([appointment.user for day in self.days for appointment in day.appointments]))
+    
     def populate(self):
         from app.models.day import Day
 

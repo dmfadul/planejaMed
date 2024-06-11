@@ -21,6 +21,7 @@ def gen_base(center_abbr):
 
 def gen_month(center_abbr, month, year):
     month_num = global_vars.MESES.index(month)+1
+    
     center = Center.query.filter_by(abbreviation=center_abbr).first()
     month = Month.query.filter_by(number=month_num, year=year).first()
 
@@ -29,5 +30,13 @@ def gen_month(center_abbr, month, year):
     table_header = [['']+weekdays, ['']+monthdays]
 
     table = table_header
+    users = sorted(month.users, key=lambda x: x.full_name)
+    for user in users:
+        row = [(user.abbreviated_name, user.crm)] + [""]*len(monthdays)
+        table.append(row)
+
+    for i in len(users):
+        for j in len(monthdays):
+            pass
 
     return table
