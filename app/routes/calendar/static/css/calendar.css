@@ -1,0 +1,92 @@
+.calendar {
+    cursor: default;
+    border-collapse: collapse;
+    width: 80%;
+    margin: 50px auto;
+}
+
+.calendar-header {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.calendar, .calendar th, .calendar td {
+    border: 1px solid #ddd;
+}
+
+.calendar th, .calendar td {
+    padding: 15px;
+    text-align: center;
+}
+
+#dictData {
+    position: relative;
+    left: 60px;  /* adjust this value to move the entire list to the right */
+}
+
+#dictData ul {
+    list-style-type: none;  /* Remove bullet points */
+    padding: 0px 0px;
+    margin: 0;
+}
+
+#dictData li {
+    width: 450px;
+    background-color: #f9f9f9;  /* Light grey background */
+    border: 1px solid #e0e0e0;  /* Border around each card */
+    padding: 10px 15px;  /* Padding inside each card */
+    margin: 10px 0;  /* Space between cards */
+    border-radius: 5px;  /* Rounded corners */
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);  /* A slight shadow for depth */
+    transition: transform 0.2s;  /* Smooth transformation transition */
+}
+
+#dictData li:hover {
+    transform: translateY(-3px);  /* Lift the card up slightly */
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.15);  /* Increase the shadow depth */
+}
+
+.day-clicked {
+    box-shadow: 0px 0px 10px #000; /* Example shadow effect */
+}
+
+
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
