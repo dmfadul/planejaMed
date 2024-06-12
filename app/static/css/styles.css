@@ -1,5 +1,17 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  justify-content: center;
+  align-items: center;
+  height: 0 100px; /* 100% of the viewport height */
+}
+
 header {
-  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  font-size: 40px;
   background-color: #333;
   color: white;
   padding: 1rem;
@@ -26,16 +38,6 @@ main {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f4f4;
-  position: relative;
-  justify-content: center;
-  align-items: center;
-  height: 100vh; /* 100% of the viewport height */
-}
 
 a {
   color: black;
@@ -50,22 +52,99 @@ input[type=password] {
   margin: 8px 0;
 }
 
+/* Tablets (até 768px) */
+@media (max-width: 768px) {
 
-@media screen and (max-width: 600px) {
-    header {
-    font-size: 7px;
-    }
+  .header-content {
+    font-size: 28px;
+    padding-left: 22px;
+  }
+  .flex-container{
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .botton-logout{
+    width: 100%;
+    position: relative;
+    top: 20px;
+  }
 
-    #logo {
-    width: 30px;
-    height: auto;
-    }
+}
 
-    #logout {
-    padding: 0px 0px;
-    }
+/* Celulares Grandes (até 590px) */
+@media (max-width: 590px) {
 
-    td {
-    font-size: 11px; /* Adjust the width to your desired size */
-    }
+  .header-content {
+    font-size: 28px;
+    justify-content: center;
+    align-items: center;
+  }
+  .flex-container{
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .botton-logout{
+    width: 100%;
+    position: relative;
+    top: 20px;
+  }
+
+}
+
+/* Celulares Grandes (até 425px) */
+@media (max-width: 425px) {
+  .header-content {
+    font-size: 28px;
+    padding-left: 22px;
+  }
+  .flex-container{
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .botton-logout{
+    width: 100%;
+    position: relative;
+    top: 20px;
+  }
+  
+}
+
+/* Celulares Médios (até 375px) */
+@media (max-width: 375px) {
+  .header-content {
+    font-size: 28px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .flex-container{
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .botton-logout{
+    width: 100%;
+    position: relative;
+    top: 20px;
+  }
+ 
+}
+
+/* Celulares Pequenos (até 320px) */
+@media (max-width: 320px) {
+  .header-content {
+    font-size: 18px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .flex-container{
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .botton-logout{
+    width: 100%;
+    position: relative;
+    top: 20px;
+  }
+
 }

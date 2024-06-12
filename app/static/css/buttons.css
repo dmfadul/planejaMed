@@ -102,16 +102,50 @@
 }
 
 .backdrop {
-  position: sticky; /* Match the position property of your button container */
-  top: 0;
+  /* position: sticky; Match the position property of your button container */
+  top: 100px;
   left: 0;
-  width: 200%;
-  height: 110px; /* Adjust to match the height of your button container */
+  width: 100%;
+  height: 100px; /* Adjust to match the height of your button container */
   background-color: white;
-  z-index: 99; /* Below the button container but above the table */
+  /* z-index: 99; Below the button container but above the table */
 }
 
 .keep-in-window {
   min-height: 100vh; /* This ensures that the container is at least as tall as the viewport */
   /* other styles */
+}
+
+/* General style for each section */
+section {
+  background-color: #ffffff; /* A clean, white canvas for each section */
+  border: 2px solid #e7e7e7; /* A fine, subtle border to delineate the sections */
+  padding: 20px; /* A cushion of space within, for the content to breathe */
+  margin: 20px auto; /* Space around, setting each section as an island unto itself */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); /* A soft shadow for depth, like a gentle hint of mystery */
+  max-width: 600px; /* A width befitting the center stage */
+}
+
+/* Style for form elements within the admin section */
+section form {
+  display: flex; /* A modern layout, each item its own space */
+  flex-direction: column; /* Stacked vertically, a column of intrigue */
+
+}
+
+form label, form select, form button {
+   margin-bottom: 10px; /* A breath between elements, like a moment's pause */
+}
+
+form select, form button {
+  padding: 10px; /* Comfort for the user's interaction, as one eases into an armchair */
+  border-radius: 4px; /* Softened corners, a detail that pleases the eye */
+  border: 1px solid #dcdcdc; /* A border to contain, but not to constrain */
+}
+
+/* Style the submit button with more prominence */
+form button {
+  background-color: #007bff; /* A bold color, for a button of importance */
+  color: white; /* Contrast, my friend, for legibility */
+  border-color: #007bff; /* The border, in harmony with the button's fabric */
 }
