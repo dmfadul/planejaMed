@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block head_links %}
+<script type="text/javascript" src="{{ url_for('calendar.static', filename='scripts/calendar_click.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('calendar.static', filename='scripts/kebab.js') }}"></script>
+{% endblock %}
+
+
+{% block mainContent %}
+    <table class="calendar">
+        <tr class="calendar-header">
+            <th colspan="7">{{ month_name }} {{month_year }} {{center}}</th>
+        </tr>
+        <tr>
+            <td>Sab</td>
+            <td>Dom</td>
+            <td>Seg</td>
+            <td>Ter</td>
+            <td>Qua</td>
+            <td>Qui</td>
+            <td>Sex</td>
+        </tr>
+        {% for week in calendar_days %}
+            <tr>
+                {% for day in week %}
+                    <td>{{ day }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+
+    <div id="hourModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Selecione os Horários</h2>
+            <div id="hourOptions"></div>
+            <button id="submitHours">Submit</button>
+        </div>
+    </div>
+
+    <div id="dictData"></div>
+
+    <script>
+        var currentUserSchedule = {{ curr_user_schedule | tojson | safe }};
+    </script>
+{% endblock %}
