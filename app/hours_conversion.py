@@ -1,4 +1,4 @@
-import instance.global_vars as global_vars
+import app.global_vars as global_vars
 
 
 def unify_appointments(appointments):
@@ -34,3 +34,22 @@ def unify_appointments(appointments):
             appointments = [app for app in appointments if app not in hour_list]
 
     return ''.join(unified_appointments)
+
+
+def convert_hours_to_line(hour_list):
+    hour_map = global_vars.HOURS_MAP
+    if not hour_list:
+        return ""
+    
+    split_hours = []
+    current = [hour_list[0]]
+    for i in range(1, len(hour_list)):
+        if hour_list[i] == hour_list[i - 1] + 1:
+            current.append(hour_list[i])
+        else:
+            split_hours.append(current)
+            current = [hour_list[i]]
+    
+    split_hours.append(current)
+    split_hours = sorted(split_hours, key=lambda x: x[0])
+    print(split_hours)

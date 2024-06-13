@@ -1,7 +1,7 @@
 from app import create_app, db
 from app.models import User, Center, BaseAppointment
 from datetime import datetime
-import instance.global_vars as global_vars
+import app.global_vars as global_vars
 import sqlite3
 import json
 

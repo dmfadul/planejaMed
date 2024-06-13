@@ -1,7 +1,7 @@
 from app import db
 from sqlalchemy import ForeignKey, UniqueConstraint
 from datetime import datetime, timedelta
-import instance.global_vars as global_vars
+import app.global_vars as global_vars
 
 
 class Month(db.Model):

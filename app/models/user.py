@@ -99,7 +99,7 @@ class User(db.Model):
         return ' '.join(name.split())
     
     def base_row(self, center_id):
-        from ._funcs import unify_appointments
+        from app.hours_conversion import unify_appointments
         base_appointments = [app for app in self.base_appointments if app.center_id == center_id]
         
         app_dict = {}
@@ -124,7 +124,7 @@ class User(db.Model):
         return base_row
     
     def filtered_appointments(self, center_id, day_id, unified=False):
-        from ._funcs import unify_appointments
+        from app.hours_conversion import unify_appointments
 
         apps = [a.hour for a in self.appointments if a.center_id == center_id and a.day_id == day_id]
         if not apps and not unified:

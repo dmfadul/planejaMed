@@ -1,5 +1,5 @@
 import math
-from instance import global_vars
+import app.global_vars as global_vars
 from app.models import Center, User, Month
 
 

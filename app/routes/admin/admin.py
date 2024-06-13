@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 
-import instance.global_vars as global_vars
+import app.global_vars as global_vars
 from app.models import Center, Month
 
 admin_bp = Blueprint(

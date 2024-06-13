@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, jsonify
-from .gen_data import get_calendar_days
+from .gen_data import get_calendar_days, gen_day_hours
 
 
 
@@ -31,6 +31,6 @@ def calendar(center):
 
 @calendar_bp.route("/calendar/<center>/<day>", methods=["GET"])
 def calendar_day(center, day):
-    # day_data = gen_days_hours(center, day)
-    day_data = ["TESTE"]
+    day_data = gen_day_hours(center, day)
+
     return jsonify({"data": day_data})

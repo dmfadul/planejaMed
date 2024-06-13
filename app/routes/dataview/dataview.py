@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, jsonify, flash
 from app.models import BaseAppointment, Center, Month
 from .resolve_data import resolve_data
 from .gen_data import gen_base, gen_month
-import instance.global_vars as global_vars
+import app.global_vars as global_vars
 
 dataview_bp = Blueprint(
                         "dataview",

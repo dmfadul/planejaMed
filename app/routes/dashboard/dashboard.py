@@ -1,5 +1,5 @@
 from flask import Blueprint, redirect, url_for, render_template
-import instance.global_vars as global_vars
+import app.global_vars as global_vars
 from app.models import Center, Month
 
 dashboard_bp = Blueprint(

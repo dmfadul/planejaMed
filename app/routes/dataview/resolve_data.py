@@ -1,7 +1,7 @@
 from app import create_app
 from app.models import User, Center, Day, Month, BaseAppointment, Appointment
 from datetime import datetime
-import instance.global_vars as global_vars
+import app.global_vars as global_vars
 
 
 def convert_hours(hour_list):
