@@ -11,12 +11,6 @@ dashboard_bp = Blueprint(
                         )
 
 
-
-@dashboard_bp.route('/')
-def index():
-    return redirect(url_for('dashboard.dashboard'))
-
-
 @dashboard_bp.route('/dashboard/')
 def dashboard():
     months = global_vars.MESES
