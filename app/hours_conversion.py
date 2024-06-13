@@ -36,15 +36,17 @@ def unify_appointments(appointments):
     return ''.join(unified_appointments)
 
 
-def convert_hours_to_line(hour_list):
-    hour_map = global_vars.HOURS_MAP
+def split_hours(hour_list):
+    hours_key = global_vars.HOURS_KEY
     if not hour_list:
-        return ""
+        return []
     
+    hour_list = sorted(hour_list, key=lambda x: hours_key.index(x))
+
     split_hours = []
     current = [hour_list[0]]
     for i in range(1, len(hour_list)):
-        if hour_list[i] == hour_list[i - 1] + 1:
+        if hour_list[i] == hour_list[i - 1] + 1 or hour_list[i] == 1 and hour_list[i - 1] == 24:
             current.append(hour_list[i])
         else:
             split_hours.append(current)
@@ -52,4 +54,15 @@ def convert_hours_to_line(hour_list):
     
     split_hours.append(current)
     split_hours = sorted(split_hours, key=lambda x: x[0])
-    print(split_hours)
+
+    return split_hours
+
+
+def convert_hours_to_line(hour_list):
+    if not hour_list:
+        return ""
+    
+    if len(hour_list) == 1:
+        return -1
+    
+    return f"{hour_list[0]:02d}:00 - {hour_list[-1]:02d}:00"

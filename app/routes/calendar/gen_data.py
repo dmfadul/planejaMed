@@ -1,7 +1,7 @@
 from datetime import datetime
 from calendar import monthcalendar
 from app.models import Center, Day, Month, Appointment
-from app.hours_conversion import convert_hours_to_line
+from app.hours_conversion import split_hours, convert_hours_to_line
 
 
 def get_calendar_days(month_num, year):
@@ -23,7 +23,10 @@ def gen_day_hours(center_abbr, day_num):
             appointments_dict[doctor_name] = []
         appointments_dict[doctor_name].append(app.hour)
     
-    for key, value in appointments_dict.items():
-        convert_hours_to_line(value)
+    t = split_hours([1, 2, 3, 4, 5, 6, 7, 8, 9, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24])
+    print(t)
+    for hour in t:
+        s = convert_hours_to_line(hour)
+        print(s)
 
     return ["TESTE"]

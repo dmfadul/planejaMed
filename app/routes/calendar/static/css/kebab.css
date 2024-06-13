@@ -1,0 +1,41 @@
+.kebab-menu {
+    position: relative;
+    display: inline-block;
+    float: right; /* Position the menu to the right side of the list item */
+}
+
+.kebab-content {
+    display: none;
+    position: absolute;
+    right: 0; /* Align the dropdown to the right */
+    background-color: #f9f9f9;
+    min-width: 120px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.kebab-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.kebab-content a:last-child {
+    border-bottom: none; /* Remove border for the last item */
+}
+
+.kebab-content a:hover {
+    background-color: #e0e0e0; /* Slightly darker grey on hover */
+}
+
+.kebab-button {
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    font-size: 20px;
+    color: #000; /* Match the color with the list text */
+}
