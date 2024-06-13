@@ -18,10 +18,12 @@ def create_app(config_filename=None):
     from app.routes.dataview.dataview import dataview_bp
     from app.routes.calendar.calendar import calendar_bp
     from app.routes.admin.admin import admin_bp
+    from app.routes.login.login import login_bp
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(dataview_bp)
     app.register_blueprint(calendar_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(login_bp)
 
     return app
 
