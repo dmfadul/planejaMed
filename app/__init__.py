@@ -1,7 +1,9 @@
 from flask import Flask
+from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
+bcrypt = Bcrypt()
 
 
 def create_app(config_filename=None):
@@ -11,8 +13,10 @@ def create_app(config_filename=None):
     
     app.config.from_pyfile(config_filename)
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.secret_key = app.config['SECRET_KEY']
 
     db.init_app(app)
+    bcrypt.init_app(app)
 
     from app.routes.dashboard.dashboard import dashboard_bp
     from app.routes.dataview.dataview import dataview_bp
