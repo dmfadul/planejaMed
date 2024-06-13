@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block mainContent %}
+    <form id="login" method="POST" action="">
+        {{ form.hidden_tag() }}
+
+        <h2>Login</h2>
+        {{ form.crm_number.label(class="form-control") }}
+        {{ form.crm_number(id="crm", placeholder="CRM", autofocus=True) }}
+
+        {{ form.password.label(class="form-control") }}
+        {{ form.password(id="password", placeholder="SENHA") }}
+
+        {{ form.submit(class="button") }}
+    </form>
+    <div style="padding: 10px;">
+        <small>
+            <a href="{{ url_for('login.register') }}"> Inscreva-se </a>
+        </small>
+    </div>
+
+{% endblock %}
