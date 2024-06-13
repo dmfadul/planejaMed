@@ -1,4 +1,5 @@
 from flask import Blueprint
+from app.forms import LoginForm, RegistrationForm
 
 
 login_bp = Blueprint('login',
