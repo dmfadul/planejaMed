@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block mainContent %}
+    <section>
+        <form method="post" action="{{ url_for('dataview.overview') }}">
+
+            <label for="option">Calcular Mês:</label>
+            <select name="month">
+                {% for month in months %}
+                    <option value="{{ month }}" {% if month==current_month %} selected {% endif %}>{{ month }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="year">
+                {% for year in range(2020, 2031) %}
+                    <option value="{{ year }}" {% if year==current_year %} selected {% endif %}>{{ year }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="hidden" name="action" value="calc">
+
+            <button type="submit">Calcular</button>
+        </form>
+    </section>
+    
+    <section>
+        <form method="post" action="{{ url_for('dashboard.create_month') }}">
+              <label for="create-month">Criar Novo Mês:</label>
+              <select id="create-month" name="month">
+                {% for month in months %}
+                    <option value="{{ month }}" {% if month == current_month %} selected {% endif %}>{{ month }}</option>
+                {% endfor %}
+              </select>
+
+              <label for="create-year">Ano:</label>
+              <select id="create-year" name="year">
+                  {% for year in range(2020, 2031) %}
+                    <option value="{{ year }}" {% if year == current_year %} selected {% endif %}>{{ year }}</option>
+                  {% endfor %}
+              </select>
+              <button type="submit">Criar</button>
+        </form>
+    </section>
+
+    <section style="text-align: center;">
+        <label>Destrancar Novo Mês:</label>
+        <button onclick="window.location.href='/push-month'; return false;" class="common-button">{{ next_month }}</button>
+    </section>
+{% endblock %}

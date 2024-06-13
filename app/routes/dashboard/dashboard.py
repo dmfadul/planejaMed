@@ -22,7 +22,6 @@ def dashboard():
     months = global_vars.MESES
     current_year = Month.get_current().year
     current_month = Month.get_current().name
-    next_month = Month.get_current().next_month_name
     pending_requests = None
     centers = [center.abbreviation for center in Center.query.all()]
 
@@ -35,7 +34,6 @@ def dashboard():
                             months=months,
                             current_month=current_month,
                             current_year=current_year,
-                            next_month=next_month,
                             pending_requests=pending_requests
                             )
 
