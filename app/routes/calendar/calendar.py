@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, jsonify
-from .gen_data import get_calendar_days, gen_day_hours
+from .gen_data import gen_day_hours
 from app.models import Month
 
 
