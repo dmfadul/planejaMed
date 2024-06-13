@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block head_links %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{{ url_for('login.static', filename='css/login.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/button.css') }}">
+{% endblock %}
+
+{% block mainContent %}
+    <form id="register" method="POST" action="">
+        {{ form.hidden_tag() }}
+
+        <h2>Registrar Conta</h2>
+
+        {{ form.first_name(id="first_name", placeholder="Primeiro Nome", autofocus=True) }}
+
+        {{ form.middle_name(id="middle_name", placeholder="Nome do Meio") }}
+
+        {{ form.last_name(id="last_name", placeholder="Sobrenome") }}
+
+        {{ form.cellphone(id="cellphone", placeholder="Fone") }}
+
+        {{ form.email(id="email", placeholder="E-Mail") }}
+
+        {{ form.crm_number(id="crm", placeholder="CRM", autofocus=True) }}
+
+        {{ form.rqe_number(id="rqe", placeholder="RQE") }}
+
+        {{ form.password(id="password", placeholder="Senha") }}
+
+        {{ form.confirm_password(id="confirm_password", placeholder="Confirmar Senha") }}
+
+        {{ form.submit(class="button") }}
+    </form>
+    <div style="padding: 10px;">
+        <small>
+            <a href="{{ url_for('login.login') }}"> Já tem uma conta? </a>
+        </small>
+    </div>
+
+{% endblock %}
