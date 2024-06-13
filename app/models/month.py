@@ -63,6 +63,14 @@ class Month(db.Model):
         return global_vars.MESES[self.number]
 
     @property
+    def first_day(self):
+        return sorted(self.days, key=lambda x: x.date)[0]
+    
+    @property
+    def last_day(self):
+        return sorted(self.days, key=lambda x: x.date)[-1]
+    
+    @property
     def dates_row(self):
         start_date = datetime(self.previous_month[1], self.previous_month[0], global_vars.STR_DAY)
         end_date = datetime(self.year, self.number, global_vars.STR_DAY-1)
@@ -73,6 +81,24 @@ class Month(db.Model):
             start_date += timedelta(days=1)
         
         return dates_row
+    
+    @property
+    def calendar(self):
+        month = []
+        week = [""] * 7
+        current_date = self.first_day.date
+
+        while current_date <= self.last_day.date:
+            week[current_date.weekday()] = current_date.day
+            if current_date.weekday() == 6:
+                month.append(week)
+                week = [""] * 7
+            current_date += timedelta(days=1)
+
+        if week != [""] * 7:
+            month.append(week)
+            
+        return month
     
     @property
     def holidays(self):

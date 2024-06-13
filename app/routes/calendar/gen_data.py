@@ -4,10 +4,6 @@ from app.models import Center, Day, Month, Appointment
 from app.hours_conversion import split_hours, convert_hours_to_line
 
 
-def get_calendar_days(month_num, year):
-    return [[day if day != 0 else "" for day in week] for week in monthcalendar(year, month_num)]
-
-
 def gen_day_hours(center_abbr, day_num):
     center = Center.query.filter_by(abbreviation=center_abbr).first()
     month = Month.get_current()
@@ -23,10 +19,13 @@ def gen_day_hours(center_abbr, day_num):
             appointments_dict[doctor_name] = []
         appointments_dict[doctor_name].append(app.hour)
     
-    t = split_hours([1, 2, 3, 4, 5, 6, 7, 8, 9, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24])
-    print(t)
-    for hour in t:
-        s = convert_hours_to_line(hour)
-        print(s)
+    appointments_list = []
+    for doctor_name, hour_range in appointments_dict.items():
+        hour_list = split_hours(hour_range)
+        all_hours = ""
+        for hour in hour_list:
+            all_hours += "*" + convert_hours_to_line(hour)
+        
+        appointments_list.append(f"{doctor_name}*{all_hours}")
 
-    return ["TESTE"]
+    return appointments_list
