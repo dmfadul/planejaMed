@@ -43,8 +43,7 @@ class User(db.Model):
         users = cls.query.all()
         crms = [user.crm for user in users]
         names = [user.full_name for user in users]
-
-        # Create a new instance of Appointments
+        
         new_user = cls(
             first_name = first_name,
             middle_name = middle_name,
@@ -56,9 +55,8 @@ class User(db.Model):
             password = password
         )
 
-        # Add the new instance to the session and commit it
         db.session.add(new_user)
-        if new_user.crm in crms:
+        if int(new_user.crm) in crms:
             db.session.rollback()
             return -1
         if new_user.full_name in names:
