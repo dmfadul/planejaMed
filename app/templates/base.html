@@ -22,13 +22,19 @@
       <img src="/static/logo.png" alt="Mackenzie Doctors Logo" id="logo">
     </div>
     
-
-
     <div class="user-name">
       <a href="/profile" style="color: #add8e6; ">
         {{ user_name }}
       </a>
+
+    {% if dont_show_logout %}
+    {% else %}
+      <form class="button-logout" id="logout" action="/logout" method="post">
+        <button type="submit">Sair</button>
+      </form>
+    {% endif %}
     </div>
+
   </header>
 
   <!-- Display Flash Messages -->
@@ -47,12 +53,6 @@
     {% block outsideContent %}
     {% endblock %}
   <main id="main-container">
-    {% if dont_show_logout %}
-    {% else %}
-      <form class="botton-logout" id="logout" action="/logout" method="post">
-        <button type="submit">Sair</button>
-      </form>
-    {% endif %}
     {% block mainContent %}
     {% endblock %}
   </main>

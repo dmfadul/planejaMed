@@ -33,8 +33,35 @@ header {
 }
 
 .user-name {
+  display: flex;
+  align-items: center;
   margin-top: 0.1rem;
   font-size: 30px;
+}
+
+.user-name a {
+  margin-right: 15px;
+  color: #add8e6;
+  text-decoration: none;
+}
+
+.button-logout {
+  margin: 0;
+}
+
+.button-logout button {
+  padding: 5px 15px;
+  background-color: #007BFF; /* Blue color for the button */
+  border: none;
+  border-radius: 5px; /* Rounded corners */
+  color: white; /* White text for contrast */
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.button-logout button:hover {
+  background-color: #0056b3; /* Darker shade on hover */
 }
 
 main {
@@ -48,19 +75,6 @@ main {
 a {
   color: black;
   text-decoration: none;
-}
-
-.button-logout button {
-  background-color: #444;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.button-logout button:hover {
-  background-color: #555;
 }
 
 input[type=text],
@@ -81,7 +95,7 @@ input[type=password] {
     display: flex;
     flex-wrap: wrap;
   }
-  .botton-logout{
+  .button-logout{
     width: 100%;
     position: relative;
     top: 20px;
@@ -99,7 +113,7 @@ input[type=password] {
     display: flex;
     flex-wrap: wrap;
   }
-  .botton-logout{
+  .button-logout{
     width: 100%;
     position: relative;
     top: 20px;
@@ -116,7 +130,7 @@ input[type=password] {
     display: flex;
     flex-wrap: wrap;
   }
-  .botton-logout{
+  .button-logout{
     width: 100%;
     position: relative;
     top: 20px;
@@ -135,7 +149,7 @@ input[type=password] {
     display: flex;
     flex-wrap: wrap;
   }
-  .botton-logout{
+  .button-logout{
     width: 100%;
     position: relative;
     top: 20px;
@@ -154,7 +168,7 @@ input[type=password] {
     display: flex;
     flex-wrap: wrap;
   }
-  .botton-logout{
+  .button-logout{
     width: 100%;
     position: relative;
     top: 20px;
