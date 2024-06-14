@@ -40,8 +40,9 @@ def register():
             flash("Nome já cadastrado", "danger")
             return redirect(url_for('login.register'))
 
-        flash("Conta Criada Com Sucesso!", "success")
-        return redirect(url_for('login.login'))
+        if flag.isinstance(User):
+            flash("Conta Criada Com Sucesso!", "success")
+            return redirect(url_for('login.login'))
     else:
         print("not ok")
 
