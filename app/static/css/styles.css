@@ -5,29 +5,36 @@ body {
   background-color: #f4f4f4;
   justify-content: center;
   align-items: center;
-  height: 0 100px; /* 100% of the viewport height */
+  height: 100%;
 }
 
 header {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   font-size: 40px;
   background-color: #333;
   color: white;
   padding: 1rem;
   text-align: center;
-  cursor: pointer
+  cursor: pointer;
 }
 
 .header-content {
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 0.1rem;
 }
 
 #logo {
   width: 100px;
   height: auto;
+}
+
+.user-name {
+  margin-top: 0.1rem;
+  font-size: 30px;
 }
 
 main {
@@ -38,10 +45,22 @@ main {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-
 a {
   color: black;
   text-decoration: none;
+}
+
+.button-logout button {
+  background-color: #444;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.button-logout button:hover {
+  background-color: #555;
 }
 
 input[type=text],
@@ -54,7 +73,6 @@ input[type=password] {
 
 /* Tablets (até 768px) */
 @media (max-width: 768px) {
-
   .header-content {
     font-size: 28px;
     padding-left: 22px;
@@ -68,12 +86,10 @@ input[type=password] {
     position: relative;
     top: 20px;
   }
-
 }
 
 /* Celulares Grandes (até 590px) */
 @media (max-width: 590px) {
-
   .header-content {
     font-size: 28px;
     justify-content: center;
@@ -88,7 +104,6 @@ input[type=password] {
     position: relative;
     top: 20px;
   }
-
 }
 
 /* Celulares Grandes (até 425px) */
@@ -106,7 +121,6 @@ input[type=password] {
     position: relative;
     top: 20px;
   }
-  
 }
 
 /* Celulares Médios (até 375px) */
@@ -126,7 +140,6 @@ input[type=password] {
     position: relative;
     top: 20px;
   }
- 
 }
 
 /* Celulares Pequenos (até 320px) */
@@ -146,5 +159,4 @@ input[type=password] {
     position: relative;
     top: 20px;
   }
-
 }

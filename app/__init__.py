@@ -35,20 +35,12 @@ def create_app(config_filename=None):
     app.register_blueprint(admin_bp)
     app.register_blueprint(login_bp)
 
-    # @app.context_processor
-    # def inject_user():
-    #     from flask_login import current_user
-    #     user_first_name = current_user.first_name if current_user.is_authenticated else None
-
-    #     if user_first_name is None:
-    #         return dict(user_name='')
+    @app.context_processor
+    def inject_user():
+        from flask_login import current_user
+        user_name = current_user.full_name if current_user.is_authenticated else ''
         
-    #     user_middle_name = current_user.middle_name
-    #     user_last_name = current_user.last_name
-    #     user_name = f"{user_first_name} {user_middle_name} {user_last_name}"
-    #     user_name = user_name.strip().replace("  ", " ")
-
-    #     return dict(user_name=user_name)
+        return dict(user_name=user_name)
 
     return app
 
