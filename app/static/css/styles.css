@@ -100,6 +100,17 @@ input[type=password] {
     position: relative;
     top: 20px;
   }
+  .user-name {
+    display: flex;
+    align-items: center;
+    margin-top: 0.1rem;
+    font-size: 18px;
+  }
+  .user-name a {
+    margin-right: 5px;
+    color: #add8e6;
+    text-decoration: none;
+  }
 }
 
 /* Celulares Grandes (até 590px) */
