@@ -5,10 +5,8 @@
         {{ form.hidden_tag() }}
 
         <h2>Login</h2>
-        {{ form.crm_number.label(class="form-control") }}
         {{ form.crm_number(id="crm", placeholder="CRM", autofocus=True) }}
 
-        {{ form.password.label(class="form-control") }}
         {{ form.password(id="password", placeholder="SENHA") }}
 
         {{ form.submit(class="button") }}

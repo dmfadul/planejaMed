@@ -1,4 +1,5 @@
 from flask import Blueprint, redirect, url_for, render_template, flash
+from flask_login import current_user, login_user, logout_user
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
 from app import db, bcrypt
@@ -17,7 +18,26 @@ def index():
 
 @login_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    return 'Login page'
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard.dashboard'))
+
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(crm=form.crm_number.data).first()
+        if not user or not bcrypt.check_password_hash(user.password, form.password.data):
+            flash("Login Inválido. Verifique CRM e Senha", "danger")
+            return redirect(url_for('login.login'))
+        if not user.is_active:
+            flash("Usuário Não Está Ativo. Entre em Contato com Admin", "danger")
+            return redirect(url_for('login.login'))
+        if user.is_locked:
+            flash("Aguarde Liberação do Admin", "danger")
+            return redirect(url_for('login.login'))
+
+        login_user(user, remember=form.remember.data)
+        return redirect(url_for('dashboard.dashboard'))
+
+    return render_template('login.html', title="Login", form=form, dont_show_logout=True)
 
 
 @login_bp.route('/register', methods=['GET', 'POST'])
