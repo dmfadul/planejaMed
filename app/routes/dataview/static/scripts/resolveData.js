@@ -25,14 +25,20 @@ function sendData() {
         .then(data => {
             console.log('Success:', data);
             sessionStorage.setItem("clickButton", true);
+            saveScrollPosition();  // Save scroll position before reloading
             window.location.reload();
         })
         .catch(error => {
             console.error('Error:', error);
+            alert('An error occurred while updating appointments. Please try again.');
         })
         .finally(() => {
             clearSelection();
         });
+}
+
+function saveScrollPosition() {
+    sessionStorage.setItem('scrollPosition', window.scrollY);
 }
 
 function clearSelection() {
@@ -66,19 +72,7 @@ function confirmData() {
             let dropdown2 = createTimeDropdown(`dropdown2_${index}`);
             let dropdown3 = createTimeDropdown(`dropdown3_${index}`);
 
-            firstDropdown.addEventListener('change', () => {
-                if (firstDropdown.value !== '-') {
-                    dropdown2.disabled = true;
-                    dropdown3.disabled = true;
-                    dropdown2.style.backgroundColor = "#e9e9e9"; // Gray out the dropdown
-                    dropdown3.style.backgroundColor = "#e9e9e9"; // Gray out the dropdown
-                } else {
-                    dropdown2.disabled = false;
-                    dropdown3.disabled = false;
-                    dropdown2.style.backgroundColor = ""; // Reset background color
-                    dropdown3.style.backgroundColor = ""; // Reset background color
-                }
-            });
+            firstDropdown.addEventListener('change', () => handleDropdownChange(firstDropdown, dropdown2, dropdown3));
 
             div.appendChild(firstDropdown);
             div.appendChild(dropdown2);
@@ -130,6 +124,19 @@ function createTimeDropdown(id) {
     return dropdown;
 }
 
+function handleDropdownChange(firstDropdown, dropdown2, dropdown3) {
+    if (firstDropdown.value !== '-') {
+        dropdown2.disabled = true;
+        dropdown3.disabled = true;
+        dropdown2.style.backgroundColor = "#e9e9e9"; // Gray out the dropdown
+        dropdown3.style.backgroundColor = "#e9e9e9"; // Gray out the dropdown
+    } else {
+        dropdown2.disabled = false;
+        dropdown3.disabled = false;
+        dropdown2.style.backgroundColor = ""; // Reset background color
+        dropdown3.style.backgroundColor = ""; // Reset background color
+    }
+}
 
 function setupModalEvents(resolve, reject) {
     const modal = document.getElementById('confirmationModal');
@@ -165,3 +172,12 @@ function setupModalEvents(resolve, reject) {
         }
     };
 }
+
+// Restore scroll position on page load
+window.addEventListener('load', () => {
+    const scrollPosition = sessionStorage.getItem('scrollPosition');
+    if (scrollPosition) {
+        window.scrollTo(0, parseInt(scrollPosition));
+        sessionStorage.removeItem('scrollPosition');
+    }
+});
