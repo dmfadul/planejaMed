@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, url_for, render_template, flash
+from flask import Blueprint, redirect, url_for, render_template, flash, request
 from flask_login import current_user, login_user, logout_user
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
@@ -36,7 +36,8 @@ def login():
             return redirect(url_for('login.login'))
 
         login_user(user, remember=form.remember.data)
-        return redirect(url_for('dashboard.dashboard'))
+        next_page = request.args.get('next')
+        return redirect(next_page) if next_page else redirect(url_for('dashboard.dashboard'))
 
     return render_template('login.html', title="Login", form=form, dont_show_logout=True)
 
