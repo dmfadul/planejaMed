@@ -34,11 +34,11 @@ def convert_hours(hour_list):
 
 def resolve_data(data):
     if data.get("year") is None:
-        resolve_base_appointments(data)
+        flag = resolve_base_appointments(data)
     else:
-        resolve_month_appointments(data)  
+        flag = resolve_month_appointments(data)  
 
-    return 0
+    return flag
 
 
 def resolve_base_appointments(data):
@@ -69,14 +69,18 @@ def resolve_base_appointments(data):
             hour_list = cell.get("hourValue") # Hour_list has the format ["-", "00:00", "00:00"]
             hours = convert_hours(hour_list)
             if hours == 1:
-                print("A hora inicial e final são iguais")
+                return 1
             if hours == 2:
-                print("Horário final passa para o dia seguinte")
+                return 2
+            
             app = create_app()
             with app.app_context():
+                flags = []
                 for hour in hours:
-                    BaseAppointment.add_entry(doctor.id, center.id, weekday, weekindex, hour)
-
+                    flag = BaseAppointment.add_entry(doctor.id, center.id, weekday, weekindex, hour)
+                    if flag == -1:
+                        flags.append((doctor.id, center.id, weekday, weekindex, hour))
+            return 0 if not flags else -1
         else:
             print("Erro")
 
@@ -85,7 +89,7 @@ def resolve_month_appointments(data):
     action = data.get("action")
     center = Center.query.filter_by(abbreviation=data.get("center")).first()
     year = int(data.get("year"))
-    month = Month.query.filter_by(number=global_vars.MESES.index(data.get("month"))+1).first()
+    month = Month.query.filter_by(number=global_vars.MESES.index(data.get("month"))+1, year=year).first()
 
     selected_cells = data.get("selectedCells")
     for cell in selected_cells:
@@ -115,14 +119,17 @@ def resolve_month_appointments(data):
             hour_list = cell.get("hourValue") # Hour_list has the format ["-", "00:00", "00:00"]
             hours = convert_hours(hour_list)
             if hours == 1:
-                print("A hora inicial e final são iguais")
+                return 1
             if hours == 2:
-                print("Horário final passa para o dia seguinte")
+                return 2
 
             app = create_app()
             with app.app_context():
+                flags = []
                 for hour in hours:
-                    Appointment.add_entry(doctor.id, center.id, day.id, hour)
-
+                    flag = Appointment.add_entry(doctor.id, center.id, day.id, hour)
+                    if flag == -1:
+                        flags.append((doctor.id, center.id, day.id, hour))
+            return 0 if not flags else -1
         else:
             print("Erro")

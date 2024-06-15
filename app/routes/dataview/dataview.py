@@ -55,10 +55,16 @@ def update_appointments():
         return jsonify({"status": "error", 'message': 'You are not an admin'})
     
     flag = resolve_data(request.get_json())
+    if flag == 0:
+        return jsonify({"status": "success", 'message': 'Appointments updated'})
+
     if flag == 1:
-        return jsonify({"status": "error", 'message': 'An unexpected error occurred'})
+        flash("Horários Inválidos - A hora de Início e de Fim são iguais", "danger")
+        return jsonify({"status": "error", 'message': 'Invalid hours - Start and End time are the same'})
+    if flag == 2:
+        return jsonify({"status": "error", 'message': 'Invalid hours - End time goes to the next day'})
     if flag == -1:
-        flash("Horários conflitantes", "danger")
+        flash("O Médico Selecionado Tem Horários conflitantes em Outro Centro", "danger")
         return jsonify({"status": "error", 'message': 'Conflicting hours'})
     
-    return jsonify({"status": "success", 'message': 'Database updated successfully'})
+    return jsonify({"status": "error", 'message': 'An unexpected error occurred'})    
