@@ -9,3 +9,10 @@
     <button type="button" id="add-doctor" onclick="updateDoctor('add')">Incluir Médico</button>
     <button type="button" id="remove-doctor" onclick="updateDoctor('remove')">Excluir Médico</button>
 {% endblock %}
+
+{% block otherScriptVariables %}
+    <script>
+        var monthValue = null;
+        var yearValue = null;
+    </script>
+{% endblock %}

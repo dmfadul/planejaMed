@@ -29,8 +29,12 @@ function sendData() {
             window.location.reload();
         })
         .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while updating appointments. Please try again.');
+            if (error !== 'User cancelled the operation') {
+                console.error('Error:', error);
+                alert('An error occurred while updating appointments. Please try again.');
+            } else {
+                console.log('Operation cancelled by the user.');
+            }
         })
         .finally(() => {
             clearSelection();
