@@ -102,7 +102,7 @@ class Month(db.Model):
     
     @property
     def holidays(self):
-        return [day for day in self.days if day.is_holiday]
+        return [day.date.day for day in self.days if day.is_holiday]
     
     @property
     def users(self):

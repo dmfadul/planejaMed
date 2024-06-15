@@ -3,7 +3,7 @@ import app.global_vars as global_vars
 from app.models import Center, User, Month
 
 
-def gen_base(center_abbr):
+def gen_base_table(center_abbr):
     center_id = Center.query.filter_by(abbreviation=center_abbr).first().id
 
     weekdays = [day[:3] for day in global_vars.DIAS_SEMANA] * 5
@@ -19,7 +19,7 @@ def gen_base(center_abbr):
     return table
 
 
-def gen_month(center_abbr, month, year):
+def gen_month_table(center_abbr, month, year):
     month_num = global_vars.MESES.index(month)+1
     
     center = Center.query.filter_by(abbreviation=center_abbr).first()

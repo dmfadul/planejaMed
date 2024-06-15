@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, jsonify, flash
 from flask_login import login_required, current_user
 from app.models import BaseAppointment, Center, Month
 from .resolve_data import resolve_data
-from .gen_data import gen_base, gen_month
+from .gen_data import gen_base_table, gen_month_table
 import app.global_vars as global_vars
 
 dataview_bp = Blueprint(
@@ -18,7 +18,7 @@ dataview_bp = Blueprint(
 @login_required
 def baseview():
     center_abbr = request.form.get("center")
-    data = gen_base(center_abbr)
+    data = gen_base_table(center_abbr)
 
     return render_template("baseview.html",
                            data=data,
@@ -30,16 +30,19 @@ def baseview():
 @login_required
 def monthview():
     center_abbr = request.form.get("center")
-    month = request.form.get("month")
     year = request.form.get("year")
+    month_name = request.form.get("month")
 
-    data = gen_month(center_abbr, month, year)
+    month = Month.query.filter_by(number=global_vars.MESES.index(month_name)+1, year=year).first()
+    print(month.holidays)
+
+    data = gen_month_table(center_abbr, month_name, year)
 
     return render_template("monthview.html",
                            data=data,
-                           hdays=[],
+                           hdays=month.holidays,
                            center=center_abbr,
-                           month=month,
+                           month=month_name,
                            year=year,
                            is_admin=True)
 
