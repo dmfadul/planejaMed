@@ -13,7 +13,7 @@ login_bp = Blueprint('login',
 
 @login_bp.route('/')
 def index():
-    return redirect(url_for('dashboard.dashboard'))
+    return redirect(url_for('login.login'))
 
 
 @login_bp.route('/login', methods=['GET', 'POST'])

@@ -27,8 +27,7 @@
         {{ user_name }}
       </a>
 
-    {% if dont_show_logout %}
-    {% else %}
+    {% if not dont_show_logout %}
       <form class="button-logout" id="logout" action="/logout" method="post">
         <button type="submit">Sair</button>
       </form>
