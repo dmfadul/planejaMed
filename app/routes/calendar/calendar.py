@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, jsonify
+from flask_login import login_required
 from .gen_data import gen_day_hours
 from app.models import Month
 
@@ -14,6 +15,7 @@ calendar_bp = Blueprint(
 
 
 @calendar_bp.route('/calendar/<center>', methods=['GET'])
+@login_required
 def calendar(center):
     month = Month.get_current()
     current_user_schedule = []
@@ -29,6 +31,7 @@ def calendar(center):
 
 
 @calendar_bp.route("/calendar/<center>/<day>", methods=["GET"])
+@login_required
 def calendar_day(center, day):
     day_data = gen_day_hours(center, day)
 

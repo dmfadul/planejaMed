@@ -1,4 +1,5 @@
 from flask import Blueprint, request, render_template, jsonify, flash
+from flask_login import login_required, current_user
 from app.models import BaseAppointment, Center, Month
 from .resolve_data import resolve_data
 from .gen_data import gen_base, gen_month
@@ -14,6 +15,7 @@ dataview_bp = Blueprint(
 
 
 @dataview_bp.route("/baseview/", methods=["GET", "POST"])
+@login_required
 def baseview():
     center_abbr = request.form.get("center")
     data = gen_base(center_abbr)
@@ -25,6 +27,7 @@ def baseview():
 
 
 @dataview_bp.route("/monthview/", methods=["GET", "POST"])
+@login_required
 def monthview():
     center_abbr = request.form.get("center")
     month = request.form.get("month")
@@ -41,13 +44,13 @@ def monthview():
                            is_admin=True)
 
 
-@dataview_bp.route("/overview/")
-def overview():
-    return "Overview"
-
 
 @dataview_bp.route("/update-appointments", methods=["POST"])
+@login_required
 def update_appointments():
+    if not current_user.is_admin:
+        return jsonify({"status": "error", 'message': 'You are not an admin'})
+    
     flag = resolve_data(request.get_json())
     if flag == 1:
         return jsonify({"status": "error", 'message': 'An unexpected error occurred'})
