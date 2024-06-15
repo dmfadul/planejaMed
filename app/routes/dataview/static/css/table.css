@@ -127,7 +127,7 @@ tr:nth-child(even) {
 /* Sticky Header and First Two Rows */
 #hours_table tbody tr:nth-child(1) {
     position: sticky;
-    top: 0px; /* Stick to the top */
+    top: 90px; /* Stick to the top */
     background-color: #333; /* Dark grey to match header */
     color: white; /* White text for contrast */
     z-index: 98;
@@ -135,7 +135,7 @@ tr:nth-child(even) {
 
 #hours_table tbody tr:nth-child(2) {
     position: sticky;
-    top: 31px; /* Height of the first row */
+    top: 121px; /* Height of the first row */
     background-color: #333; /* Dark grey to match header */
     color: white; /* White text for contrast */
     z-index: 97;

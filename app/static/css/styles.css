@@ -77,6 +77,21 @@ a {
   text-decoration: none;
 }
 
+.backdrop {
+  position: sticky; /* Match the position property of your button container */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 90px; /* Adjust to match the height of your button container */
+  background-color: white;
+  z-index: 99; /* Below the button container but above the table */
+}
+
+.keep-in-window {
+  min-height: 100vh; /* This ensures that the container is at least as tall as the viewport */
+  /* other styles */
+}
+
 input[type=text],
 input[type=email],
 input[type=password] {

@@ -101,21 +101,6 @@
   background-color: #ccc; /* Optional: change background color */
 }
 
-.backdrop {
-  /* position: sticky; Match the position property of your button container */
-  top: 100px;
-  left: 0;
-  width: 100%;
-  height: 100px; /* Adjust to match the height of your button container */
-  background-color: white;
-  /* z-index: 99; Below the button container but above the table */
-}
-
-.keep-in-window {
-  min-height: 100vh; /* This ensures that the container is at least as tall as the viewport */
-  /* other styles */
-}
-
 /* General style for each section */
 section {
   background-color: #ffffff; /* A clean, white canvas for each section */
