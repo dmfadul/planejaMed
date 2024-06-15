@@ -67,10 +67,10 @@ function confirmData() {
         modalBody.innerHTML = '';
 
         state.selectedCells.forEach((cell, index) => {
-            let message = `${cell.doctorName}: ${cell.monthDay}, ${cell.weekDay}`;
+            let message = `${cell.doctorName}: ${cell.weekDay}, ${cell.monthDay}`;
             let div = document.createElement('div');
             div.className = 'message-container';
-            div.innerHTML = `<span class="message">${message} ${index + 1}</span>`;
+            div.innerHTML = `<span class="message">${message}</span>`;
 
             let firstDropdown = createDropdown(`firstDropdown${index}`, ['-', 'd', 'm', 't', 'n', 'c', 'v', 'dn']);
             let dropdown2 = createTimeDropdown(`dropdown2_${index}`);

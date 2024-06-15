@@ -44,13 +44,16 @@
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
                 <span id="close" class="close">&times;</span>
-                <h2>Confirm Action</h2>
+                <h2>Confirmar Ação</h2>
                 <!-- Dynamic content will be loaded here -->
                 <div id="modalBody"></div>
-                <button id="cancelButton">Cancel</button>
-                <button id="saveButton">Save</button>
+                <div class="button-group">
+                    <button id="cancelButton" class="cancel-button">Cancel</button>
+                    <button id="saveButton" class="save-button">Save</button>
+                </div>
             </div>
         </div>
+        
 
         <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/panelControl.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/cellHighlight.js') }}"></script>
