@@ -6,6 +6,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100%;
+  overflow-x: scroll;
 }
 
 header {
@@ -15,7 +16,7 @@ header {
   font-size: 40px;
   background-color: #333;
   color: white;
-  padding: 1rem;
+  padding: 0.1rem;
   text-align: center;
   cursor: pointer;
 }
@@ -24,18 +25,19 @@ header {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 0.1rem;
+  margin-bottom: 0.05rem;
 }
 
 #logo {
   width: 100px;
   height: auto;
+  padding-top: 15px;
 }
 
 .user-name {
   display: flex;
   align-items: center;
-  margin-top: 0.1rem;
+  margin-top: 0.005rem;
   font-size: 30px;
 }
 
