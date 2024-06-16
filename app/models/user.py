@@ -141,10 +141,9 @@ class User(db.Model, UserMixin):
             
             if app.is_night or app.day.is_holiday:
                 hours_dict[app.center.abbreviation][1] += 1
+            else:
+                hours_dict[app.center.abbreviation][0] += 1
 
-            hours_dict[app.center.abbreviation][0] += 1
-
-        print(hours_dict)
         return hours_dict
             
 
