@@ -9,7 +9,7 @@ class Request(db.Model):
 
     requester_id = db.Column(db.Integer, ForeignKey('users.id'), nullable=False)
     responder_id = db.Column(db.Integer, ForeignKey('users.id'))
-    receivers = db.Column(db.Text, nullable=False)
+    receivers_code = db.Column(db.Text, nullable=False)
     action = db.Column(db.Text, nullable=False)
 
     is_open = db.Column(db.Boolean, default=True)
@@ -32,3 +32,16 @@ class Request(db.Model):
     def __repr__(self):
         return f'{self.requester} - {self.action} - {self.is_open}'
     
+
+    @classmethod
+    def add_entry(cls, requester_id, receivers, action, existing_appointment_id, appointment_to_exchange_id, doctor_who_will_cover_id, doctor_to_include_id):
+        new_request = cls(requester_id=requester_id,
+                          receivers=receivers,
+                          action=action,
+                          existing_appointment_id=existing_appointment_id,
+                          appointment_to_exchange_id=appointment_to_exchange_id,
+                          doctor_who_will_cover_id=doctor_who_will_cover_id,
+                          doctor_to_include_id=doctor_to_include_id)
+        db.session.add(new_request)
+        db.session.commit()
+        return new_request
