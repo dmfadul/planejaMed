@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, url_for, render_template, flash, request
-from flask_login import current_user, login_user, logout_user
-from app.forms import LoginForm, RegistrationForm
+from flask_login import current_user, login_user, logout_user, login_required
+from app.forms import LoginForm, RegistrationForm, UpdateProfileForm
 from app.models import User
 from app import db, bcrypt
 
@@ -75,3 +75,11 @@ def register():
         print("not ok")
 
     return render_template('register.html', title="Register", form=form, dont_show_logout=True)
+
+@login_bp.route('/profile/', methods=['GET', 'POST'])
+@login_required
+def profile():
+    form = UpdateProfileForm()
+    if form.validate_on_submit():
+        print("ok")
+    return render_template('profile.html', title="Profile", form=form, dont_show_logout=False)

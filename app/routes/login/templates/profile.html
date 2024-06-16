@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block mainContent %}
+    <form method="POST" action="{{ url_for('login.profile') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.first_name.label }} {{ form.first_name(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.middle_name.label }} {{ form.middle_name(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.last_name.label }} {{ form.last_name(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.cellphone.label }} {{ form.cellphone(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.email.label }} {{ form.email(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.crm_number.label }} {{ form.crm_number(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.rqe_number.label }} {{ form.rqe_number(class="form-control") }}
+        </div>
+        <hr>
+        <div class="form-group">
+            {{ form.password.label }} {{ form.password(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.confirm_password.label }} {{ form.confirm_password(class="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-primary">Atualizar</button>
+    </form>
+{% endblock %}
