@@ -79,8 +79,8 @@ def sum_by_doctor():
     month_name = request.form.get("month")
     year = request.form.get("year")
 
-    centers = [center.abbreviation for center in Center.query.all()]
     month = Month.query.filter_by(number=global_vars.MESES.index(month_name)+1, year=year).first()
+    centers = [center.abbreviation for center in Center.query.all()]
     doctors = sorted(User.query.all(), key=lambda x: x.full_name)
 
     header_1 = ["", month] + [x for tup in list(zip(centers, centers)) for x in tup]
@@ -96,3 +96,22 @@ def sum_by_doctor():
         data.append(row)
 
     return render_template("sumview.html", data=data)
+
+
+@dataview_bp.route("/sum-days", methods=["POST"])
+@login_required
+def sum_by_days():
+    if not current_user.is_admin:
+        return jsonify({"status": "error", 'message': 'You are not an admin'})
+    
+    data = request.get_json()
+    center_abbr = data.get('center')
+    month_name = data.get('month')
+    year = data.get('year')
+    
+    month = Month.query.filter_by(number=global_vars.MESES.index(month_name)+1, year=year).first()
+    center = Center.query.filter_by(abbreviation=center_abbr).first()
+    
+    print(month, center)
+
+    return render_template("sumview.html", data=[[""]])

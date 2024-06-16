@@ -17,7 +17,7 @@
                     {% endif %}
                     <a href="/print-table" target="_blank"><button type="button" id="print-table">Imprimir</button></a>
     
-                    <a href="/table/display?action=sum-hours"><button type="button">Somar Horas</button></a>
+                    <button type="button" id="sum-hours-button">Somar Horas</button>
                     {% block genReport %}
                     {% endblock %}   
                 </div>
@@ -58,6 +58,7 @@
         <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/panelControl.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/cellHighlight.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/resolveData.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/sumHoursButton.js') }}"></script>
         {% block otherScripts %}
         {% endblock %}
 
