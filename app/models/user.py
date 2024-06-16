@@ -126,6 +126,31 @@ class User(db.Model, UserMixin):
 
         return base_row
     
+    def schedule(self):
+        from app.hours_conversion import split_hours, convert_hours_to_line
+        app_dict = {}
+        for app in self.appointments:
+            center_abbr = app.center.abbreviation
+            app_date = app.day.date
+            
+            if center_abbr not in app_dict:
+                app_dict[center_abbr] = {}
+            
+            if app_date not in app_dict[center_abbr]:
+                app_dict[center_abbr][app_date] = []
+            
+            app_dict[center_abbr][app_date].append(app.hour)
+        
+        schedule = ["-"]
+        for center in app_dict:
+            for date in app_dict[center]:
+                appointments = split_hours(app_dict[center][date])
+                for app in appointments:
+                    hour = convert_hours_to_line(app)
+                    schedule.append(f"{center} -- {date.strftime('%d/%m/%y')} -- {hour}")
+
+        return sorted(schedule)
+
     def filtered_appointments(self, center_id, day_id, unified=False):
         from app.hours_conversion import unify_appointments
 
