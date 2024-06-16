@@ -52,7 +52,7 @@ def logout():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         flag = User.add_entry(form.first_name.data,
                               form.middle_name.data,
                               form.last_name.data,
@@ -60,7 +60,8 @@ def register():
                               form.rqe_number.data,
                               form.cellphone.data,
                               form.email.data,
-                              hashed_password)
+                              form.password.data)
+                            #   hashed_password)
         if flag == -1:
             flash("CRM já cadastrado", "danger")
             return redirect(url_for('login.register'))
@@ -68,9 +69,14 @@ def register():
             flash("Nome já cadastrado", "danger")
             return redirect(url_for('login.register'))
 
-        if flag.isinstance(User):
-            flash("Conta Criada Com Sucesso!", "success")
-            return redirect(url_for('login.login'))
+        if isinstance(flag, User):
+            request = Request.new_user(flag.id)
+            if isinstance(request, Request):
+                flash("Conta Criada Com Sucesso! Aguarde a Liberação do Administrador", "success")
+                return redirect(url_for('login.login'))
+            else:
+                flash("Erro ao Criar Solicitação. Tente de Novo mais tarde ou entre em contato com o Admin", "danger")
+                return redirect(url_for('login.register'))
     else:
         print("not ok")
 

@@ -34,13 +34,13 @@ class Request(db.Model):
     
 
     @classmethod
-    def add_entry(cls, requester_id, receivers, action, existing_appointment_id, appointment_to_exchange_id, doctor_who_will_cover_id, doctor_to_include_id):
-        new_request = cls(requester_id=requester_id,
-                          receivers=receivers,
-                          action=action,
-                          existing_appointment_id=existing_appointment_id,
-                          appointment_to_exchange_id=appointment_to_exchange_id,
-                          doctor_who_will_cover_id=doctor_who_will_cover_id,
+    def new_user(cls, doctor_to_include_id):
+        new_request = cls(requester_id=doctor_to_include_id,
+                          receivers_code="*",
+                          action="include_user",
+                          existing_appointment_id=None,
+                          appointment_to_exchange_id=None,
+                          doctor_who_will_cover_id=None,
                           doctor_to_include_id=doctor_to_include_id)
         db.session.add(new_request)
         db.session.commit()
