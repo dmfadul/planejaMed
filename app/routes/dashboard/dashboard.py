@@ -31,3 +31,9 @@ def dashboard():
                             current_year=current_year,
                             pending_requests=pending_requests
                             )
+
+
+@dashboard_bp.route('/requests')
+@login_required
+def requests():
+    return render_template("requests.html", title="Requests")

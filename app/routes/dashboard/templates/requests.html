@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block head_links %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('requests.static', filename='css/requests.css') }}">
+    <script type="text/javascript" src="{{ url_for('requests.static', filename='scripts/resolveRequest.js') }}"></script>
+{% endblock %}
+
+{% block outsideContent %}
+  <div id="requests-list">
+      <div id="requestContainer">
+          {% for request in requests %}
+            <div class="request-item" id="request-{{ loop.index }}">
+                {{ request }}
+                <button onclick="resolveRequest('{{ request }}', 'yes')">Yes</button>
+                <button onclick="resolveRequest('{{ request }}', 'no')">No</button>
+            </div>
+          {% endfor %}
+      </div>
+  </div>
+
+{% endblock %}
