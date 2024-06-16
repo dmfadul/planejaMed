@@ -34,7 +34,6 @@ def monthview():
     month_name = request.form.get("month")
 
     month = Month.query.filter_by(number=global_vars.MESES.index(month_name)+1, year=year).first()
-    print(month.holidays)
 
     data = gen_month_table(center_abbr, month_name, year)
 
@@ -98,20 +97,11 @@ def sum_by_doctor():
     return render_template("sumview.html", data=data)
 
 
-@dataview_bp.route("/sum-days", methods=["POST"])
+@dataview_bp.route("/sum-days/<center>/<month>/<year>", methods=["GET"])
 @login_required
-def sum_by_days():
+def sum_by_days(center, month, year):
     if not current_user.is_admin:
         return jsonify({"status": "error", 'message': 'You are not an admin'})
     
-    data = request.get_json()
-    center_abbr = data.get('center')
-    month_name = data.get('month')
-    year = data.get('year')
-    
-    month = Month.query.filter_by(number=global_vars.MESES.index(month_name)+1, year=year).first()
-    center = Center.query.filter_by(abbreviation=center_abbr).first()
-    
-    print(month, center)
-
+    print(center, month, year)
     return render_template("sumview.html", data=[[""]])
