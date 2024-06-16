@@ -4,21 +4,20 @@
   <link rel="stylesheet" type="text/css" href="{{ url_for('dataview.static', filename='css/table.css') }}">
 {% endblock %}
 
-{% block outsideContent %}
+{% block mainContent %}
   <div id="total_hours_table">
       <table>
-        <thead>
-            <tr>
-                {% for header in data[0] %}
-                <th>{{ header }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
         <tbody>
-            {% for row in data[1:] %}
+            {% for row in data %}
             <tr>
                 {% for cell in row %}
-                <td>{{ cell }}</td>
+                {% if loop.index == 1 %}
+                <td style="min-width: 10px;">{{ cell }}</td> <!-- Adjust width as needed -->
+                {% elif loop.index == 2 %}
+                <td style="min-width: 200px;">{{ cell }}</td> <!-- Adjust width as needed -->
+                {% else %}
+                <td style="min-width: 50px;">{{ cell }}</td> <!-- Adjust width as needed -->
+                {% endif %}
                 {% endfor %}
             </tr>
             {% endfor %}
@@ -26,3 +25,4 @@
       </table>
   </div>
 {% endblock %}
+

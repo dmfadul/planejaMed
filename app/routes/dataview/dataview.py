@@ -84,10 +84,9 @@ def sum_by_doctor():
     doctors = sorted(User.query.all(), key=lambda x: x.full_name)
 
     header_1 = ["", month] + [x for tup in list(zip(centers, centers)) for x in tup]
-    header_2 = ['Nº', 'Anestesiologista'] + ['H Rotina', 'H Plantões'] * 3
+    header_2 = ['Nº', 'Anestesiologista'] + ['Rotina', 'Plantões'] * 3
     data = [header_1, header_2]
 
-    doctors[0].hours(month.id)
     for i, doctor in enumerate(doctors):
         row = [i+1, doctor.full_name]
         for center in centers:

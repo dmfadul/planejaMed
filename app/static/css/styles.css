@@ -67,11 +67,17 @@ header {
 }
 
 main {
-  max-width: 600px;
+  display: flex;
+  width: 90%;
+  max-width: 665px;
   margin: 20px auto;
   padding: 20px;
   background-color: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+main > * {
+  margin-bottom: 20px;
 }
 
 a {
