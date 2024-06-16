@@ -19,6 +19,8 @@ HOURS_MAP = {
 
 HOURS_KEY = list(range(MORNING_START, 25)) + list(range(1, VAMPIRE_END + 1))
 
+NIGHT_HOURS = list(range(18, 25)) + list(range(1, 7))
+
 DIAS_SEMANA = ["SEGUNDA", "TERÇA", "QUARTA", "QUINTA", "SEXTA", "SABADO", "DOMINGO"]
 
 MESES = [

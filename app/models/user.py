@@ -102,8 +102,7 @@ class User(db.Model, UserMixin):
         return ' '.join(name.split())
     
     @property
-    def schedule(self):
-        from app.hours_conversion import split_hours, convert_hours_to_line
+    def app_dict(self):
         app_dict = {}
         for app in self.appointments:
             center_abbr = app.center.abbreviation
@@ -116,17 +115,40 @@ class User(db.Model, UserMixin):
                 app_dict[center_abbr][app_date] = []
             
             app_dict[center_abbr][app_date].append(app.hour)
-        
+
+        return app_dict
+    
+    @property
+    def schedule(self):
+        from app.hours_conversion import split_hours, convert_hours_to_line       
         schedule = ["-"]
-        for center in app_dict:
-            for date in app_dict[center]:
-                appointments = split_hours(app_dict[center][date])
+        for center in self.app_dict:
+            for date in self.app_dict[center]:
+                appointments = split_hours(self.app_dict[center][date])
                 for app in appointments:
                     hour = convert_hours_to_line(app)
                     schedule.append(f"{center} -- {date.strftime('%d/%m/%y')} -- {hour}")
 
         return sorted(schedule)
     
+    def hours(self, month_id):
+        appointments = [app for app in self.appointments if app.day.month_id == month_id]
+
+        hours_dict = {}
+        for app in appointments:
+            if app.center.abbreviation not in hours_dict:
+                hours_dict[app.center.abbreviation] = [0, 0]
+            
+            if app.is_night or app.day.is_holiday:
+                hours_dict[app.center.abbreviation][1] += 1
+
+            hours_dict[app.center.abbreviation][0] += 1
+
+        print(hours_dict)
+        return hours_dict
+            
+
+
     def base_row(self, center_id):
         from app.hours_conversion import unify_appointments
         base_appointments = [app for app in self.base_appointments if app.center_id == center_id]

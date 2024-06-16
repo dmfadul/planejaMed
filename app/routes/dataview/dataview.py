@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, jsonify, flash
 from flask_login import login_required, current_user
-from app.models import BaseAppointment, Center, Month
+from app.models import Center, Month, User
 from .resolve_data import resolve_data
 from .gen_data import gen_base_table, gen_month_table
 import app.global_vars as global_vars
@@ -78,7 +78,22 @@ def sum_by_doctor():
     
     month_name = request.form.get("month")
     year = request.form.get("year")
-    month = Month.query.filter_by(number=global_vars.MESES.index(month_name)+1, year=year).first()
 
-    # return jsonify({"status": "success", 'doctors': doctors})
-    return render_template("sumview.html", data=[[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]])
+    centers = [center.abbreviation for center in Center.query.all()]
+    month = Month.query.filter_by(number=global_vars.MESES.index(month_name)+1, year=year).first()
+    doctors = sorted(User.query.all(), key=lambda x: x.full_name)
+
+    header_1 = ["", month] + [x for tup in list(zip(centers, centers)) for x in tup]
+    header_2 = ['Nº', 'Anestesiologista'] + ['H Rotina', 'H Plantões'] * 3
+    data = [header_1, header_2]
+
+    doctors[0].hours(month.id)
+    for i, doctor in enumerate(doctors):
+        row = [i+1, doctor.full_name]
+        for center in centers:
+            center_hours = doctor.hours(month.id).get(center) or [0, 0]
+            row += [center_hours[0], center_hours[1]]
+
+        data.append(row)
+
+    return render_template("sumview.html", data=data)

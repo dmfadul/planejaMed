@@ -38,3 +38,9 @@ class Appointment(db.Model):
     def delete_entry(self):
         db.session.delete(self)
         db.session.commit()
+
+    @property
+    def is_night(self):
+        from app.global_vars import NIGHT_HOURS
+        return self.hour in NIGHT_HOURS
+    
