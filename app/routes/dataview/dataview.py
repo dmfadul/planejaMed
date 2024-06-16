@@ -103,5 +103,9 @@ def sum_by_days(center, month, year):
     if not current_user.is_admin:
         return jsonify({"status": "error", 'message': 'You are not an admin'})
     
-    print(center, month, year)
+    month = Month.query.filter_by(number=global_vars.MESES.index(month)+1, year=year).first()
+    center = Center.query.filter_by(abbreviation=center).first()
+
+    for day in month.days:
+        print(center.abbreviation, day.date, day.hours(center.id))
     return render_template("sumview.html", data=[[""]])

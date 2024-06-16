@@ -32,6 +32,13 @@ class Day(db.Model):
 
         return new_day
     
+    def hours(self, center_id):
+        center_apps = [app for app in self.appointments if app.center_id == center_id]
+        days_hours = len([appointment for appointment in center_apps if not appointment.is_night])
+        nights_hours = len([appointment for appointment in center_apps if appointment.is_night])
+
+        return days_hours, nights_hours
+
     @property
     def key(self):
         weekindex = ((self.date - self.date.replace(day=1)).days // 7) + 1

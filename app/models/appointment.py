@@ -1,5 +1,5 @@
 from app import db
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, UniqueConstraint
 
 
 class Appointment(db.Model):
