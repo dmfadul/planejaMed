@@ -139,12 +139,13 @@ def migrate_base(base_id):
             hours = global_vars.HOURS_MAP.get(data[i][j])
 
             if hours is None:
+                print(hours)
                 continue
             
             if hours[0] < hours[1]:
                 hour_list = list(range(hours[0], hours[1]+1))
             else:
-                hour_list = [h for h in range(hours[0], 25)] + [h for h in range(1, hours[1]+1)]
+                hour_list = list(range(hours[0], 24)) + list(range(hours[1]+1))
 
             for hour in hour_list:
                 with app.app_context():
