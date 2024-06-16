@@ -17,7 +17,7 @@ class Request(db.Model):
     creation_date = db.Column(db.Date, nullable=False, default=datetime.now())
     response_date = db.Column(db.Date, nullable=True)
 
-    existing_appointment_id = db.Column(db.Integer, ForeignKey('appointments.id'), nullable=False)
+    existing_appointment_id = db.Column(db.Integer, ForeignKey('appointments.id'))
     appointment_to_exchange_id = db.Column(db.Integer, ForeignKey('appointments.id'))
     doctor_who_will_cover_id = db.Column(db.Integer, ForeignKey('users.id'))
     doctor_to_include_id = db.Column(db.Integer, ForeignKey('users.id'))
