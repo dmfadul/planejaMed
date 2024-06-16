@@ -67,7 +67,7 @@ header {
 }
 
 main {
-  display: flex;
+  display: block;
   width: 90%;
   max-width: 665px;
   margin: 20px auto;
