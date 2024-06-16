@@ -11,6 +11,7 @@ class Appointment(db.Model):
     center_id = db.Column(db.Integer, ForeignKey('centers.id'), nullable=False)
     day_id = db.Column(db.Integer, ForeignKey('days.id'), nullable=False)
     hour = db.Column(db.Integer, nullable=False)
+    # hour = db.Column(db.Integer, nullable=False, checkConstraint='hour >= 0 AND hour < 24')
 
     user = db.relationship('User', back_populates='appointments', lazy=True)
     center = db.relationship('Center', back_populates='appointments', lazy=True)
@@ -19,6 +20,8 @@ class Appointment(db.Model):
     general_requests = db.relationship('Request', foreign_keys='Request.existing_appointment_id', back_populates='existing_appointment', lazy=True)
     requests_to_exchange = db.relationship('Request', foreign_keys='Request.appointment_to_exchange_id', back_populates='appointment_to_exchange', lazy=True)
 
+    __table_args__ = (UniqueConstraint('user_id', 'day_id', 'hour', name='unique_appointment'),)
+    
     @classmethod
     def add_entry(cls, user_id, center_id, day_id, hour):
         appointment = cls(user_id=user_id,
