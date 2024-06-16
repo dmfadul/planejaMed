@@ -5,7 +5,7 @@
     <script type="text/javascript" src="{{ url_for('dashboard.static', filename='scripts/resolveRequest.js') }}"></script>
 {% endblock %}
 
-{% block outsideContent %}
+{% block mainContent %}
   <div id="requests-list">
       <div id="requestContainer">
           {% for request in requests %}

@@ -1,0 +1,38 @@
+.request-item {
+    background-color: #fff; /* Matches the main background */
+    border-bottom: 1px solid #eee; /* Light border for separation */
+    padding: 10px;
+    justify-content: space-between; /* Space out the request and buttons */
+    align-items: center;
+  }
+  
+  /* Closer button grouping */
+  .request-item > div {
+    gap: 1px; /* Adjust the space between buttons */
+  }
+  
+  .request-item button {
+    padding: 5px 10px; /* Smaller padding for a more refined button */
+    background-color: #333; /* Matches the header color for consistency */
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+  }
+  
+  .request-item button:hover {
+    background-color: #555; /* Slightly lighter on hover */
+  }
+  
+  /* Responsive adjustments for smaller screens */
+  @media screen and (max-width: 600px) {
+    .request-item {
+      font-size: 14px; /* Adjust font size for smaller screens */
+      padding: 5px; /* Less padding to fit smaller screens */
+    }
+  
+    .request-item button {
+      padding: 3px 6px; /* Smaller buttons on smaller screens */
+    }
+  }
+  
