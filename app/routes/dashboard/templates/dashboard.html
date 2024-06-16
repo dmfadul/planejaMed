@@ -12,7 +12,7 @@
     {% if pending_requests %}
         <section class="warning">
             <p>Você tem Requisições Pendentes!</p>
-            <a href="{{ url_for('requests.requests') }}"><button class="common-button">Resolve Requests</button></a>
+            <a href="{{ url_for('dashboard.requests') }}"><button class="common-button">Resolve Requests</button></a>
         </section>
     {% endif %}
 

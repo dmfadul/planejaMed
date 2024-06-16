@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, url_for, render_template
 from flask_login import login_required, current_user
 import app.global_vars as global_vars
-from app.models import Center, Month
+from app.models import Center, Month, Request
 
 dashboard_bp = Blueprint(
                         'dashboard',
@@ -18,7 +18,7 @@ def dashboard():
     months = global_vars.MESES
     current_year = Month.get_current().year
     current_month = Month.get_current().name
-    pending_requests = None
+    pending_requests = Request.query.filter_by(is_open=True).all()
     centers = [center.abbreviation for center in Center.query.all()]
 
     return render_template(
@@ -36,4 +36,5 @@ def dashboard():
 @dashboard_bp.route('/requests')
 @login_required
 def requests():
-    return render_template("requests.html", title="Requests")
+    requests = Request.query.filter_by(is_open=True).all()
+    return render_template("requests.html", title="Requests", requests=requests)
