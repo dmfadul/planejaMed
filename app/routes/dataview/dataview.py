@@ -68,3 +68,17 @@ def update_appointments():
         return jsonify({"status": "error", 'message': 'Conflicting hours'})
     
     return jsonify({"status": "error", 'message': 'An unexpected error occurred'})    
+
+
+@dataview_bp.route("/sum-doctors", methods=["POST"])
+@login_required
+def sum_by_doctor():
+    if not current_user.is_admin:
+        return jsonify({"status": "error", 'message': 'You are not an admin'})
+    
+    month_name = request.form.get("month")
+    year = request.form.get("year")
+    month = Month.query.filter_by(number=global_vars.MESES.index(month_name)+1, year=year).first()
+
+    # return jsonify({"status": "success", 'doctors': doctors})
+    return render_template("sumview.html", data=[[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]])
