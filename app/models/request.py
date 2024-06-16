@@ -13,14 +13,15 @@ class Request(db.Model):
     action = db.Column(db.Text, nullable=False)
 
     is_open = db.Column(db.Boolean, default=True)
-    is_archived = db.Column(db.Boolean, default=False)
     creation_date = db.Column(db.Date, nullable=False, default=datetime.now())
-    response_date = db.Column(db.Date, nullable=True)
 
     existing_appointment_id = db.Column(db.Integer, ForeignKey('appointments.id'))
     appointment_to_exchange_id = db.Column(db.Integer, ForeignKey('appointments.id'))
     doctor_who_will_cover_id = db.Column(db.Integer, ForeignKey('users.id'))
     doctor_to_include_id = db.Column(db.Integer, ForeignKey('users.id'))
+
+    authorized = db.Column(db.Boolean, nullable=True)
+    response_date = db.Column(db.Date, nullable=True)
 
     requester = db.relationship('User', foreign_keys=[requester_id], back_populates='requests_sent', lazy=True)
     responder = db.relationship('User', foreign_keys=[responder_id], back_populates='requests_received', lazy=True)
