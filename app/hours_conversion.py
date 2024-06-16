@@ -13,7 +13,7 @@ def unify_appointments(appointments):
         if hour[0] < hour[1]:
             hour_list = list(range(hour[0], hour[1]+1))
         else:
-            hour_list = [h for h in range(hour[0], 25)] + [h for h in range(1, hour[1]+1)]
+            hour_list = [h for h in range(hour[0], 24)] + [h for h in range(hour[1]+1)]
 
         if set(hour_list).issubset(set(appointments)):
             unified_appointments.append(letter)
@@ -23,12 +23,16 @@ def unify_appointments(appointments):
 
     if not appointments:
         return ''.join(unified_appointments)
+    
+    if max(appointments) - min(appointments) != len(appointments) - 1:
+        unified_appointments.append(f'x{len(appointments)}')
+        return ''.join(unified_appointments)
 
     for letter, hour in list(hours_map.items())[::-1]:
         if hour[0] < hour[1]:
             hour_list = list(range(hour[0], hour[1]+1))
         else:
-            hour_list = [h for h in range(hour[0], 25)] + [h for h in range(1, hour[1]+1)]
+            hour_list = [h for h in range(hour[0], 24)] + [h for h in range(hour[1]+1)]
         if appointments and set(appointments).issubset(set(hour_list)):
             unified_appointments.append(f"{letter}{len([app for app in appointments if app in hour_list])}")
             appointments = [app for app in appointments if app not in hour_list]
@@ -46,7 +50,7 @@ def split_hours(hour_list):
     split_hours = []
     current = [hour_list[0]]
     for i in range(1, len(hour_list)):
-        if hour_list[i] == hour_list[i - 1] + 1 or hour_list[i] == 1 and hour_list[i - 1] == 24:
+        if hour_list[i] == hour_list[i - 1] + 1 or hour_list[i] == 0 and hour_list[i - 1] == 23:
             current.append(hour_list[i])
         else:
             split_hours.append(current)

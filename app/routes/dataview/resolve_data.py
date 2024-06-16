@@ -10,25 +10,24 @@ def convert_hours(hour_list):
 
     if hour_list[0] == "-":
         start_hour, end_hour = int(hour_list[1].split(":")[0]), int(hour_list[2].split(":")[0])
-        if start_hour == end_hour:
+        if start_hour == end_hour and not start_hour == 7:
             return 1
         if start_hour > end_hour and end_hour > 6:
             return 2 
         
-        if start_hour > end_hour:
-            hours = list(range(start_hour, 25)) + list(range(1, end_hour))
+        if start_hour >= end_hour:
+            hours = list(range(start_hour, 24)) + list(range(end_hour))
         else:
             hours = list(range(start_hour, end_hour))
     else:
         start_hour, end_hour = hours_map[hour_list[0]]
-        print(start_hour, end_hour)
         
         if start_hour > end_hour:
-            hours = list(range(start_hour, 25)) + list(range(1, end_hour + 1))
-            print(hours)
+            hours = list(range(start_hour, 24)) + list(range(end_hour + 1))
         else:
             hours = list(range(start_hour, end_hour + 1))
 
+    print(hours)
     return hours
 
 

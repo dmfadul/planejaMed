@@ -17,9 +17,9 @@ HOURS_MAP = {
             #  'tn': (AFTERNOON_START, VAMPIRE_END),
              }
 
-HOURS_KEY = list(range(MORNING_START, 25)) + list(range(1, VAMPIRE_END + 1))
+HOURS_KEY = list(range(MORNING_START, 24)) + list(range(VAMPIRE_END + 1))
 
-NIGHT_HOURS = list(range(CINDERELLA_START, 25)) + list(range(1, VAMPIRE_END + 1))
+NIGHT_HOURS = list(range(CINDERELLA_START, 24)) + list(range(VAMPIRE_END + 1))
 
 DIAS_SEMANA = ["SEGUNDA", "TERÇA", "QUARTA", "QUINTA", "SEXTA", "SABADO", "DOMINGO"]
 

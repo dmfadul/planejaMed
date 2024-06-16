@@ -10,14 +10,14 @@ from datetime import datetime
 
 app = create_app()
 with app.app_context():
-    d = datetime(2023, 11, 27)
-    center = Center.query.filter_by(abbreviation="CCG").first()
-    day = Day.query.filter_by(date=d).first()
+    # d = datetime(2023, 11, 27)
+    # center = Center.query.filter_by(abbreviation="CCG").first()
+    # day = Day.query.filter_by(date=d).first()
     
-    appointments = Appointment.query.filter_by(center_id=center.id, day_id=day.id).all()
-    user = User.query.filter_by(crm="26704").first()
+    # appointments = Appointment.query.filter_by(center_id=center.id, day_id=day.id).all()
+    # user = User.query.filter_by(crm="26704").first()
     
-    print(user.filtered_appointments(center.id, day.id))
+    # print(user.filtered_appointments(center.id, day.id))
 
 
     # user_1 = User.query.filter_by(crm="26704").first()
