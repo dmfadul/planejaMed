@@ -1,4 +1,4 @@
-from app import db, login_manager
+from app import db, login_manager, bcrypt
 from flask_login import UserMixin
 from unidecode import unidecode
 from datetime import datetime
@@ -163,8 +163,7 @@ class User(db.Model, UserMixin):
              crm=None,
              rqe=None,
              phone=None,
-             email=None,
-             password=None):
+             email=None):
         if first_name is not None:
             self.first_name = first_name
         if middle_name is not None:
@@ -179,8 +178,6 @@ class User(db.Model, UserMixin):
             self.phone = phone
         if email is not None:
             self.email = email
-        if password is not None:
-            self.password = password
 
         try:
             db.session.commit()
@@ -188,3 +185,9 @@ class User(db.Model, UserMixin):
         except Exception as e:
             db.session.rollback()
             raise e
+
+    def set_password(self, new_password):
+        hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+
+        self.password = hashed_password
+        db.session.commit()
