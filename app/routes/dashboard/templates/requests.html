@@ -11,8 +11,8 @@
           {% for request in requests %}
             <div class="request-item" id="request-{{ loop.index }}">
                 {{ request }}
-                <button onclick="resolveRequest('{{ request }}', 'yes')">Yes</button>
-                <button onclick="resolveRequest('{{ request }}', 'no')">No</button>
+                <button onclick="resolveRequest('{{ request.id }}', 'yes')">Sim</button>
+                <button onclick="resolveRequest('{{ request.id }}', 'no')">Não</button>
             </div>
           {% endfor %}
       </div>

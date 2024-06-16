@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, url_for, render_template
+from flask import Blueprint, redirect, url_for, render_template, request, jsonify
 from flask_login import login_required, current_user
 import app.global_vars as global_vars
 from app.models import Center, Month, Request
@@ -36,5 +36,17 @@ def dashboard():
 @dashboard_bp.route('/requests')
 @login_required
 def requests():
-    requests = Request.query.filter_by(is_open=True).all()
-    return render_template("requests.html", title="Requests", requests=requests)
+    reqs = Request.query.filter_by(is_open=True).all()
+    return render_template("requests.html", title="Requests", requests=reqs)
+
+
+@dashboard_bp.route('/resolve-request', methods=['POST'])
+@login_required
+def resolve_request():
+    req_id = request.json['request']
+    response = request.json['response']
+
+    print(req_id, response)
+
+    return jsonify({"status": "success", 'message': 'Requests updated'})
+    
