@@ -106,7 +106,8 @@ class Month(db.Model):
     
     @property
     def users(self):
-        return list(set([appointment.user for day in self.days for appointment in day.appointments]))
+        users = list(set([appointment.user for day in self.days for appointment in day.appointments]))
+        return sorted(users, key=lambda x: x.full_name)
     
     def populate(self):
         from app.models.day import Day

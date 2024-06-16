@@ -41,4 +41,4 @@ def calendar_day(center, day):
 @calendar_bp.route("/schedule/", methods=["GET"])
 @login_required
 def schedule():
-    return render_template("schedule.html", schedule=current_user.schedule())
+    return render_template("schedule.html", schedule=current_user.schedule)

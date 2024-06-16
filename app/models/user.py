@@ -101,31 +101,7 @@ class User(db.Model, UserMixin):
         name = f'{self.first_name} {self.last_name}'
         return ' '.join(name.split())
     
-    def base_row(self, center_id):
-        from app.hours_conversion import unify_appointments
-        base_appointments = [app for app in self.base_appointments if app.center_id == center_id]
-        
-        app_dict = {}
-        for app in base_appointments:
-            key = (app.week_day, app.week_index)
-            if key not in app_dict:
-                app_dict[key] = [app.hour]
-            else:
-                app_dict[key].append(app.hour)
-
-        for key in app_dict:
-            app_dict[key] = unify_appointments(app_dict[key])
-
-        base_row = []
-        for weekindex in list(range(1, 6)):
-            for weekday in list(range(7)):
-                if (weekday, weekindex) in app_dict:
-                    base_row.append(app_dict[(weekday, weekindex)])
-                else:
-                    base_row.append('')
-
-        return base_row
-    
+    @property
     def schedule(self):
         from app.hours_conversion import split_hours, convert_hours_to_line
         app_dict = {}
@@ -150,7 +126,32 @@ class User(db.Model, UserMixin):
                     schedule.append(f"{center} -- {date.strftime('%d/%m/%y')} -- {hour}")
 
         return sorted(schedule)
+    
+    def base_row(self, center_id):
+        from app.hours_conversion import unify_appointments
+        base_appointments = [app for app in self.base_appointments if app.center_id == center_id]
+        
+        app_dict = {}
+        for app in base_appointments:
+            key = (app.week_day, app.week_index)
+            if key not in app_dict:
+                app_dict[key] = [app.hour]
+            else:
+                app_dict[key].append(app.hour)
 
+        for key in app_dict:
+            app_dict[key] = unify_appointments(app_dict[key])
+
+        base_row = []
+        for weekindex in list(range(1, 6)):
+            for weekday in list(range(7)):
+                if (weekday, weekindex) in app_dict:
+                    base_row.append(app_dict[(weekday, weekindex)])
+                else:
+                    base_row.append('')
+
+        return base_row
+ 
     def filtered_appointments(self, center_id, day_id, unified=False):
         from app.hours_conversion import unify_appointments
 
