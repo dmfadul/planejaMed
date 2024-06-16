@@ -36,3 +36,9 @@ def calendar_day(center, day):
     day_data = gen_day_hours(center, day)
 
     return jsonify({"data": day_data})
+
+
+@calendar_bp.route("/schedule/", methods=["GET"])
+@login_required
+def schedule():
+    return render_template("schedule.html", schedule="schedule" )

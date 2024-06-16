@@ -24,7 +24,6 @@ def dashboard():
     return render_template(
                             "dashboard.html",
                             title="Dashboard",
-                            user=current_user.crm,
                             user_is_admin=current_user.is_admin,
                             centers=centers,
                             months=months,
