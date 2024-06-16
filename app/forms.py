@@ -36,6 +36,6 @@ class UpdateProfileForm(FlaskForm):
     rqe_number = StringField('RQE', validators=[DataRequired()])
 
     password = PasswordField('Nova Senha', validators=[Optional(), Length(3, 20)])
-    confirm_password = PasswordField('Confirme a Nova Senha', validators=[EqualTo('password', message='Passwords must match')])
+    confirm_password = PasswordField('Confirme a Nova Senha', validators=[EqualTo('password', message='As senhas não coincidem')])
 
     submit = SubmitField('Atualizar')

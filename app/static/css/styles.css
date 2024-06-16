@@ -94,6 +94,13 @@ a {
   /* other styles */
 }
 
+.text-danger {
+  color: #dc3545; /* Red color */
+  font-size: 0.875em; /* Adjust the font size if necessary */
+  margin-top: 0.25rem; /* Add some space above the text */
+  margin-bottom: 0.80rem; /* Add some space below the text */
+}
+
 input[type=text],
 input[type=email],
 input[type=password] {

@@ -80,6 +80,38 @@ def register():
 @login_required
 def profile():
     form = UpdateProfileForm()
+
     if form.validate_on_submit():
-        print("ok")
-    return render_template('profile.html', title="Profile", form=form, dont_show_logout=False)
+        kwargs = {
+        "first_name": form.first_name.data,
+        "middle_name": form.middle_name.data,
+        "last_name": form.last_name.data,
+        "phone": form.cellphone.data,
+        "email": form.email.data,
+        "crm": form.crm_number.data,
+        "rqe": form.rqe_number.data,
+        }
+
+        flag = current_user.edit(**kwargs)
+        if flag == 0:
+            flash('Suas Informações foram Atualizadas!', 'success')
+
+        if form.password.data:
+            flag = current_user.set_password(form.password.data)
+            if flag == 0:
+                flash('Sua Senha Foi Atualizada!', 'success')
+
+        return redirect(url_for('login.profile'))
+
+    elif request.method == 'GET':
+        # Prefill the form with the current user's information
+        form.first_name.data = current_user.first_name
+        form.middle_name.data = current_user.middle_name
+        form.last_name.data = current_user.last_name
+        form.cellphone.data = current_user.phone
+        form.email.data = current_user.email
+        form.crm_number.data = current_user.crm
+        form.rqe_number.data = current_user.rqe
+    else:
+        flash('Erro ao Atualizar Informações', 'danger')
+    return render_template('profile.html', title='Profile', form=form)
