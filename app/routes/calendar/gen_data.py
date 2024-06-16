@@ -7,8 +7,11 @@ from app.hours_conversion import split_hours, convert_hours_to_line
 def gen_day_hours(center_abbr, day_num):
     center = Center.query.filter_by(abbreviation=center_abbr).first()
     month = Month.get_current()
-    date = datetime(day=int(day_num), month=month.number, year=month.year)
-    day = Day.query.filter_by(month_id=month.id, date=date).first()
+
+    day = [day for day in month.days if day.date.day == int(day_num)][0]
+
+    # date = datetime(day=int(day_num), month=month.number, year=month.year)
+    # day = Day.query.filter_by(month_id=month.id, date=date).first()
     
     appointments = Appointment.query.filter_by(center_id=center.id, day_id=day.id).all()
 
