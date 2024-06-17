@@ -62,24 +62,6 @@ def register():
                               form.email.data,
                               form.password.data)
                             #   hashed_password)
-        if flag == -1:
-            flash("CRM já cadastrado", "danger")
-            return redirect(url_for('login.register'))
-        if flag == -2:
-            flash("Nome já cadastrado", "danger")
-            return redirect(url_for('login.register'))
-        if flag == -3:
-            flash("CRM já cadastrado", "danger")
-            # TODO: send message to admin - user is trying to create a new account with an existing one
-            return redirect(url_for('login.register'))
-        if flag == -4:
-            flash("Conta já existe. Aguarde a Liberação do Administrador", "success")
-            # TODO: send message to admin - user is asking for inclusion (check if he has been denied before)
-            return redirect(url_for('login.login'))
-        if flag == -5:
-            flash("Conta já existe, mas usuário não está ativo. Entre em contato com o Admin", "success")
-            # TODO: send message to admin - removed user is trying to create a new account
-            return redirect(url_for('login.login'))
 
         if isinstance(flag, User):
             request = Request.new_user(flag.id)
@@ -89,8 +71,11 @@ def register():
             else:
                 flash("Erro ao Criar Solicitação. Tente de Novo mais tarde ou entre em contato com o Admin", "danger")
                 return redirect(url_for('login.register'))
+        else:
+            flash(flag, "danger")
+            return redirect(url_for('login.register'))
     else:
-        print("not ok")
+        print("form did not validate")
 
     return render_template('register.html', title="Register", form=form, dont_show_logout=True)
 

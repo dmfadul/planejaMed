@@ -63,25 +63,28 @@ class User(db.Model, UserMixin):
         db.session.add(new_user)
         if existing_user and existing_user.is_active and not existing_user.is_locked:
             db.session.rollback()
-            return -3
+            # TODO: send message to admin - user is trying to create a new account with an existing one
+            return "CRM já cadastrado"
         if existing_user and existing_user.is_active and existing_user.is_locked:
             db.session.rollback()
-            return -4
+            # TODO: send message to admin - user is asking for inclusion (check if he has been denied before)
+            return "Conta já existe. Aguarde a Liberação do Administrador"
         if existing_user and not existing_user.is_active:
             db.session.rollback()
-            return -5
+            # TODO: send message to admin - removed user is trying to create a new account
+            return "Conta já existe, mas usuário não está ativo. Entre em contato com o Admin"
         if existing_user:
             db.session.rollback()
-            return -1
+            return "CRM já cadastrado"
         if new_user.full_name in names:
             db.session.rollback()
-            return -2
+            return "Nome já cadastrado"
         try:
             db.session.commit()
         except Exception as e:
             db.session.rollback()
             raise e
-
+        
         return new_user
 
     @classmethod
