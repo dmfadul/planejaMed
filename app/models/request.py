@@ -33,7 +33,6 @@ class Request(db.Model):
     def __repr__(self):
         return f'{self.requester} - {self.action} - {self.is_open}'
     
-
     @classmethod
     def new_user(cls, doctor_to_include_id):
         new_request = cls(requester_id=doctor_to_include_id,
@@ -46,3 +45,13 @@ class Request(db.Model):
         db.session.add(new_request)
         db.session.commit()
         return new_request
+    
+    def respond(self, responder_id, is_authorized):
+        self.responder_id = responder_id
+        self.authorized = is_authorized
+        self.response_date = datetime.now()
+        self.is_open = False
+
+        db.session.commit()
+        return 0
+            

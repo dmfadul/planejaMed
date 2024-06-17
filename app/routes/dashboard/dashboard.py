@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, url_for, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, flash
 from flask_login import login_required, current_user
 import app.global_vars as global_vars
 from app.models import Center, Month, Request
@@ -48,6 +48,7 @@ def resolve_request():
     authorized = request.json['response'] == 'yes'
 
     flag = resolve_req(req_id, authorized)
+    flash(flag, 'success')
 
     return jsonify({"status": "success", 'message': 'Requests updated'})
     
