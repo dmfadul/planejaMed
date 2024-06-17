@@ -2,6 +2,7 @@ from flask import Blueprint, redirect, url_for, render_template, request, jsonif
 from flask_login import login_required, current_user
 import app.global_vars as global_vars
 from app.models import Center, Month, Request
+from .resolve_requests import resolve_req
 
 dashboard_bp = Blueprint(
                         'dashboard',
@@ -44,9 +45,9 @@ def requests():
 @login_required
 def resolve_request():
     req_id = request.json['request']
-    response = request.json['response']
+    authorized = request.json['response'] == 'yes'
 
-    print(req_id, response)
+    flag = resolve_req(req_id, authorized)
 
     return jsonify({"status": "success", 'message': 'Requests updated'})
     
