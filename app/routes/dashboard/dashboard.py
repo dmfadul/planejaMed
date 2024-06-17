@@ -19,7 +19,7 @@ def dashboard():
     months = global_vars.MESES
     current_year = Month.get_current().year
     current_month = Month.get_current().name
-    pending_requests = Request.query.filter_by(is_open=True).all()
+    pending_requests = Request.filter_by_user(current_user.id)
     centers = [center.abbreviation for center in Center.query.all()]
 
     return render_template(
@@ -37,7 +37,7 @@ def dashboard():
 @dashboard_bp.route('/requests')
 @login_required
 def requests():
-    reqs = Request.query.filter_by(is_open=True).all()
+    reqs = Request.filter_by_user(current_user.id)
     return render_template("requests.html", title="Requests", requests=reqs)
 
 

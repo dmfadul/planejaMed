@@ -46,10 +46,24 @@ class Request(db.Model):
         db.session.commit()
         return new_request
     
+    @classmethod
+    def filter_by_user(cls, user_id):
+        return [req for req in cls.query.filter_by(is_open=True).all() if user_id in req.responders]
+
     @property
     def responders(self):
-        return [user for user in User.query.all() if user.code in self.receivers_code]
+        from app.models.user import User
+
+        user_ids = [user.id for user in User.query.all() if user.is_sudo]
+
+        if self.receivers_code == "*":
+            user_ids += [user.id for user in User.query.all() if user.is_admin]
+        else:
+            user_ids += [user.id for user in User.query.all() if user.id == int(self.receivers_code)]
     
+        return user_ids
+    
+
     def respond(self, responder_id, is_authorized):
         self.responder_id = responder_id
         self.authorized = is_authorized

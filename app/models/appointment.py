@@ -11,6 +11,7 @@ class Appointment(db.Model):
     center_id = db.Column(db.Integer, ForeignKey('centers.id'), nullable=False)
     day_id = db.Column(db.Integer, ForeignKey('days.id'), nullable=False)
     hour = db.Column(db.Integer, nullable=False)
+    # THE LINE ABOVE MUST BE COMMENTED OUT AND THE LINE BELOW UNCOMMENTED
     # hour = db.Column(db.Integer, nullable=False, checkConstraint='hour >= 0 AND hour < 24')
 
     user = db.relationship('User', back_populates='appointments', lazy=True)
