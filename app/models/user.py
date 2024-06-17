@@ -46,7 +46,7 @@ class User(db.Model, UserMixin):
     @classmethod
     def add_entry(cls, first_name, middle_name, last_name, crm, rqe, phone, email, password):
         users = cls.query.all()
-        crms = [user.crm for user in users]
+        existing_user = cls.query.filter_by(crm=crm).first()
         names = [user.full_name for user in users]
         
         new_user = cls(
@@ -61,7 +61,16 @@ class User(db.Model, UserMixin):
         )
 
         db.session.add(new_user)
-        if int(new_user.crm) in crms:
+        if existing_user and existing_user.is_active and not existing_user.is_locked:
+            db.session.rollback()
+            return -3
+        if existing_user and existing_user.is_active and existing_user.is_locked:
+            db.session.rollback()
+            return -4
+        if existing_user and not existing_user.is_active:
+            db.session.rollback()
+            return -5
+        if existing_user:
             db.session.rollback()
             return -1
         if new_user.full_name in names:
