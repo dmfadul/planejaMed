@@ -1,5 +1,3 @@
-import app.global_vars as global_vars
-import math
 from app import db
 from sqlalchemy import ForeignKey
 

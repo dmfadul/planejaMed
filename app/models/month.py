@@ -1,5 +1,5 @@
 from app import db
-from sqlalchemy import ForeignKey, UniqueConstraint
+from sqlalchemy import UniqueConstraint
 from datetime import datetime, timedelta
 import app.global_vars as global_vars
 

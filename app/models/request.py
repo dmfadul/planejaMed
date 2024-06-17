@@ -46,6 +46,10 @@ class Request(db.Model):
         db.session.commit()
         return new_request
     
+    @property
+    def responders(self):
+        return [user for user in User.query.all() if user.code in self.receivers_code]
+    
     def respond(self, responder_id, is_authorized):
         self.responder_id = responder_id
         self.authorized = is_authorized
