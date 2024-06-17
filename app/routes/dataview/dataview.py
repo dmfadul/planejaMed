@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, jsonify, flash
+from flask import Blueprint, request, render_template, jsonify, flash, redirect, url_for
 from flask_login import login_required, current_user
 from app.models import Center, Month, User
 from .resolve_data import resolve_data
@@ -34,6 +34,10 @@ def monthview():
     month_name = request.form.get("month")
 
     month = Month.query.filter_by(number=global_vars.MESES.index(month_name)+1, year=year).first()
+    if month is None:
+        flash(f"O mês {month_name} de {year} ainda não foi criado", "danger")
+        return redirect(url_for("dashboard.dashboard"))
+
 
     data = gen_month_table(center_abbr, month_name, year)
 
