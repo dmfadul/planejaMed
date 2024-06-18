@@ -44,4 +44,35 @@ def create_app(config_filename=None):
 
     return app
 
-create_app()    
+create_app()
+
+
+# TODO: FINISH ADMIN FUNCTIONS
+# TODO: add a "set current month" button
+# TODO: list of months in db
+# TODO: Create exclude user function
+# TODO: add logic to user add a new center
+
+# TODO: REPORT
+# TODO: PRINT TABLE
+# TODO: connect gen report button
+
+
+# TODO: ADD REQUESTS
+# TODO: !!stop doctor from offering same hour to two people
+
+# TODO: Include: delete holidays
+# TODO: add replies to answered requests
+# TODO: change admin table interaction
+# TODO: add an actual settings file.
+# TODO: Replace popup by modal
+
+# TODO: FO LATER
+# TODO: add home button
+# TODO: use profile name to gen abbreviated names (recreate user table)/finish reports
+# TODO: fix aesthetics/simplify css and js
+# TODO: add visible password button
+
+
+
+

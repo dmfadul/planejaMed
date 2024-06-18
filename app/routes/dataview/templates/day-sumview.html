@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block head_links %}
+  <link rel="stylesheet" type="text/css" href="{{ url_for('dataview.static', filename='css/table.css') }}">
+{% endblock %}
+
+{% block outsideContent %}
+  <div id="total_hours_table">
+      <table>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                {% for cell in row %}
+                {% if loop.index == 1 %}
+                <td style="min-width: 10px;">{{ cell }}</td> <!-- Adjust width as needed -->
+                {% else %}
+                <td style="min-width: 35px;">{{ cell }}</td> <!-- Adjust width as needed -->
+                {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+  </div>
+{% endblock %}
+

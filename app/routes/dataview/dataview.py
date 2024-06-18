@@ -98,7 +98,7 @@ def sum_by_doctor():
 
         data.append(row)
 
-    return render_template("sumview.html", data=data)
+    return render_template("doctor-sumview.html", data=data)
 
 
 @dataview_bp.route("/sum-days/<center>/<month>/<year>", methods=["GET"])
@@ -110,6 +110,12 @@ def sum_by_days(center, month, year):
     month = Month.query.filter_by(number=global_vars.MESES.index(month)+1, year=year).first()
     center = Center.query.filter_by(abbreviation=center).first()
 
-    for day in month.days:
-        print(center.abbreviation, day.date, day.hours(center.id))
-    return render_template("sumview.html", data=[[""]])
+    month_days = [''] + [f"{int(day.date.day):02d}" for day in month.days]
+    week_days = [''] + [global_vars.DIAS_SEMANA[day.date.weekday()][0] for day in month.days]
+    
+    daytime_values = ['DIA: '] + [day.hours(center.id)[0] for day in month.days]
+    night_values = ['NOITE: '] + [day.hours(center.id)[1] for day in month.days]
+
+    data = [month_days, week_days, daytime_values, night_values]
+
+    return render_template("day-sumview.html", data=data)
