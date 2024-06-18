@@ -18,7 +18,7 @@ def gen_day_hours(center_abbr, day_num):
             appointments_dict[doctor_name] = []
         appointments_dict[doctor_name].append(app.hour)
     
-    appointments_list = []
+    appointments_list = ['-']
     for doctor_name, hour_range in appointments_dict.items():
         hour_list = split_hours(hour_range)
         all_hours = ""

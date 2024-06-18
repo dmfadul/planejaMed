@@ -7,6 +7,7 @@ import json
 
 DATABASE = 'old_db.db'
 
+dias_semana = global_vars.DIAS_SEMANA
 hours_map = global_vars.HOURS_MAP
 hours_map["tn"] = (13, 6)
 hours_map["d10"] = (7, 17)
@@ -184,6 +185,8 @@ def migrate_month(center_abbr, month_num, year):
             if doctor == -1:
                 continue
             month = Month.query.filter_by(number=month_num, year=year).first()
+            if month.is_populated:
+                continue
             if month is None:
                 month = Month.add_entry(number=month_num, year=year, center_id=center.id)
                 month.populate()
