@@ -223,6 +223,6 @@ def migrate_month(center_abbr, month_name, year):
 
             for hour in hour_list:
                 with app.app_context():
-                    flag = Appointment.add_entry(doctor.id, center.id, week_day, week_index, hour)
+                    flag = Appointment.add_entry(doctor.id, center.id, day_id, hour)
                     print(doctor.id, center.id, week_day, week_index, hour)
 

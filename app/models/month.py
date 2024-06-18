@@ -10,7 +10,7 @@ class Month(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     number = db.Column(db.Integer, nullable=False)
     year = db.Column(db.Integer, nullable=False)
-    # leader = db.Column(db.String(100))
+    leader = db.Column(db.String(100))
     is_populated = db.Column(db.Boolean, default=False)
     is_locked = db.Column(db.Boolean, default=False)
     is_current = db.Column(db.Boolean, default=False)
