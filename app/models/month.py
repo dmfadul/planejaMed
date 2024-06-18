@@ -25,12 +25,13 @@ class Month(db.Model):
         return f"{self.number}/{self.year}"  
 
     @classmethod
-    def create_new_month(cls, number, year):
+    def create_new_month(cls, number, year, leader=None):
+        leader = leader or global_vars.LEADER
         existing_months = cls.query.filter_by(number=number, year=year).all()
         if existing_months:
             return -1
         
-        month = cls(number=number, year=year)
+        month = cls(number=number, year=year, leader=leader)
         month.is_locked = True
 
         db.session.add(month)

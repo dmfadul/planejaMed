@@ -7,6 +7,10 @@ import json
 
 DATABASE = 'old_db.db'
 
+hours_map = global_vars.HOURS_MAP
+hours_map["tn"] = (13, 6)
+hours_map["d10"] = (7, 17)
+
 
 def get_tables_names():
     conn = sqlite3.connect(DATABASE)
@@ -117,12 +121,6 @@ def add_centers():
 
 
 def migrate_base(base_id):
-    dias_semana = [d[:3] for d in global_vars.DIAS_SEMANA]
-    hours_map = global_vars.HOURS_MAP
-
-    hours_map["tn"] = (13, 6)
-    hours_map["d10"] = (7, 17)
-
     base = load_from_db('Bases', base_id)
     data = json.loads(base[2])
 
@@ -165,21 +163,14 @@ def migrate_base(base_id):
                     print(flag, doctor.id, center.id, week_day, week_index, hour)
 
 
-def migrate_month(center_abbr, month_name, year):
-    dias_semana = [d[:3] for d in global_vars.DIAS_SEMANA]
-    hours_map = global_vars.HOURS_MAP
-
-    hours_map["tn"] = (13, 6)
-    hours_map["d10"] = (7, 17)
-
-    month_id = f"{center_abbr}{month_name}{year}1"
+def migrate_month(center_abbr, month_num, year):
+    month_id = f"{center_abbr}{month_num}{year}1"
     month_data = load_from_db('months', month_id)
 
     data_holidays = json.loads(month_data[5])
 
     data = data_holidays[:-1]
     holidays = [h for h in data_holidays[-1] if h]
-    leader = month_data[9]
 
     app = create_app()
 
@@ -188,10 +179,14 @@ def migrate_month(center_abbr, month_name, year):
             continue
         doctor_name = data[i][0]
         with app.app_context():
+            center = Center.query.filter_by(abbreviation=center_abbr).first()
             doctor = User.get_by_name(doctor_name)
             if doctor == -1:
                 continue
-            center = Center.query.filter_by(abbreviation=center_abbr).first()
+            month = Month.query.filter_by(number=month_num, year=year).first()
+            if month is None:
+                month = Month.add_entry(number=month_num, year=year, center_id=center.id)
+                month.populate()
 
         for j in range(len(data[i])):
             if j == 0:
@@ -199,8 +194,10 @@ def migrate_month(center_abbr, month_name, year):
             if data[i][j] == '' or data[i][j] is None:
                 continue
 
-            week_day, week_index = dias_semana.index(data[0][j]), data[1][j]
-            
+            month_day = int(data[1][j])
+            actual_month = month_num -1 if 26 <= month_day <= 31 else month_num
+            month_date = datetime(year, actual_month, month_day)       
+                    
             hours_str = data[i][j].strip().lower()
             hours_str = hours_str.replace("n6", "c")
             hours_str = hours_str
@@ -211,7 +208,6 @@ def migrate_month(center_abbr, month_name, year):
             hours = hours_map.get(hours_str)
             
             if hours is None:
-                print(hours_str)
                 continue
             
             if hours_str == 'mn':
@@ -223,6 +219,10 @@ def migrate_month(center_abbr, month_name, year):
 
             for hour in hour_list:
                 with app.app_context():
-                    flag = Appointment.add_entry(doctor.id, center.id, day_id, hour)
-                    print(doctor.id, center.id, week_day, week_index, hour)
+                    day = Day.query.filter_by(month_id=month.id, date=month_date).first()
+                    if month_day in holidays:
+                        day.add_holiday()
+                    # flag = Appointment.add_entry(doctor.id, center.id, day.id, hour)
+                    print(doctor.id, center.id, day.id, hour)
 
+migrate_month('CCG', 12, 2023)
