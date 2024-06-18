@@ -6,7 +6,7 @@ from datetime import datetime
 
 # migration_funcs.add_centers()
 # migration_funcs.migrate_users()
-# migration_funcs.migrate_base("CCQ--BASE")
+migration_funcs.migrate_base("CCG--BASE")
 
 app = create_app()
 with app.app_context():

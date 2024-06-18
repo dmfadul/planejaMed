@@ -1,5 +1,5 @@
 from app import create_app, db
-from app.models import User, Center, BaseAppointment
+from app.models import User, Center, BaseAppointment, Appointment, Month, Day
 from datetime import datetime
 import app.global_vars as global_vars
 import sqlite3
@@ -117,9 +117,16 @@ def add_centers():
 
 
 def migrate_base(base_id):
-    app = create_app()
+    dias_semana = [d[:3] for d in global_vars.DIAS_SEMANA]
+    hours_map = global_vars.HOURS_MAP
+
+    hours_map["tn"] = (13, 6)
+    hours_map["d10"] = (7, 17)
+
     base = load_from_db('Bases', base_id)
     data = json.loads(base[2])
+
+    app = create_app()
 
     for i in range(len(data)):
         if i in [0, 1]:
@@ -134,15 +141,20 @@ def migrate_base(base_id):
                 continue
             if data[i][j] == '' or data[i][j] is None:
                 continue
-            
-            week_day, week_index = [d[:3] for d in global_vars.DIAS_SEMANA].index(data[0][j]), data[1][j]
-            hours = global_vars.HOURS_MAP.get(data[i][j])
 
-            if hours is None:
-                print(hours)
-                continue
+            week_day, week_index = dias_semana.index(data[0][j]), data[1][j]
             
-            if hours[0] < hours[1]:
+            hours_str = data[i][j].strip().lower()
+            hours_str = hours_str.replace("n6", "c")
+            hours = hours_map.get(hours_str)
+            
+            # if hours is None:
+            #     print(hours_str)
+            #     continue
+            
+            if hours_str == 'mn':
+                hour_list = list(range(7, 13)) + list(range(19, 24)) + list(range(1, 7))
+            elif hours[0] < hours[1]:
                 hour_list = list(range(hours[0], hours[1]+1))
             else:
                 hour_list = list(range(hours[0], 24)) + list(range(hours[1]+1))
@@ -151,3 +163,66 @@ def migrate_base(base_id):
                 with app.app_context():
                     flag = BaseAppointment.add_entry(doctor.id, center.id, week_day, week_index, hour)
                     print(flag, doctor.id, center.id, week_day, week_index, hour)
+
+
+def migrate_month(center_abbr, month_name, year):
+    dias_semana = [d[:3] for d in global_vars.DIAS_SEMANA]
+    hours_map = global_vars.HOURS_MAP
+
+    hours_map["tn"] = (13, 6)
+    hours_map["d10"] = (7, 17)
+
+    month_id = f"{center_abbr}{month_name}{year}1"
+    month_data = load_from_db('months', month_id)
+
+    data_holidays = json.loads(month_data[5])
+
+    data = data_holidays[:-1]
+    holidays = [h for h in data_holidays[-1] if h]
+    leader = month_data[9]
+
+    app = create_app()
+
+    for i in range(len(data)):
+        if i in [0, 1]:
+            continue
+        doctor_name = data[i][0]
+        with app.app_context():
+            doctor = User.get_by_name(doctor_name)
+            if doctor == -1:
+                continue
+            center = Center.query.filter_by(abbreviation=center_abbr).first()
+
+        for j in range(len(data[i])):
+            if j == 0:
+                continue
+            if data[i][j] == '' or data[i][j] is None:
+                continue
+
+            week_day, week_index = dias_semana.index(data[0][j]), data[1][j]
+            
+            hours_str = data[i][j].strip().lower()
+            hours_str = hours_str.replace("n6", "c")
+            hours_str = hours_str
+            
+            hours_str = sorted(list(hours_str), key=lambda x: ['dn', 'd', 'm', 't', 'n', 'c', 'v'].index(x))
+            hours_str = ''.join(hours_str)
+
+            hours = hours_map.get(hours_str)
+            
+            if hours is None:
+                print(hours_str)
+                continue
+            
+            if hours_str == 'mn':
+                hour_list = list(range(7, 13)) + list(range(19, 24)) + list(range(1, 7))
+            elif hours[0] < hours[1]:
+                hour_list = list(range(hours[0], hours[1]+1))
+            else:
+                hour_list = list(range(hours[0], 24)) + list(range(hours[1]+1))
+
+            for hour in hour_list:
+                with app.app_context():
+                    flag = Appointment.add_entry(doctor.id, center.id, week_day, week_index, hour)
+                    print(doctor.id, center.id, week_day, week_index, hour)
+
