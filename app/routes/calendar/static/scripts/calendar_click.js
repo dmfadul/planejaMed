@@ -19,24 +19,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     let index = 0;
                     for (let item of dayList) {
-                        output += `
-                            <li id="item-${index}">
-                                ${item.split("*").join("<br>")}
-                                <div class="kebab-menu">
-                                    <button class="kebab-button">&#8942;</button>
-                                    <div class="kebab-content">
-                                        <a href="#" onclick="processRequest('${item.split("*").join("<br>")}', 'exchange')" data-action="exchange">Trocar</a>
-                                        <a href="#" onclick="processRequest('${item.split("*").join("<br>")}', 'exclude')" data-action="exclude">Excluir</a>
-                                        <a href="#" onclick="processRequest('${item.split("*").join("<br>")}', 'donation')" data-action="donation">Doação</a>
+                        const itemContent = item.split("*").join("<br>");
+                        if (item === '-') {
+                            output += `
+                                <li id="item-${index}">
+                                    ${itemContent}
+                                    <div class="kebab-menu">
+                                        <button class="kebab-button">&#8942;</button>
+                                        <div class="kebab-content">
+                                            <a href="#" onclick="processRequest('${itemContent}', 'include')" data-action="include">Incluir</a>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>`;
+                                </li>`;
+                        } else {
+                            output += `
+                                <li id="item-${index}">
+                                    ${itemContent}
+                                    <div class="kebab-menu">
+                                        <button class="kebab-button">&#8942;</button>
+                                        <div class="kebab-content">
+                                            <a href="#" onclick="processRequest('${itemContent}', 'exchange')" data-action="exchange">Trocar</a>
+                                            <a href="#" onclick="processRequest('${itemContent}', 'exclude')" data-action="exclude">Excluir</a>
+                                            <a href="#" onclick="processRequest('${itemContent}', 'donation')" data-action="donation">Doação</a>
+                                        </div>
+                                    </div>
+                                </li>`;
+                        }
                         index++;
                     }
                     output += '</ul>';  // Close the unordered list
 
                     document.getElementById('dictData').innerHTML = output;
-                })
+                });
         }
     }
 
