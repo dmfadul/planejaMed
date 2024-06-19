@@ -2,11 +2,13 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from app.routes.dataview.gen_data import gen_month_table 
 from reportlab.lib.pagesizes import landscape, A4
 from flask_login import login_required
-from flask import Blueprint, send_file
+from flask import Blueprint, send_file, current_app
 import app.global_vars as global_vars
 from app.models import Center, Month
 from reportlab.lib import colors
+from docx import Document
 from io import BytesIO
+import os
 
 report_bp = Blueprint(
                       'report',
@@ -20,8 +22,55 @@ report_bp = Blueprint(
 @report_bp.route('/report/<center>/<month>/<year>')
 @login_required
 def gen_report(center, month, year):
-    print(center, month, year)
-    return "Report"
+    try:
+        # Determine the path to the DOCX template
+        template_path = os.path.join(current_app.root_path, 'static', 'escala.docx')
+        
+        # Log the path being used
+        current_app.logger.info(f"Using template path: {template_path}")
+        
+        # Load the DOCX template
+        doc = Document(template_path)
+
+        # Replace placeholders in the document
+        for paragraph in doc.paragraphs:
+            if '{names}' in paragraph.text:
+                paragraph.text = paragraph.text.replace('{names}', "hello world")
+            if '{center}' in paragraph.text:
+                paragraph.text = paragraph.text.replace('{center}', center)
+            if '{month}' in paragraph.text:
+                paragraph.text = paragraph.text.replace('{month}', month)
+            if '{year}' in paragraph.text:
+                paragraph.text = paragraph.text.replace('{year}', year)
+
+        # Replace placeholders in tables
+        for table in doc.tables:
+            for row in table.rows:
+                for cell in row.cells:
+                    for paragraph in cell.paragraphs:
+                        if '{names}' in paragraph.text:
+                            paragraph.text = paragraph.text.replace('{names}', "hello world")
+                        if '{center}' in paragraph.text:
+                            paragraph.text = paragraph.text.replace('{center}', center)
+                        if '{month}' in paragraph.text:
+                            paragraph.text = paragraph.text.replace('{month}', month)
+                        if '{year}' in paragraph.text:
+                            paragraph.text = paragraph.text.replace('{year}', year)
+
+        # Save the updated document to a BytesIO object
+        file_stream = BytesIO()
+        doc.save(file_stream)
+        file_stream.seek(0)
+
+        # Send the file as an attachment
+        return send_file(file_stream, 
+                         download_name='report.docx', 
+                         mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+                         as_attachment=True)
+    except Exception as e:
+        current_app.logger.error(f"Error generating report: {e}")
+        return str(e), 500
+
 
 
 @report_bp.route('/print-table/<center_abbr>/<month_name>/<year>')
