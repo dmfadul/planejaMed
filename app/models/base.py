@@ -53,3 +53,24 @@ class BaseAppointment(db.Model):
     def appointments_dict(cls, center_id):
         appointments = cls.query.filter_by(center_id=center_id).all()
         return {}
+    
+    @classmethod
+    def day_night_hours_dict(cls, center_id):
+        appointments = cls.query.filter_by(center_id=center_id).all()
+
+        app_dict = {}
+        for app in appointments:
+            if (app.week_day, app.week_index) not in app_dict:
+                app_dict[(app.week_day, app.week_index)] = [0, 0]
+
+            if app.is_night:
+                app_dict[(app.week_day, app.week_index)][1] += 1
+            else:
+                app_dict[(app.week_day, app.week_index)][0] += 1
+                
+        return app_dict
+    
+    @property
+    def is_night(self):
+        from app.global_vars import NIGHT_HOURS
+        return self.hour in NIGHT_HOURS

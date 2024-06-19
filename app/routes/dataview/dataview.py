@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, jsonify, flash, redirect, url_for
 from flask_login import login_required, current_user
-from app.models import Center, Month, User
+from app.models import Center, Month, User, BaseAppointment
 from .resolve_data import resolve_data
 from .gen_data import gen_base_table, gen_month_table
 import app.global_vars as global_vars
@@ -104,18 +104,36 @@ def sum_by_doctor():
 @dataview_bp.route("/sum-days/<center>/<month>/<year>", methods=["GET"])
 @login_required
 def sum_by_days(center, month, year):
+    dias_semana = global_vars.DIAS_SEMANA
     if not current_user.is_admin:
         return jsonify({"status": "error", 'message': 'You are not an admin'})
     
-    month = Month.query.filter_by(number=global_vars.MESES.index(month)+1, year=year).first()
     center = Center.query.filter_by(abbreviation=center).first()
+    if year == 'null':
+        base_dict = BaseAppointment.day_night_hours_dict(center.id)
+        
+        week_days = ['']
+        week_indexes = ['']
+        daytime_values = ['DIA:']
+        night_values = ['NOITE:']
 
-    month_days = [''] + [f"{int(day.date.day):02d}" for day in month.days]
-    week_days = [''] + [global_vars.DIAS_SEMANA[day.date.weekday()][0] for day in month.days]
+        for key in sorted(base_dict.keys(), key=lambda x: (x[1], x[0])):
+            week_days.append(dias_semana[key[0]][0])
+            week_indexes.append(key[1])
+            daytime_values.append(base_dict[key][0])
+            night_values.append(base_dict[key][1])
+
+        data = [week_days, week_indexes, daytime_values, night_values]
     
-    daytime_values = ['DIA: '] + [day.hours(center.id)[0] for day in month.days]
-    night_values = ['NOITE: '] + [day.hours(center.id)[1] for day in month.days]
+    else:
+        month = Month.query.filter_by(number=global_vars.MESES.index(month)+1, year=year).first()
 
-    data = [month_days, week_days, daytime_values, night_values]
+        month_days = [''] + [f"{int(day.date.day):02d}" for day in month.days]
+        week_days = [''] + [dias_semana[day.date.weekday()][0] for day in month.days]
+        
+        daytime_values = ['DIA: '] + [day.hours(center.id)[0] for day in month.days]
+        night_values = ['NOITE: '] + [day.hours(center.id)[1] for day in month.days]
+
+        data = [month_days, week_days, daytime_values, night_values]
 
     return render_template("day-sumview.html", data=data)
