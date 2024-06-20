@@ -6,10 +6,22 @@ from datetime import datetime
 
 # migration_funcs.add_centers()
 # migration_funcs.migrate_users()
-migration_funcs.migrate_base("CCG--BASE")
+# migration_funcs.migrate_base("CCG--BASE")
 
 app = create_app()
 with app.app_context():
+    doctor = User.query.filter_by(crm="26704").first()
+    center = Center.query.filter_by(abbreviation="CCO").first()
+    day = Day.query.filter_by(date=datetime(2024, 1, 28)).first()
+    
+    apps = doctor.filtered_appointments(center.id, day.id)
+
+    # print(apps)
+    for a in doctor.appointments:
+        if a.center_id != center.id:
+            continue
+        print(a.day.date, a.hour)
+
     # d = datetime(2023, 11, 27)
     # center = Center.query.filter_by(abbreviation="CCG").first()
     # day = Day.query.filter_by(date=d).first()
