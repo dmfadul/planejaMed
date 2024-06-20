@@ -13,6 +13,7 @@ document.addEventListener('click', function(event) {
 
 
 function processRequest(itemInfo, action){
+    console.log(itemInfo);
     let counter = 0;
     let hours = [];
     let extraInfo = '';
@@ -24,7 +25,7 @@ function processRequest(itemInfo, action){
         extraInfo[2] = 0;
         label = 'Horários: '
     }else if(action == "include") {
-        hours = ["CCG", "CCO", "CCQ"];
+        hours = ["CCG", "CCO", "CCQ"];  // TODO: mudar para pegar do banco
         label = 'Centros: '
     }else{
         hours = itemInfo.split('<br>').slice(1);

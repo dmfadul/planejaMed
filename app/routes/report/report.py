@@ -35,7 +35,7 @@ def gen_report(center, month, year):
         # Replace placeholders in the document
         for paragraph in doc.paragraphs:
             if '{names}' in paragraph.text:
-                paragraph.text = paragraph.text.replace('{names}', "hello world")
+                paragraph.text = paragraph.text.replace('{names}', "hello\nworld!\n!\nIam\na\nnew\nline")
             if '{center}' in paragraph.text:
                 paragraph.text = paragraph.text.replace('{center}', center)
             if '{month}' in paragraph.text:
@@ -49,7 +49,7 @@ def gen_report(center, month, year):
                 for cell in row.cells:
                     for paragraph in cell.paragraphs:
                         if '{names}' in paragraph.text:
-                            paragraph.text = paragraph.text.replace('{names}', "hello world")
+                            paragraph.text = paragraph.text.replace('{names}', "hello\nworld!\n!\nIam\na\nnew\nline")
                         if '{center}' in paragraph.text:
                             paragraph.text = paragraph.text.replace('{center}', center)
                         if '{month}' in paragraph.text:

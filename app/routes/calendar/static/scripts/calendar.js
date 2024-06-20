@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="kebab-menu">
                                         <button class="kebab-button">&#8942;</button>
                                         <div class="kebab-content">
-                                            <a href="#" onclick="processRequest('${itemContent}', 'include')" data-action="include">Incluir</a>
+                                            <a href="#" onclick="processRequest('${itemContent}', 'include')" data-action="include">Inclusão</a>
                                         </div>
                                     </div>
                                 </li>`;
@@ -38,8 +38,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="kebab-menu">
                                         <button class="kebab-button">&#8942;</button>
                                         <div class="kebab-content">
-                                            <a href="#" onclick="processRequest('${itemContent}', 'exchange')" data-action="exchange">Trocar</a>
-                                            <a href="#" onclick="processRequest('${itemContent}', 'exclude')" data-action="exclude">Excluir</a>
+                                            <a href="#" onclick="processRequest('${itemContent}', 'exchange')" data-action="exchange">Troca</a>
+                                            <a href="#" onclick="processRequest('${itemContent}', 'exclude')" data-action="exclude">Exclusão</a>
                                             <a href="#" onclick="processRequest('${itemContent}', 'donation')" data-action="donation">Doação</a>
                                         </div>
                                     </div>
