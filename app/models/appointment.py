@@ -25,6 +25,22 @@ class Appointment(db.Model):
     
     @classmethod
     def add_entry(cls, user_id, center_id, day_id, hour):
+        existing_apps = cls.query.all()
+
+        existing_apps = [app for app in existing_apps if app.user_id == user_id]
+        existing_apps = [app for app in existing_apps if app.day_id == day_id]
+        existing_apps = [app for app in existing_apps if app.hour == hour]
+        existing_apps_other_centers = [app for app in existing_apps if app.center_id != center_id]
+        existing_apps_same_center = [app for app in existing_apps if app.center_id == center_id]
+
+        if existing_apps_other_centers:
+            app = existing_apps_other_centers[0]
+            return f"Conflito - {app.user.full_name} já tem esse horário no centro {app.center.abbreviation}"
+        
+        if existing_apps_same_center:
+            app = existing_apps_same_center[0]
+            return 0
+
         appointment = cls(user_id=user_id,
                           center_id=center_id,
                           day_id=day_id,

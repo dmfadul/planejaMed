@@ -97,6 +97,7 @@ def resolve_month_appointments(data):
             
         if not day:
             print("erro")
+            return -1
         else:
             day = day[0]
         
@@ -110,24 +111,24 @@ def resolve_month_appointments(data):
                 ).all()
 
                 for appointment in appointments:
-                    print("appointment: ", appointment.hour)
                     appointment.delete_entry()
+            
+            return 0
 
         elif action == "add":
             hour_list = cell.get("hourValue") # Hour_list has the format ["-", "00:00", "00:00"]
             hours = convert_hours(hour_list)
-            if hours == 1:
-                return 1
-            if hours == 2:
-                return 2
+            if isinstance(hours, str):
+                return hours
 
             app = create_app()
             with app.app_context():
                 flags = []
                 for hour in hours:
                     flag = Appointment.add_entry(doctor.id, center.id, day.id, hour)
-                    if flag == -1:
-                        flags.append((doctor.id, center.id, day.id, hour))
-            return 0 if not flags else -1
+                    if isinstance(flag, str):
+                        flags.append(flag)
+
+            return 0 if not flags else '\n'.join(list(set(flags)))       
         else:
             print("Erro")

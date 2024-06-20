@@ -32,7 +32,7 @@ class BaseAppointment(db.Model):
 
         if existing_apps_other_centers:
             app = existing_apps_other_centers[0]
-            return f"Conflito - {app.user.full_name} já tem esse horário em: {app.center.abbreviation}"
+            return f"Conflito - {app.user.full_name} já tem esse horário na base {app.center.abbreviation}"
         
         if existing_apps_same_center:
             app = existing_apps_same_center[0]
