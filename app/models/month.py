@@ -41,6 +41,10 @@ class Month(db.Model):
     @classmethod
     def get_current(cls):
         return cls.query.filter_by(is_current=True).first()
+    
+    @property
+    def is_latest(self):
+        return self == Month.query.order_by(Month.year.desc(), Month.number.desc()).first()
 
     @property
     def name(self):

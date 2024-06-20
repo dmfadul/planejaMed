@@ -1,15 +1,20 @@
 {% extends 'base.html' %}
 
 {% block mainContent %}
-    <section style="text-align: center;">
-        <label>Criar Mês:</label>
-        <button onclick="window.location.href='/push-month'; return false;" class="common-button">{{ next_month }}</button>
-    </section>
+    {% if curr_is_latest %}
+        <section style="text-align: center;">
+            <button onclick="handleCreateButtonClick();" class="common-button">Criar {{ next_month_name }} {{ next_month_year }}</button>
+        </section>
+    {% else %}
+        <section style="text-align: center;">
+            <button onclick="handleNextButtonClick();" class="common-button">Destrancar {{ next_month_name }} {{ next_month_year }}</button>
+        </section>
+    {% endif %}
 
-    <section style="text-align: center;">
-        <label>Destrancar Mês:</label>
-        <button onclick="window.location.href='/push-month'; return false;" class="common-button">{{ next_month }}</button>
-    </section>
+    <!-- Add a hidden div for the waiting message -->
+    <div id="waitingMessage" style="display:none; text-align: center;">
+        <p>Processing your request, please wait...</p>
+    </div>
 
     <section>
         <form method="post" action="{{ url_for('dataview.sum_by_doctor') }}">
@@ -17,7 +22,7 @@
             <label for="option">Calcular Mês:</label>
             <select name="month">
                 {% for month in months %}
-                    <option value="{{ month }}" {% if month==current_month %} selected {% endif %}>{{ month }}</option>
+                    <option value="{{ month }}" {% if month==current_month_name %} selected {% endif %}>{{ month }}</option>
                 {% endfor %}
             </select>
 
@@ -38,7 +43,7 @@
               <label for="create-month">Criar Novo Centro:</label>
               <select id="create-month" name="month">
                 {% for month in months %}
-                    <option value="{{ month }}" {% if month == current_month %} selected {% endif %}>{{ month }}</option>
+                    <option value="{{ month }}" {% if month == current_month_name %} selected {% endif %}>{{ month }}</option>
                 {% endfor %}
               </select>
 
@@ -56,7 +61,7 @@
               <label for="create-month">Incluir Novo Médico:</label>
               <select id="create-month" name="month">
                 {% for month in months %}
-                    <option value="{{ month }}" {% if month == current_month %} selected {% endif %}>{{ month }}</option>
+                    <option value="{{ month }}" {% if month == current_month_name %} selected {% endif %}>{{ month }}</option>
                 {% endfor %}
               </select>
 
@@ -74,7 +79,7 @@
               <label for="create-month">Bloquear Médico:</label>
               <select id="create-month" name="month">
                 {% for month in months %}
-                    <option value="{{ month }}" {% if month == current_month %} selected {% endif %}>{{ month }}</option>
+                    <option value="{{ month }}" {% if month == current_month_name %} selected {% endif %}>{{ month }}</option>
                 {% endfor %}
               </select>
 
@@ -86,4 +91,7 @@
               <button type="submit">Criar</button>
         </form>
     </section>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='scripts/buttonListeners.js') }}"></script>
+
 {% endblock %}

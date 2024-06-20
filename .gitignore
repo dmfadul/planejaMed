@@ -9,6 +9,7 @@ app/__pycache__/
 app/routes/__pycache__/
 app/models/__pycache__/
 
+app/routes/__pycache__/
 app/routes/admin/__pycache__/
 app/routes/calendar/__pycache__/
 app/routes/dashboard/__pycache__/
