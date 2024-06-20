@@ -11,9 +11,9 @@ def convert_hours(hour_list):
     if hour_list[0] == "-":
         start_hour, end_hour = int(hour_list[1].split(":")[0]), int(hour_list[2].split(":")[0])
         if start_hour == end_hour and not start_hour == 7:
-            return 1
+            return "Horários Inválidos - A hora de Início e de Fim são iguais"
         if start_hour > end_hour and end_hour > 6:
-            return 2 
+            return "Horários Inválidos - A hora de Fim Passa para o Dia Seguinte"
         
         if start_hour >= end_hour:
             hours = list(range(start_hour, 24)) + list(range(end_hour))
@@ -27,7 +27,6 @@ def convert_hours(hour_list):
         else:
             hours = list(range(start_hour, end_hour + 1))
 
-    print(hours)
     return hours
 
 
@@ -61,25 +60,25 @@ def resolve_base_appointments(data):
                 ).all()
 
                 for base_appointment in base_appointments:
-                    print("base_appointment: ", base_appointment)
                     base_appointment.delete_entry()
+            
+            return 0
 
         elif action == "add":
             hour_list = cell.get("hourValue") # Hour_list has the format ["-", "00:00", "00:00"]
             hours = convert_hours(hour_list)
-            if hours == 1:
-                return 1
-            if hours == 2:
-                return 2
+            if isinstance(hours, str):
+                return hours
             
             app = create_app()
             with app.app_context():
                 flags = []
                 for hour in hours:
                     flag = BaseAppointment.add_entry(doctor.id, center.id, weekday, weekindex, hour)
-                    if flag == -1:
-                        flags.append((doctor.id, center.id, weekday, weekindex, hour))
-            return 0 if not flags else -1
+                    if isinstance(flag, str):
+                        flags.append(flag)
+
+            return 0 if not flags else '\n'.join(list(set(flags)))
         else:
             print("Erro")
 

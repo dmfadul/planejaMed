@@ -60,17 +60,9 @@ def update_appointments():
     flag = resolve_data(request.get_json())
     if flag == 0:
         return jsonify({"status": "success", 'message': 'Appointments updated'})
-
-    if flag == 1:
-        flash("Horários Inválidos - A hora de Início e de Fim são iguais", "danger")
-        return jsonify({"status": "error", 'message': 'Invalid hours - Start and End time are the same'})
-    if flag == 2:
-        return jsonify({"status": "error", 'message': 'Invalid hours - End time goes to the next day'})
-    if flag == -1:
-        flash("O Médico Selecionado Tem Horários conflitantes em Outro Centro", "danger")
-        return jsonify({"status": "error", 'message': 'Conflicting hours'})
     
-    return jsonify({"status": "error", 'message': 'An unexpected error occurred'})    
+    flash(flag, "danger")
+    return jsonify({"status": "error", 'message': 'Appointments not updated'})
 
 
 @dataview_bp.route("/sum-doctors", methods=["POST"])

@@ -27,10 +27,16 @@ class BaseAppointment(db.Model):
         existing_apps = [app for app in existing_apps if app.week_day == week_day]
         existing_apps = [app for app in existing_apps if app.week_index == week_index]
         existing_apps = [app for app in existing_apps if app.hour == hour]
+        existing_apps_other_centers = [app for app in existing_apps if app.center_id != center_id]
+        existing_apps_same_center = [app for app in existing_apps if app.center_id == center_id]
 
-        if existing_apps:
-            print("Conflicting hours")
-            return -1
+        if existing_apps_other_centers:
+            app = existing_apps_other_centers[0]
+            return f"Conflito - {app.user.full_name} já tem esse horário em: {app.center.abbreviation}"
+        
+        if existing_apps_same_center:
+            app = existing_apps_same_center[0]
+            return 0
 
         new_base_appointment = cls(
             user_id = user_id,
