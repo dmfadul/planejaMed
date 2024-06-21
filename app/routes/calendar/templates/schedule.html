@@ -1,23 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'basic.html' %}
 
-{% block head_links %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('calendar.static', filename='css/calendar.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ url_for('calendar.static', filename='css/kebab.css') }}">
-
-<script type="text/javascript" src="{{ url_for('calendar.static', filename='scripts/schedule.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('calendar.static', filename='scripts/dataFlow.js') }}"></script>
+{% block more_head_links %}
+    <script type="text/javascript" src="{{ url_for('calendar.static', filename='scripts/schedule.js') }}"></script>
 {% endblock %}
 
 
-{% block mainContent %}
-    <div id="hourModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Selecione os Horários</h2>
-            <div id="hourOptions"></div>
-            <button id="submitHours">Submit</button>
-        </div>
-    </div>
+{% block innerContent %}
 
     <div id="data-container" data-items='{{ schedule|tojson|safe }}'></div>
     <div id="dictData"></div>
