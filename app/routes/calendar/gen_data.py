@@ -28,3 +28,14 @@ def gen_day_hours(center_abbr, day_num):
         appointments_list.append(f"{doctor_name}*{all_hours}")
 
     return appointments_list
+
+
+def gen_days_dict(center_abbr):
+    month = Month.get_current()
+
+    days_dict = {}
+    for day in month.days:
+        if day.date.day not in days_dict:
+            days_dict[day.date.day] = gen_day_hours(center_abbr, day.date.day)
+
+    return days_dict

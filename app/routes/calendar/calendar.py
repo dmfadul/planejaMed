@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, jsonify
 from flask_login import login_required, current_user
-from .gen_data import gen_day_hours
+from .gen_data import gen_day_hours, gen_days_dict
 from app.models import Month
 
 
@@ -19,12 +19,14 @@ calendar_bp = Blueprint(
 def calendar(center):
     month = Month.get_current()
     current_user_schedule = []
+    days_dict = gen_days_dict(center)
 
     kwargs = {
     'month_name': month.name,
     'month_year': month.year,
     'center': center,
     'calendar_days': month.calendar,
+    'days_dict': days_dict,
     'curr_user_schedule': current_user_schedule
     }
     return render_template("calendar.html", **kwargs)
@@ -34,13 +36,8 @@ def calendar(center):
 @login_required
 def calendar_day(center, day):
     day_data = gen_day_hours(center, day)
-    
-    day_dict = {
-        "day": day,
-        "data": day_data
-    }
 
-    return jsonify({"data": day_data, "day_dict": day_dict})
+    return jsonify({"data": day_data})
 
 
 @calendar_bp.route("/schedule/", methods=["GET"])
