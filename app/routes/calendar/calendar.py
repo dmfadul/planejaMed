@@ -34,8 +34,13 @@ def calendar(center):
 @login_required
 def calendar_day(center, day):
     day_data = gen_day_hours(center, day)
+    
+    day_dict = {
+        "day": day,
+        "data": day_data
+    }
 
-    return jsonify({"data": day_data})
+    return jsonify({"data": day_data, "day_dict": day_dict})
 
 
 @calendar_bp.route("/schedule/", methods=["GET"])

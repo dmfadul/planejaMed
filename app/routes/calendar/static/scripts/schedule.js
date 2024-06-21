@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
  
      let index = 0;
      for (let item of schedule) {
-     let action = (index === 0) ? 'include' : 'exclude';
+     let action = (index === 0) ? 'sch_include' : 'sch_exclude';
      let label = (index === 0) ? 'Inclusão' : 'Exclusão';
  
          output += `
@@ -22,8 +22,8 @@ document.addEventListener('DOMContentLoaded', function() {
                      <button class="kebab-button">&#8942;</button>
                      <div class="kebab-content">
                          <a href="#" onclick="processRequest('${item}', '${action}')" data-action="${action}">${label}</a>
-                         ${index !== 0 ? `<a href="#" onclick="processRequest('${item}', 'donation')" data-action="donation">Doação</a>` : ''}
-                         ${index !== 0 ? `<a href="#" onclick="processRequest('${item}', 'exchange')" data-action="exchange">Troca</a>` : ''}
+                         ${index !== 0 ? `<a href="#" onclick="processRequest('${item}', 'sch_donate')" data-action="donation">Doação</a>` : ''}
+                         ${index !== 0 ? `<a href="#" onclick="processRequest('${item}', 'sch_exchange')" data-action="exchange">Troca</a>` : ''}
                      </div>
                  </div>
              </li>`;

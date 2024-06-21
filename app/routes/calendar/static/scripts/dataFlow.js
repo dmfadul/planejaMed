@@ -13,27 +13,20 @@ document.addEventListener('click', function(event) {
 
 
 function processRequest(itemInfo, action){
-    console.log(itemInfo);
-    let counter = 0;
-    let hours = [];
-    let extraInfo = '';
-    let label = '';
-
-    if((action=="exclude" || action=="donation") && itemInfo.includes('--')) {
-        hours = itemInfo.split('--').slice(2);
-        extraInfo = itemInfo.split('--');
-        extraInfo[2] = 0;
-        label = 'Horários: '
-    }else if(action == "include") {
-        hours = ["CCG", "CCO", "CCQ"];  // TODO: mudar para pegar do banco
-        label = 'Centros: '
+    if(action=="cal_exclude") {
+        console.log(itemInfo);
+    }else if(action == "cal_include") {
+    }else if(action == "cal_exchange") {
+    }else if(action == "cal_donate") {
+    }else if(action == "sch_exclude") {
+    }else if(action == "sch_include") {
+    }else if(action == "sch_exchange") {
+    }else if(action == "sch_donate") {
     }else{
-        hours = itemInfo.split('<br>').slice(1);
-        extraInfo = itemInfo.split('<br>')[0];
-        label = 'Horários: '
+        console.log("Invalid action");
     }
 
-    openModal(hours, label, action, counter, extraInfo); // open hourModal
+    //openModal(hours, label, action, counter, extraInfo); // open hourModal
 }
 
 function openModal(inputList, ddLabel, action, counter, extraInfo) {
