@@ -17,8 +17,13 @@ function processCalRequest(itemInfo, crm, action){
         hours = doctorsDict[crm][day];
         
         openModal(hours, "Escolha Horas para Excluir:", function(selectedValue) {
-            let hoursToExclude = selectedValue;
-            sendHoursToServer(action, itemInfo, crm, hoursToExclude);
+            let infoDict = {
+                "day": day,
+                "crmToExclude": crm,
+                "hoursToExclude": selectedValue
+            };
+
+            sendHoursToServer(action, infoDict);
         });
             
     }else if(action == "include") {
@@ -41,14 +46,10 @@ function processSchRequest(itemInfo, crm, action){
 
 
 // Function to send selected hours to the server
-function sendHoursToServer(selection, action, counter, extraInfo) {
+function sendHoursToServer(action, infoDict) {
     fetch('/update_hours/', {
         method: 'POST',
-        body: JSON.stringify({ action: action,
-                               mainInfo: selection,
-                               extraInfo: extraInfo,
-                               counter: counter
-                             }),
+        body: JSON.stringify({ action: action, infoDict: infoDict}),
         headers: {
             'Content-Type': 'application/json'
         }
