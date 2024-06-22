@@ -161,7 +161,7 @@ class User(db.Model, UserMixin):
 
 
     def base_row(self, center_id):
-        from app.hours_conversion import unify_appointments
+        from app.hours_conversion import convert_to_letter
         base_appointments = [app for app in self.base_appointments if app.center_id == center_id]
         
         app_dict = {}
@@ -173,7 +173,7 @@ class User(db.Model, UserMixin):
                 app_dict[key].append(app.hour)
 
         for key in app_dict:
-            app_dict[key] = unify_appointments(app_dict[key])
+            app_dict[key] = convert_to_letter(app_dict[key])
 
         base_row = []
         for weekindex in list(range(1, 6)):
@@ -186,7 +186,7 @@ class User(db.Model, UserMixin):
         return base_row
  
     def filtered_appointments(self, center_id, day_id, unified=False):
-        from app.hours_conversion import unify_appointments
+        from app.hours_conversion import convert_to_letter
 
         apps = [a.hour for a in self.appointments if a.center_id == center_id and a.day_id == day_id]
         if not apps and not unified:
@@ -195,7 +195,7 @@ class User(db.Model, UserMixin):
             return ''
         
         if unified:
-            return unify_appointments(apps)
+            return convert_to_letter(apps)
         
         return apps
 

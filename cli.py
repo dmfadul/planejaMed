@@ -1,9 +1,9 @@
 import migration_funcs
 from app.models import User, Center, Month, Appointment, Day
 from app import create_app, db
-from app.hours_conversion import unify_appointments
-from datetime import datetime
+from app.hours_conversion import convert_to_letter, gen_redudant_hour_list
 
+print(gen_redudant_hour_list([7, 8, 9, 10, 11, 12, 13, 14, 15, 16], include_line=True))
 # migration_funcs.add_centers()
 # migration_funcs.migrate_users()
 # migration_funcs.migrate_base("CCG--BASE")

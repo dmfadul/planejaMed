@@ -41,7 +41,7 @@ class Month(db.Model):
     @classmethod
     def get_current(cls):
         return cls.query.filter_by(is_current=True).first()
-    
+
     @property
     def is_latest(self):
         return self == Month.query.order_by(Month.year.desc(), Month.number.desc()).first()
@@ -119,6 +119,9 @@ class Month(db.Model):
     def appointments(self):
         return [appointment for day in self.days for appointment in day.appointments]
     
+    def get_day(self, day_num):
+        return [day for day in self.days if day.date.day == day_num][0]
+
     def populate(self):
         from app.models.day import Day
 

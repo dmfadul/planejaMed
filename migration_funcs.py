@@ -8,7 +8,7 @@ import json
 DATABASE = 'old_db.db'
 
 dias_semana = global_vars.DIAS_SEMANA
-hours_map = global_vars.HOURS_MAP
+hours_map = global_vars.HOURS_MAP.copy()
 hours_map["tn"] = (13, 6)
 hours_map["d10"] = (7, 17)
 

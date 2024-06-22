@@ -1,14 +1,14 @@
 from datetime import datetime
 from calendar import monthcalendar
 from app.models import Center, Day, Month, Appointment
-from app.hours_conversion import split_hours, convert_hours_to_line
+from app.hours_conversion import split_hours, convert_hours_to_line, convert_to_letter
 
 
 def gen_day_hours(center_abbr, day_num):
     center = Center.query.filter_by(abbreviation=center_abbr).first()
     month = Month.get_current()
 
-    day = [day for day in month.days if day.date.day == int(day_num)][0]   
+    day = month.get_day(day_num)
     appointments = Appointment.query.filter_by(center_id=center.id, day_id=day.id).all()
 
     appointments_dict = {}
@@ -21,6 +21,7 @@ def gen_day_hours(center_abbr, day_num):
     appointments_list = ['-']
     for doctor_name, hour_range in appointments_dict.items():
         hour_list = split_hours(hour_range)
+        
         all_hours = ""
         for hour in hour_list:
             all_hours += "*" + convert_hours_to_line(hour)
