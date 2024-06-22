@@ -12,19 +12,28 @@ document.addEventListener('click', function(event) {
 });
 
 
-function processRequest(itemInfo, action){
-    if(action=="cal_exclude") {
-        openModal([1, 2, 3, 4], "Please select an option to exclude:", function(selectedValue) {
-            console.log("User selected:", selectedValue);
+function processCalRequest(itemInfo, crm, action){
+    if(action=="exclude") {
+        hours = doctorsDict[crm][day];
+        
+        openModal(hours, "Escolha Horas para Excluir:", function(selectedValue) {
+            let hoursToExclude = selectedValue;
+            sendHoursToServer(action, itemInfo, crm, hoursToExclude);
         });
             
-    }else if(action == "cal_include") {
-    }else if(action == "cal_exchange") {
-    }else if(action == "cal_donate") {
-    }else if(action == "sch_exclude") {
-    }else if(action == "sch_include") {
-    }else if(action == "sch_exchange") {
-    }else if(action == "sch_donate") {
+    }else if(action == "include") {
+    }else if(action == "exchange") {
+    }else if(action == "donate") {
+    }else{
+        console.log("Invalid action");
+    }
+}
+
+function processSchRequest(itemInfo, crm, action){
+    if(action=="exclude") {
+    }else if(action == "include") {
+    }else if(action == "exchange") {
+    }else if(action == "donate") {
     }else{
         console.log("Invalid action");
     }

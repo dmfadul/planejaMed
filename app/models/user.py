@@ -158,8 +158,6 @@ class User(db.Model, UserMixin):
 
         return hours_dict
             
-
-
     def base_row(self, center_id):
         from app.hours_conversion import convert_to_letter
         base_appointments = [app for app in self.base_appointments if app.center_id == center_id]

@@ -11,6 +11,16 @@ def appointments_key(hour):
         raise ValueError("Hour should be in the range 0-23")
 
 
+def appointments_letters_key(s):
+    letters = ['dn', 'd', 'm', 't', 'n', 'c', 'v', 'x']
+
+    for letter in letters:
+        if letter in s:
+            return letters.index(letter)
+    
+    raise ValueError("String should contain one of the following letters: dn, d, m, t, n, c, v, x")
+
+
 def prepare_appointments(appointments):
     """convert a list of appointments to a list of hours and a remainder"""
         
@@ -80,7 +90,7 @@ def gen_redudant_hour_list(appointments, include_line=False):
         elif remainder and set(remainder).issubset(set(hour_list)):
             letters.append(f"{letter}{len([app for app in remainder if app in hour_list])}")
             
-    return letters
+    return sorted(letters, key=appointments_letters_key)
         
 
 def convert_to_letter(appointments):
