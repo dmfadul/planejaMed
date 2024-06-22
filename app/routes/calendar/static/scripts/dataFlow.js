@@ -14,7 +14,10 @@ document.addEventListener('click', function(event) {
 
 function processRequest(itemInfo, action){
     if(action=="cal_exclude") {
-        console.log(itemInfo);
+        openModal([1, 2, 3, 4], "Please select an option to exclude:", function(selectedValue) {
+            console.log("User selected:", selectedValue);
+        });
+            
     }else if(action == "cal_include") {
     }else if(action == "cal_exchange") {
     }else if(action == "cal_donate") {
@@ -25,74 +28,8 @@ function processRequest(itemInfo, action){
     }else{
         console.log("Invalid action");
     }
-
-    //openModal(hours, label, action, counter, extraInfo); // open hourModal
 }
 
-function openModal(inputList, ddLabel, action, counter, extraInfo) {
-    if((inputList.includes("M: 07:00 - 13:00") && inputList.includes("T: 13:00 - 19:00") && !inputList.includes("D: 07:00 - 19:00"))){
-        inputList.unshift("D: 07:00 - 19:00");
-    }
-    if ((inputList.includes("D: 07:00 - 19:00") && inputList.includes("N: 19:00 - 07:00") && !inputList.includes("DN: 07:00 - 07:00"))){
-        inputList.push("DN: 07:00 - 07:00");
-    }
-    if(!inputList.some(string => string.includes("M: 07:00 - 13:00")) && inputList.some(string => string.includes("D: 07:00 - 19:00"))){
-        inputList.push("M: 07:00 - 13:00");
-        inputList.push("T: 13:00 - 19:00");
-    }
-    let modal = document.getElementById('hourModal');
-    let hourOptionsDiv = document.getElementById('hourOptions');
-
-    hourOptionsDiv.innerHTML = ''; // Clear previous options
-
-    let flexContainer = document.createElement('div');
-    flexContainer.className = 'flex-container';
-
-    let dropdownLabel = document.createElement('label');
-    dropdownLabel.innerHTML = ddLabel ;
-    dropdownLabel.htmlFor = 'scheduleDropdown';
-
-    let dropdown = document.createElement('select');
-    dropdown.id = 'scheduleDropdown';
-
-    inputList.forEach(item => {
-        let option = document.createElement('option');
-        option.value = item;
-        option.text = item;
-        dropdown.appendChild(option);
-    });
-
-    flexContainer.appendChild(dropdownLabel);
-    flexContainer.appendChild(dropdown);
-
-    hourOptionsDiv.appendChild(flexContainer);
-    hourOptionsDiv.appendChild(document.createElement('br'));
-
-    modal.style.display = "block";
-
-    document.getElementById('submitHours').onclick = function() {
-        let dropdown = document.getElementById('scheduleDropdown');
-        let selection = dropdown.options[dropdown.selectedIndex].value;
-
-        if((action=="exclude" || action=="donation") && extraInfo[2]==0) {
-            extraInfo[2] = selection;
-        }
-
-        sendHoursToServer(selection, action, counter, extraInfo);
-        modal.style.display = "none";
-    };
-
-    let closeButton = document.querySelector('.close');
-    closeButton.onclick = function() {
-        modal.style.display = "none";
-    };
-
-    document.addEventListener('keydown', function(event) {
-        if (event.key === "Escape") { // Checks if the pressed key is 'Escape'
-            modal.style.display = "none";
-        }
-    });
-}
 
 // Function to send selected hours to the server
 function sendHoursToServer(selection, action, counter, extraInfo) {

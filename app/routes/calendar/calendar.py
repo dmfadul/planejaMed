@@ -32,14 +32,6 @@ def calendar(center):
     return render_template("calendar.html", **kwargs)
 
 
-@calendar_bp.route("/calendar/<center>/<day>", methods=["GET"])
-@login_required
-def calendar_day(center, day):
-    day_data = gen_day_hours(center, day)
-
-    return jsonify({"data": day_data})
-
-
 @calendar_bp.route("/schedule/", methods=["GET"])
 @login_required
 def schedule():

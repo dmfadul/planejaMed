@@ -1,3 +1,5 @@
+let day;
+
 document.addEventListener('DOMContentLoaded', function() {
     function handleDayClick(event) {
         const clickedDay = event.target;
@@ -10,7 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
             clickedDay.classList.add('day-clicked');
             let output = '<ul>';
 
-            let dayList = daysDict[clickedDay.innerText];
+            day = clickedDay.innerText;
+            let dayList = daysDict[day];
 
             let index = 0;
             for (let item of dayList) {
@@ -45,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
             output += '</ul>';  // Close the unordered list
 
             document.getElementById('dictData').innerHTML = output;
-            console.log(daysDict[clickedDay.innerText]);
         }
     }
 

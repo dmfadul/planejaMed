@@ -5,6 +5,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('calendar.static', filename='css/kebab.css') }}">
     {% block more_head_links %}
     {% endblock %}
+    <script type="text/javascript" src="{{ url_for('calendar.static', filename='scripts/modals.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('calendar.static', filename='scripts/dataFlow.js') }}"></script>
 {% endblock %}
 
@@ -15,10 +16,14 @@
 
     <div id="hourModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Selecione os Horários</h2>
-            <div id="hourOptions"></div>
-            <button id="submitHours">Submit</button>
+            <span id="close" class="close">&times;</span>
+            <h2>Confirmar Ação</h2>
+            <!-- Dynamic content will be loaded here -->
+            <div id="modalBody"></div>
+            <div class="button-group">
+                <button id="cancelButton" class="cancel-button">Cancel</button>
+                <button id="saveButton" class="save-button">Save</button>
+            </div>
         </div>
     </div>
 {% endblock %}

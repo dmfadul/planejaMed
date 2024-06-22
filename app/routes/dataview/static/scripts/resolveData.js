@@ -61,7 +61,7 @@ function confirmData() {
             return;
         }
 
-        const modal = document.getElementById('confirmationModal');
+        const modal = document.getElementById('hourModal');
         const modalBody = document.getElementById('modalBody');
         modal.style.display = 'block';
         modalBody.innerHTML = '';
@@ -143,7 +143,7 @@ function handleDropdownChange(firstDropdown, dropdown2, dropdown3) {
 }
 
 function setupModalEvents(resolve, reject) {
-    const modal = document.getElementById('confirmationModal');
+    const modal = document.getElementById('hourModal');
 
     function closeModal() {
         modal.style.display = 'none';
