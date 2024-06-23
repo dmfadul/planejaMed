@@ -23,7 +23,7 @@ function processCalRequest(itemInfo, crm, action){
                 "hoursToExclude": selectedValue
             };
 
-            sendHoursToServer(action, infoDict);
+            sendHoursToServer("cal_exclude", infoDict);
         });
             
     }else if(action == "include") {

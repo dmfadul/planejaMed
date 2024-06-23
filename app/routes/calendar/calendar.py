@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, jsonify, request
 from flask_login import login_required, current_user
 from .gen_data import gen_day_hours, gen_days_dict, gen_doctors_dict
+from .resolve_data import resolve_data
 from app.models import Month
 
 
@@ -43,5 +44,9 @@ def schedule():
 @calendar_bp.route("/update_hours/", methods=["POST"])
 def update_hours():
     data = request.json
-    print(data)
+    action = data.get('action')
+    info_dict = data.get('infoDict')
+
+    flag = resolve_data(action, info_dict)
+    
     return jsonify({"status": "success"})
