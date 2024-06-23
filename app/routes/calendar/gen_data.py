@@ -24,42 +24,44 @@ def gen_day_hours(center_abbr, day_num):
 
     appointments_dict = {}
     for app in appointments:
-        doctor_name = app.user.full_name
-        doctor_crm = app.user.crm
-        if (doctor_name, doctor_crm) not in appointments_dict:
-            appointments_dict[(doctor_name, doctor_crm)] = []
-        appointments_dict[(doctor_name, doctor_crm)].append(app.hour)
+        doctor_name, doctor_crm = app.user.full_name, app.user.crm
+
+        if doctor_crm not in appointments_dict:
+            appointments_dict[doctor_crm] = []
+        appointments_dict[doctor_crm].append(app.hour)
     
-    appointments_list = ['-']
-    for doctor_name_crm, hour_range in appointments_dict.items():
+    for doctor_crm, hour_range in appointments_dict.items():
         hour_list = split_hours(hour_range)
         
         all_hours = ""
         for hour in hour_list:
             all_hours += convert_hours_to_line(hour)
         
-        appointments_list.append((f"{doctor_name_crm[0]}*{all_hours}", doctor_name_crm[1]))
+        redudant_list = gen_redudant_hour_list(hour_range, include_line=True)
+        doctor_name = User.query.filter_by(crm=doctor_crm).first().full_name
 
-    return appointments_list
+        appointments_dict[doctor_crm] = {'hours': (all_hours, redudant_list),
+                                         'name': doctor_name}
+
+    return appointments_dict
 
 
-def gen_doctors_dict(center_abbr):
-    center = Center.query.filter_by(abbreviation=center_abbr).first()
-    month = Month.get_current()
-    month_dates = [day.date for day in month.days]
-    doctors = User.query.all()
+# def gen_doctors_dict(center_abbr):
+#     center = Center.query.filter_by(abbreviation=center_abbr).first()
+#     month = Month.get_current()
+#     month_dates = [day.date for day in month.days]
+#     doctors = User.query.all()
 
-    doctors_dict = {}
-    for doctor in doctors:
-        if doctor.crm not in doctors_dict:
-            doctors_dict[doctor.crm] = {}
+#     doctors_dict = {}
+#     for doctor in doctors:
+#         if doctor.crm not in doctors_dict:
+#             doctors_dict[doctor.crm] = {}
 
-        center_schedule = doctor.app_dict.get(center.abbreviation, [])
-        for date in center_schedule:
-            if date not in month_dates:
-                continue
-            if date.day not in doctors_dict[doctor.crm]:
-                doctors_dict[doctor.crm][date.day] = gen_redudant_hour_list(center_schedule[date],
-                                                                            include_line=True)
-
-    return doctors_dict
+#         center_schedule = doctor.app_dict.get(center.abbreviation, [])
+#         for date in center_schedule:
+#             if date not in month_dates:
+#                 continue
+#             if date.day not in doctors_dict[doctor.crm]:
+#                 doctors_dict[doctor.crm][date.day] = gen_redudant_hour_list(center_schedule[date],
+#                                                                             include_line=True)
+#     return doctors_dict

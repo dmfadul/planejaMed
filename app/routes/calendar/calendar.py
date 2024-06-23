@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template, jsonify, request
 from flask_login import login_required, current_user
-from .gen_data import gen_day_hours, gen_days_dict, gen_doctors_dict
+from .gen_data import gen_days_dict
 from .resolve_data import resolve_data
 from app.models import Month
-
 
 
 calendar_bp = Blueprint(
@@ -21,7 +20,6 @@ def calendar(center):
     month = Month.get_current()
     current_user_schedule = []
     days_dict = gen_days_dict(center)
-    doctors_dict = gen_doctors_dict(center)
 
     kwargs = {
     'month_name': month.name,
@@ -29,7 +27,6 @@ def calendar(center):
     'center': center,
     'calendar_days': month.calendar,
     'days_dict': days_dict,
-    'doctors_dict': doctors_dict,
     'curr_user_schedule': current_user_schedule
     }
     return render_template("calendar.html", **kwargs)
@@ -48,5 +45,5 @@ def update_hours():
     info_dict = data.get('infoDict')
 
     flag = resolve_data(action, info_dict)
-    
+
     return jsonify({"status": "success"})

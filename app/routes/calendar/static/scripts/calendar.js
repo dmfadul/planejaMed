@@ -16,17 +16,19 @@ document.addEventListener('DOMContentLoaded', function() {
             let dayList = daysDict[day];
 
             let index = 0;
-            for (let name_crm of dayList) {
-                let item = name_crm[0];
-                const itemContent = item.split("*").join("<br>");
-                if (item === '-') {
+            for (let [crm, infoDict] of Object.entries(dayList)) {
+                let name = infoDict['name'];
+                let hourLine = infoDict['hours'][0];
+
+                const itemContent = [name, hourLine].join("<br>");
+                if (index === 0) {
                     output += `
                         <li id="item-${index}">
-                            ${itemContent}
+                            -
                             <div class="kebab-menu">
                                 <button class="kebab-button">&#8942;</button>
                                 <div class="kebab-content">
-                                    <a href="#" onclick="processCalRequest('${itemContent}', '${name_crm[1]}', 'include')" data-action="include">Inclusão</a>
+                                    <a href="#" onclick="processCalRequest('-', '0', 'include')" data-action="include">Inclusão</a>
                                 </div>
                             </div>
                         </li>`;
@@ -37,9 +39,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="kebab-menu">
                                 <button class="kebab-button">&#8942;</button>
                                 <div class="kebab-content">
-                                    <a href="#" onclick="processCalRequest('${itemContent}', '${name_crm[1]}', 'exchange')" data-action="exchange">Troca</a>
-                                    <a href="#" onclick="processCalRequest('${itemContent}', '${name_crm[1]}', 'exclude')" data-action="exclude">Exclusão</a>
-                                    <a href="#" onclick="processCalRequest('${itemContent}', '${name_crm[1]}', 'donate')" data-action="donation">Doação</a>
+                                    <a href="#" onclick="processCalRequest('${itemContent}', '${crm}', 'exchange')" data-action="exchange">Troca</a>
+                                    <a href="#" onclick="processCalRequest('${itemContent}', '${crm}', 'exclude')" data-action="exclude">Exclusão</a>
+                                    <a href="#" onclick="processCalRequest('${itemContent}', '${crm}', 'donate')" data-action="donation">Doação</a>
                                 </div>
                             </div>
                         </li>`;

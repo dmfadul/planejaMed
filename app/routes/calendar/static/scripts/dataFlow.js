@@ -14,9 +14,9 @@ document.addEventListener('click', function(event) {
 
 function processCalRequest(itemInfo, crm, action){
     if(action=="exclude") {
-        hours = doctorsDict[crm][day];
+        let redudantHoursList = daysDict[day][crm]["hours"][1];
         
-        openModal(hours, "Escolha Horas para Excluir:", function(selectedValue) {
+        openModal(redudantHoursList, "Escolha Horas para Excluir:", function(selectedValue) {
             let infoDict = {
                 "day": day,
                 "crmToExclude": crm,
