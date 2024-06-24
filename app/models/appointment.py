@@ -64,3 +64,10 @@ class Appointment(db.Model):
         from app.global_vars import NIGHT_HOURS
         return self.hour in NIGHT_HOURS
     
+    @staticmethod
+    def add_entries(entries):
+        from app import db
+        db.session.bulk_save_objects(entries)
+        db.session.commit()
+
+        return 0

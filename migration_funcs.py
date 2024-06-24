@@ -110,21 +110,23 @@ def migrate_users():
             new_user.date_joined = date_joined
 
 def adjust_users():
-    user = User.query.filter_by(crm=26704).first()
-    user.make_admin()
-    user.make_sudo()
+    app = create_app()
+    with app.app_context():
+        user = User.query.filter_by(crm=26704).first()
+        user.make_admin()
+        user.make_sudo()
 
-    new_user = User.add_entry(first_name="David",
-                              middle_name="Malheiro",
-                              last_name="Fadul",
-                              crm=10000,
-                              rqe=10000,
-                              phone="(41)99257-4321",
-                              email="dmf030@gmail.com",
-                              password="741852")
-    new_user.make_admin()
-    new_user.make_sudo()
-    new_user.make_root()
+        new_user = User.add_entry(first_name="David",
+                                middle_name="Malheiro",
+                                last_name="Fadul",
+                                crm=10000,
+                                rqe=10000,
+                                phone="(41)99257-4321",
+                                email="dmf030@gmail.com",
+                                password="741852")
+        new_user.make_admin()
+        new_user.make_sudo()
+        new_user.make_root()
 
 
 def add_centers():
@@ -202,7 +204,8 @@ def prepare_month(month_num, year):
     month = Month.create_new_month(month_num, year)
     month.populate()
     month.gen_appointments()
-    month.set_current()
+    
+    return month
 
 
 def migrate_month(center_abbr, month_num, year):

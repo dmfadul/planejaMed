@@ -37,6 +37,13 @@ class Month(db.Model):
         db.session.add(month)
         db.session.commit()
         return month
+    
+    def delete(self):
+        self.depopulate()
+        
+        db.session.delete(self)
+        db.session.commit()
+        return 0
         
     @classmethod
     def get_current(cls):
@@ -144,7 +151,7 @@ class Month(db.Model):
     
     def depopulate(self):
         for day in self.days[:]:
-            self.days.remove(day)
+            day.delete()
         self.is_populated = False
         db.session.commit()
         return 0
@@ -152,23 +159,57 @@ class Month(db.Model):
     def gen_appointments(self):
         from app.models.appointment import Appointment
         from app.models.base import BaseAppointment
+        from sqlalchemy.orm import joinedload
 
         if not self.is_populated:
             return -1
+        
+        base_appointments = BaseAppointment.query.options(
+            joinedload(BaseAppointment.user),
+            joinedload(BaseAppointment.center)
+        ).filter(
+            BaseAppointment.week_day.in_([day.key[0] for day in self.days]),
+            BaseAppointment.week_index.in_([day.key[1] for day in self.days])
+        ).all()
 
-        for day in self.days:
-            base_appointments = BaseAppointment.query.filter_by(
-                                                                week_day=day.key[0],
-                                                                week_index=day.key[1]
-                                                                ).all()
+        # Create a mapping for day keys to day objects for quick lookup
+        day_map = {(day.key[0], day.key[1]): day for day in self.days}      
+
+        appointments = []
+        for b_app in base_appointments:
+            day = day_map.get((b_app.week_day, b_app.week_index))
+            if not day:
+                continue
             
-            for b_app in base_appointments:
-                print(b_app.user.full_name, b_app.center.abbreviation, day.date, b_app.hour)
-                Appointment.add_entry(user_id=b_app.user_id,
-                                      center_id=b_app.center_id,
-                                      day_id=day.id,
-                                      hour=b_app.hour)
-        return 0
+            print(b_app.user.full_name, b_app.center.abbreviation, day.date, b_app.hour)
+            appointments.append(Appointment(user_id=b_app.user_id,
+                                            center_id=b_app.center_id,
+                                            day_id=day.id,
+                                            hour=b_app.hour))
+        if appointments:
+            Appointment.add_entries(appointments)
+        
+        
+    # def gen_appointments(self):
+    #     from app.models.appointment import Appointment
+    #     from app.models.base import BaseAppointment
+
+    #     if not self.is_populated:
+    #         return -1
+
+    #     for day in self.days:
+    #         base_appointments = BaseAppointment.query.filter_by(
+    #                                                             week_day=day.key[0],
+    #                                                             week_index=day.key[1]
+    #                                                             ).all()
+            
+    #         for b_app in base_appointments:
+    #             print(b_app.user.full_name, b_app.center.abbreviation, day.date, b_app.hour)
+    #             Appointment.add_entry(user_id=b_app.user_id,
+    #                                   center_id=b_app.center_id,
+    #                                   day_id=day.id,
+    #                                   hour=b_app.hour)
+    #     return 0
 
     def lock(self):
         self.is_locked = True

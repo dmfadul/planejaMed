@@ -32,6 +32,14 @@ class Day(db.Model):
 
         return new_day
     
+    def delete(self):
+        for appointment in self.appointments:
+            appointment.delete_entry()
+        
+        db.session.delete(self)
+        db.session.commit()
+        return 0
+    
     def hours(self, center_id):
         center_apps = [app for app in self.appointments if app.center_id == center_id]
         days_hours = len([appointment for appointment in center_apps if not appointment.is_night])

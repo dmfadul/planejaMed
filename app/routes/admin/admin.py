@@ -15,7 +15,9 @@ admin_bp = Blueprint(
 
 @admin_bp.route('/admin/')
 def admin():
-    # test if user is admin
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+    
     months = global_vars.MESES
     current_month = Month.get_current()
     current_year = current_month.year
@@ -80,9 +82,9 @@ def next_month():
     if not next_month:
         raise Exception("Next month does not exist")
     
-    # flag = next_month.set_current()
-    # if not flag:
-    #     flash(f"O mês corrente foi avançado para {next_month.name/next_month.year} ", 'success')
+    flag = next_month.set_current()
+    if not flag:
+        flash(f"O mês corrente foi avançado para {next_month.name}/{next_month.year} ", 'success')
 
     return redirect(url_for('admin.admin'))
 
