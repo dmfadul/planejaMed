@@ -189,27 +189,7 @@ class Month(db.Model):
         if appointments:
             Appointment.add_entries(appointments)
         
-        
-    # def gen_appointments(self):
-    #     from app.models.appointment import Appointment
-    #     from app.models.base import BaseAppointment
-
-    #     if not self.is_populated:
-    #         return -1
-
-    #     for day in self.days:
-    #         base_appointments = BaseAppointment.query.filter_by(
-    #                                                             week_day=day.key[0],
-    #                                                             week_index=day.key[1]
-    #                                                             ).all()
-            
-    #         for b_app in base_appointments:
-    #             print(b_app.user.full_name, b_app.center.abbreviation, day.date, b_app.hour)
-    #             Appointment.add_entry(user_id=b_app.user_id,
-    #                                   center_id=b_app.center_id,
-    #                                   day_id=day.id,
-    #                                   hour=b_app.hour)
-    #     return 0
+        return 0
 
     def lock(self):
         self.is_locked = True
