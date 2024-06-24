@@ -20,7 +20,7 @@ def dashboard():
     current_year = Month.get_current().year
     current_month = Month.get_current().name
     pending_requests = Request.filter_by_user(current_user.id)
-    centers = [center.abbreviation for center in Center.query.all()]
+    centers = [center.abbreviation for center in Center.query.filter_by(is_active=True).all()]
 
     return render_template(
                             "dashboard.html",

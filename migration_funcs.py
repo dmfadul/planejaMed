@@ -13,6 +13,12 @@ hours_map["tn"] = (13, 6)
 hours_map["d10"] = (7, 17)
 
 
+def drop_all_tables():
+    app = create_app()
+    with app.app_context():
+        db.drop_all()
+
+
 def get_tables_names():
     conn = sqlite3.connect(DATABASE)
     conn.execute("PRAGMA foreign_keys = ON")
@@ -107,6 +113,7 @@ def add_centers():
                {"name": "CENTRO CIRÚRGICO GERAL", "abbreviation": "CCG"},
                {"name": "CENTRO CIRÚRGICO OBSTÉTRICO", "abbreviation": "CCO"},
                {"name": "CENTRO CIRÚGICO DE QUEIMADOS", "abbreviation": "CCQ"},
+               {"name": "SERVIÇO DE APOIO DE DIAGNÓSTICO E TRATAMENTO", "abbreviation": "SADT"},
               ]
     
     app = create_app()

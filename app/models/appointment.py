@@ -1,5 +1,5 @@
 from app import db
-from sqlalchemy import ForeignKey, UniqueConstraint
+from sqlalchemy import ForeignKey, UniqueConstraint, CheckConstraint
 
 
 class Appointment(db.Model):
@@ -11,8 +11,6 @@ class Appointment(db.Model):
     center_id = db.Column(db.Integer, ForeignKey('centers.id'), nullable=False)
     day_id = db.Column(db.Integer, ForeignKey('days.id'), nullable=False)
     hour = db.Column(db.Integer, nullable=False)
-    # THE LINE ABOVE MUST BE COMMENTED OUT AND THE LINE BELOW UNCOMMENTED
-    # hour = db.Column(db.Integer, nullable=False, checkConstraint='hour >= 0 AND hour < 24')
 
     user = db.relationship('User', back_populates='appointments', lazy=True)
     center = db.relationship('Center', back_populates='appointments', lazy=True)
@@ -22,6 +20,7 @@ class Appointment(db.Model):
     requests_to_exchange = db.relationship('Request', foreign_keys='Request.appointment_to_exchange_id', back_populates='appointment_to_exchange', lazy=True)
 
     __table_args__ = (UniqueConstraint('user_id', 'day_id', 'hour', name='unique_appointment'),)
+    __table_args__ = (CheckConstraint('hour >= 0 AND hour < 24', name='valid_hour_range'),)
     
     @classmethod
     def add_entry(cls, user_id, center_id, day_id, hour):

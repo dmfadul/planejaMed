@@ -21,7 +21,7 @@ def admin():
     current_year = current_month.year
     current_month_name = current_month.name
     next_month_name = current_month.next_month_name
-    centers = [center.abbreviation for center in Center.query.all()]
+    centers = [center.abbreviation for center in Center.query.filter_by(is_active=True).all()]
     return render_template(
                            "admin.html",
                            title="Admin",
