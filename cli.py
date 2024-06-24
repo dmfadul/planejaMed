@@ -10,8 +10,11 @@ from app import create_app, db
 
 app = create_app()
 with app.app_context():
+    doctor = User.query.filter_by(crm=42390).first()
+    for app in doctor.appointments:
+        print(app.day, app.hour)
     # month = Month.create_new_month(12, 2023)
-    month = Month.query.filter_by(number=12, year=2023).first()
-    month.populate()
-    month.gen_appointments()
+    # month = Month.query.filter_by(number=12, year=2023).first()
+    # month.populate()
+    # month.gen_appointments()
     pass

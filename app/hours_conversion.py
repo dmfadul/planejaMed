@@ -35,7 +35,7 @@ def prepare_appointments(appointments):
             letters.append(letter)
             appointments = [app for app in appointments if app not in hour_list]
    
-    letters = sorted(letters, key=lambda x: ['dn', 'd', 'm', 't', 'n', 'c', 'v'].index(x))
+    letters = sorted(letters, key=appointments_letters_key)
 
     return letters, appointments
 
@@ -71,7 +71,7 @@ def gen_redudant_hour_list(appointments, include_line=False):
     if 'n' in letters:
         letters += ['c', 'v']
 
-    letters = sorted(letters, key=lambda x: ['dn', 'd', 'm', 't', 'n', 'c', 'v'].index(x))
+    letters = sorted(letters, key=appointments_letters_key)
     
     if not remainder:
         if not include_line:

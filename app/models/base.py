@@ -20,7 +20,7 @@ class BaseAppointment(db.Model):
         return f'{self.week_day} - {self.week_index} - {self.hour}'
     
     @classmethod
-    def add_entry(cls, user_id, center_id, week_day, week_index, hour):
+    def check_conflicts(cls, user_id, center_id, week_day, week_index, hour):
         existing_apps = cls.query.all()
 
         existing_apps = [app for app in existing_apps if app.user_id == user_id]
@@ -38,6 +38,30 @@ class BaseAppointment(db.Model):
             app = existing_apps_same_center[0]
             return 0
 
+
+    @classmethod
+    def add_entries(cls, entries):
+        for entry in entries:
+            flag = cls.check_conflicts(**entry)
+
+            flags = []
+            if flag:
+                flags.append(flag)
+                continue
+
+            new_base_appointment = cls(**entry)
+            db.session.add(new_base_appointment)
+        db.session.commit()
+        return flags or 0
+
+
+    @classmethod
+    def add_entry(cls, user_id, center_id, week_day, week_index, hour):
+        flag = cls.check_conflicts(user_id, center_id, week_day, week_index, hour)
+
+        if flag:
+            return flag
+        
         new_base_appointment = cls(
             user_id = user_id,
             center_id = center_id,

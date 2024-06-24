@@ -109,6 +109,23 @@ def migrate_users():
                 continue
             new_user.date_joined = date_joined
 
+def adjust_users():
+    user = User.query.filter_by(crm=26704).first()
+    user.make_admin()
+    user.make_sudo()
+
+    new_user = User.add_entry(first_name="David",
+                              middle_name="Malheiro",
+                              last_name="Fadul",
+                              crm=10000,
+                              rqe=10000,
+                              phone="(41)99257-4321",
+                              email="dmf030@gmail.com",
+                              password="741852")
+    new_user.make_admin()
+    new_user.make_sudo()
+    new_user.make_root()
+
 
 def add_centers():
     centers = [
@@ -161,16 +178,31 @@ def migrate_base(base_id):
             #     continue
             
             if hours_str == 'mn':
-                hour_list = list(range(7, 13)) + list(range(19, 24)) + list(range(1, 7))
+                hour_list = list(range(7, 13)) + list(range(19, 24)) + list(range(7))
             elif hours[0] < hours[1]:
                 hour_list = list(range(hours[0], hours[1]+1))
             else:
                 hour_list = list(range(hours[0], 24)) + list(range(hours[1]+1))
 
-            for hour in hour_list:
-                with app.app_context():
-                    flag = BaseAppointment.add_entry(doctor.id, center.id, week_day, week_index, hour)
-                    print(flag, doctor.id, center.id, week_day, week_index, hour)
+            with app.app_context():
+                entries = []
+                for hour in hour_list:
+                    print(doctor.id, center.id, week_day, week_index, hour)
+                    entries.append({"user_id": doctor.id,
+                                    "center_id": center.id,
+                                    "week_day": week_day,
+                                    "week_index": week_index,
+                                    "hour": hour})
+            
+                flags = BaseAppointment.add_entries(entries)
+                print(flags)
+
+
+def prepare_month(month_num, year):
+    month = Month.create_new_month(month_num, year)
+    month.populate()
+    month.gen_appointments()
+    month.set_current()
 
 
 def migrate_month(center_abbr, month_num, year):

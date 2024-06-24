@@ -204,6 +204,24 @@ class User(db.Model, UserMixin):
     def unlock(self):
         self.is_locked = False
         db.session.commit()
+
+    def make_admin(self):
+        self.is_admin = True
+        db.session.commit()
+    
+    def make_sudo(self):
+        self.is_sudo = True
+        db.session.commit()
+
+    def make_root(self):
+        self.is_root = True
+        db.session.commit()
+
+    def remove_privileges(self):
+        self.is_admin = False
+        self.is_sudo = False
+        self.is_root = False
+        db.session.commit()
     
     def activate(self):
         self.is_active = True
