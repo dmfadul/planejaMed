@@ -108,6 +108,7 @@ def resolve_month_appointments(data):
                     user_id=doctor.id,
                     center_id=center.id,
                     day_id = day.id,
+                    is_confirmed=True
                 ).all()
 
                 for appointment in appointments:

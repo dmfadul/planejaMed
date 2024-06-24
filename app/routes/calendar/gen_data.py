@@ -20,7 +20,9 @@ def gen_day_hours(center_abbr, day_num):
     month = Month.get_current()
 
     day = month.get_day(day_num)
-    appointments = Appointment.query.filter_by(center_id=center.id, day_id=day.id).all()
+    appointments = Appointment.query.filter_by(center_id=center.id,
+                                               day_id=day.id,
+                                               is_confirmed=True).all()
 
     appointments_dict = {}
     for app in appointments:
