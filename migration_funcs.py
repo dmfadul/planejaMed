@@ -8,9 +8,11 @@ import json
 DATABASE = 'old_db.db'
 
 dias_semana = global_vars.DIAS_SEMANA
+dias_semana_abbrev = [d[:3] for d in dias_semana]
 hours_map = global_vars.HOURS_MAP.copy()
 hours_map["tn"] = (13, 6)
 hours_map["d10"] = (7, 17)
+hours_map["d9"] = (7, 16)
 
 
 def drop_all_tables():
@@ -148,7 +150,7 @@ def migrate_base(base_id):
             if data[i][j] == '' or data[i][j] is None:
                 continue
 
-            week_day, week_index = dias_semana.index(data[0][j]), data[1][j]
+            week_day, week_index = dias_semana_abbrev.index(data[0][j]), data[1][j]
             
             hours_str = data[i][j].strip().lower()
             hours_str = hours_str.replace("n6", "c")
@@ -234,5 +236,3 @@ def migrate_month(center_abbr, month_num, year):
                         day.add_holiday()
                     # flag = Appointment.add_entry(doctor.id, center.id, day.id, hour)
                     print(doctor.id, center.id, day.id, hour)
-
-migrate_month('CCG', 12, 2023)

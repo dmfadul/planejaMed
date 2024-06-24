@@ -16,7 +16,7 @@ class Appointment(db.Model):
     user = db.relationship('User', back_populates='appointments', lazy=True)
     center = db.relationship('Center', back_populates='appointments', lazy=True)
     day = db.relationship('Day', back_populates='appointments', lazy=True)
-    request = db.relationship('Request', back_populates='appointment', lazy=True)
+    request = db.relationship('Request', back_populates='appointments', lazy=True)
 
     is_confirmed = db.Column(db.Boolean, default=True)
     
