@@ -1,17 +1,3 @@
-document.addEventListener('click', function(event) {
-    if (event.target.classList.contains('kebab-button')) {
-        event.target.nextElementSibling.style.display = 'block';
-    } else {
-        var openMenus = document.querySelectorAll('.kebab-content');
-        for (var menu of openMenus) {
-            if (menu.style.display === 'block') {
-                menu.style.display = 'none';
-            }
-        }
-    }
-});
-
-
 function processCalRequest(itemInfo, crm, action){
     if(action=="exclude") {
         let redudantHoursList = daysDict[day][crm]["hours"][1];
@@ -28,6 +14,8 @@ function processCalRequest(itemInfo, crm, action){
             
     }else if(action == "include") {
     }else if(action == "exchange") {
+        populateIdDropdown();
+
     }else if(action == "donate") {
     }else{
         console.log("Invalid action");

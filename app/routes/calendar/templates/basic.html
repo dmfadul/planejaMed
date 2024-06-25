@@ -7,7 +7,8 @@
     {% block more_head_links %}
     {% endblock %}
     <script type="text/javascript" src="{{ url_for('calendar.static', filename='scripts/modals.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('calendar.static', filename='scripts/dataFlow.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('calendar.static', filename='scripts/kebabButton.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('calendar.static', filename='scripts/processRequest.js') }}"></script>
 {% endblock %}
 
 
@@ -15,6 +16,19 @@
     {% block innerContent %}
     {% endblock %}
 
+    <!-- Modal -->
+    <div id="modal" style="display: none;">
+        <label for="idDropdown">Select ID:</label>
+        <select id="idDropdown">
+            <!-- Options will be populated dynamically -->
+        </select>
+    </div>
+
+    <!-- Dropdown to be populated -->
+    <label for="valueDropdown">Select Value:</label>
+    <select id="valueDropdown">
+        <!-- Options will be populated dynamically -->
+    </select>
     <div id="hourModal" class="modal">
         <div class="modal-content">
             <span id="close" class="close">&times;</span>
