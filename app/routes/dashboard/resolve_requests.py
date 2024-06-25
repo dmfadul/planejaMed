@@ -9,7 +9,7 @@ def resolve_req(req_id, authorized):
         return "A solicitação foi negada com sucesso"
     
     if req.action == 'include_user':
-        new_user = User.query.get(req.doctor_to_include_id)
+        new_user = User.query.get(req.requester_id)
         new_user.unlock()
         req.respond(current_user.id, "autorizado")
         return f"O usuário {new_user.full_name} foi incluído com sucesso"
