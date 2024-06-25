@@ -30,7 +30,6 @@ class Request(db.Model):
         new_request = cls(requester_id=doctor_to_include_id,
                           receivers_code="*",
                           action="include_user",
-                          existing_appointment_id=None
                           )
         db.session.add(new_request)
         db.session.commit()
@@ -38,10 +37,10 @@ class Request(db.Model):
     
     @classmethod
     def filter_by_user(cls, user_id):
-        return [req for req in cls.query.filter_by(is_open=True).all() if user_id in req.responders]
+        return [req for req in cls.query.filter_by(is_open=True).all() if user_id in req.receivers]
 
     @property
-    def responders(self):
+    def receivers(self):
         from app.models.user import User
 
         user_ids = [user.id for user in User.query.all() if user.is_sudo]
@@ -54,9 +53,9 @@ class Request(db.Model):
         return user_ids
     
 
-    def respond(self, responder_id, is_authorized):
+    def respond(self, responder_id, response):
         self.responder_id = responder_id
-        self.authorized = is_authorized
+        self.response = response
         self.response_date = datetime.now()
         self.is_open = False
 
