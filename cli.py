@@ -11,7 +11,20 @@ from app import create_app, db
 
 # app = create_app()
 # with app.app_context():
-#     month = migration_funcs.prepare_month(12, 2023)
+#     month = Month.query.filter_by(number=4, year=2024).first()
+#     month.set_current()
+    # days = []
+    # for app in month.appointments:
+    #     days.append(app.day.date)
+
+    # unique = sorted(list(set(days)))
+
+    # for day in unique:
+    #     print(day.strftime("%d/%m/%Y"))
+
+    
+
+
     # month = Month.query.filter_by(number=12, year=2023).first()
     # month.set_current()
     

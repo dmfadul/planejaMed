@@ -38,10 +38,17 @@ class Month(db.Model):
         db.session.commit()
         return month
     
-    def delete(self):
-        self.depopulate()
+    @classmethod
+    def delete(cls, number, year):
+        month_to_delete = cls.query.filter_by(number=number, year=year).first()
+        if month_to_delete.is_current:
+            prv_month, prv_year = month_to_delete.previous_month
+            new_current = cls.query.filter_by(number=prv_month, year=prv_year).first()
+            new_current.set_current()
+
+        month_to_delete.depopulate()
         
-        db.session.delete(self)
+        db.session.delete(month_to_delete)
         db.session.commit()
         return 0
         
