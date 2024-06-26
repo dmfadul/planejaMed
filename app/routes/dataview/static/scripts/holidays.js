@@ -2,13 +2,23 @@ function addHoliday() {
     askForHoliday().then(holiday => {
         if (holiday) {
             showHoliday(holiday);
-            sendHoliday(holiday);
+            sendHoliday(holiday, action='add');
         }
     }).catch(error => {
         console.log(error);
     });
 }
 
+function removeHoliday() {
+    askForHoliday().then(holiday => {
+        if (holiday) {
+            eraseHoliday(holiday);
+            sendHoliday(holiday, action='remove');
+        }
+    }).catch(error => {
+        console.log(error);
+    });
+}
 
 function askForHoliday() {
     return new Promise((resolve, reject) => {
@@ -56,13 +66,13 @@ function askForHoliday() {
     });
 }
 
-function sendHoliday(holiday) {
+function sendHoliday(holiday, action) {
     fetch('/resolve_holiday', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(holiday),
+        body: JSON.stringify({'holiday': holiday, 'action': action}),
     })
     .then(response => response.json())
     .then(data => {
@@ -78,6 +88,14 @@ function showHoliday(holiday) {
     const elements = document.querySelectorAll('.' + targetClass);
     elements.forEach(element => {
         element.classList.add('holiday');
+    });
+}
+
+function eraseHoliday(holiday) {
+    let targetClass = "col_" + holiday
+    const elements = document.querySelectorAll('.' + targetClass);
+    elements.forEach(element => {
+        element.classList.remove('holiday');
     });
 }
 
