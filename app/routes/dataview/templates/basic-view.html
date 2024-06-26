@@ -9,10 +9,10 @@
             <div id="button-container">
                 <div id="default-buttons">
                     {% if is_admin %}
-                        <button type="button" id="edit-button" onclick="startEditing()">Editar</button>
+                    <button type="button" id="edit-button" onclick="startEditing()">Editar</button>
+                    <button type="button" id="sum-hours-button">Somar Horas</button>
                     {% endif %}
     
-                    <button type="button" id="sum-hours-button">Somar Horas</button>
                     {% block reports %}
                     {% endblock %}   
                 </div>

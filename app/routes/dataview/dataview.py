@@ -47,7 +47,7 @@ def monthview():
                            center=center_abbr,
                            month=month_name,
                            year=year,
-                           is_admin=True)
+                           is_admin=current_user.is_admin)
 
 
 
