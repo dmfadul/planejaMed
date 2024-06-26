@@ -86,6 +86,12 @@ class User(db.Model, UserMixin):
             raise e
         
         return new_user
+    
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+        return 0
 
     @classmethod
     def get_by_name(cls, full_name):

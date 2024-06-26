@@ -180,7 +180,7 @@ class Month(db.Model):
         ).all()
 
         # Create a mapping for day keys to day objects for quick lookup
-        day_map = {(day.key[0], day.key[1]): day for day in self.days}      
+        day_map = {(day.key[0], day.key[1]): day for day in self.days}          
 
         appointments = []
         for b_app in base_appointments:
@@ -188,7 +188,7 @@ class Month(db.Model):
             if not day:
                 continue
             
-            print(b_app.user.full_name, b_app.center.abbreviation, day.date, b_app.hour)
+            # print(b_app.user.full_name, b_app.center.abbreviation, day.date, b_app.hour)
             appointments.append(Appointment(user_id=b_app.user_id,
                                             center_id=b_app.center_id,
                                             day_id=day.id,

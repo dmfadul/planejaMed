@@ -70,6 +70,7 @@ def register():
                 return redirect(url_for('login.login'))
             else:
                 flash("Erro ao Criar Solicitação. Tente de Novo mais tarde ou entre em contato com o Admin", "danger")
+                flag.delete()
                 return redirect(url_for('login.register'))
         else:
             flash(flag, "danger")

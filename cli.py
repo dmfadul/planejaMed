@@ -9,10 +9,10 @@ from app import create_app, db
 # migration_funcs.adjust_users()
 # migration_funcs.migrate_base("CCG--BASE")
 
-# app = create_app()
-# with app.app_context():
-#     month = Month.query.filter_by(number=4, year=2024).first()
-#     month.set_current()
+app = create_app()
+with app.app_context():
+    month = Month.delete(number=5, year=2024)
+    
     # days = []
     # for app in month.appointments:
     #     days.append(app.day.date)
