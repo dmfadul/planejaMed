@@ -180,19 +180,27 @@ class Month(db.Model):
         ).all()
 
         # Create a mapping for day keys to day objects for quick lookup
-        day_map = {(day.key[0], day.key[1]): day for day in self.days}          
+        day_map = {(day.key[0], day.key[1]): day for day in self.days}
+
+        base_app_map = {}         
+        for b_app in base_appointments:
+            if (b_app.week_day, b_app.week_index) not in base_app_map:
+                base_app_map[(b_app.week_day, b_app.week_index)] = []
+            base_app_map[(b_app.week_day, b_app.week_index)].append(b_app)
 
         appointments = []
-        for b_app in base_appointments:
-            day = day_map.get((b_app.week_day, b_app.week_index))
-            if not day:
+        for day in self.days:
+            day_base_apps = base_app_map.get(day.key)
+            if not day_base_apps:
                 continue
-            
-            # print(b_app.user.full_name, b_app.center.abbreviation, day.date, b_app.hour)
-            appointments.append(Appointment(user_id=b_app.user_id,
-                                            center_id=b_app.center_id,
-                                            day_id=day.id,
-                                            hour=b_app.hour))
+
+            for b_app in day_base_apps:
+                print(b_app.user.full_name, b_app.center.abbreviation, day.date, b_app.hour)
+                appointments.append(Appointment(user_id=b_app.user_id,
+                                                center_id=b_app.center_id,
+                                                day_id=day.id,
+                                                hour=b_app.hour))
+
         if appointments:
             Appointment.add_entries(appointments)
         
