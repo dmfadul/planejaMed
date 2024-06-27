@@ -33,20 +33,24 @@ def monthview():
     year = request.form.get("year")
     month_name = request.form.get("month")
 
-    month = Month.query.filter_by(number=global_vars.MESES.index(month_name)+1, year=year).first()
+    if month_name is None or year is None or center_abbr is None:
+        month = Month.get_current()
+        center_abbr = "CCG"
+    else:
+        month = Month.query.filter_by(number=global_vars.MESES.index(month_name)+1, year=year).first()
+
     if month is None:
         flash(f"O mês {month_name} de {year} ainda não foi criado", "danger")
         return redirect(url_for("dashboard.dashboard"))
 
-
-    data = gen_month_table(center_abbr, month_name, year)
+    data = gen_month_table(center_abbr, month.name, month.year)
 
     return render_template("monthview.html",
                            data=data,
                            hdays=month.holidays,
                            center=center_abbr,
-                           month=month_name,
-                           year=year,
+                           month=month.name,
+                           year=month.year,
                            is_admin=current_user.is_admin)
 
 
