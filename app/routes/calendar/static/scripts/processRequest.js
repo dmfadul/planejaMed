@@ -2,15 +2,7 @@ function processCalRequest(itemInfo, crm, action){
     if(action=="exclude") {
         let redudantHoursList = daysDict[day][crm]["hours"][1];
         
-        openModal(redudantHoursList, "Escolha Horas para Excluir:", function(selectedValue) {
-            let infoDict = {
-                "day": day,
-                "crmToExclude": crm,
-                "hoursToExclude": selectedValue
-            };
-
-            sendHoursToServer("cal_exclude", infoDict);
-        });
+        openModal();
             
     }else if(action == "include") {
     }else if(action == "exchange") {
