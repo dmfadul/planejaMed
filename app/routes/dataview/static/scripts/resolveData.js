@@ -54,6 +54,14 @@ function clearSelection() {
     state.action = null;
 }
 
+function openModal() {
+    const modal = document.getElementById('hourModal');
+    const overlay = document.getElementById('overlay');
+
+    modal.classList.remove('hidden');
+    overlay.classList.remove('hidden');
+}
+
 function confirmData() {
     return new Promise((resolve, reject) => {
         if (state.action === "delete") {
@@ -63,7 +71,7 @@ function confirmData() {
 
         const modal = document.getElementById('hourModal');
         const modalBody = document.getElementById('modalBody');
-        modal.style.display = 'block';
+        openModal();
         modalBody.innerHTML = '';
 
         state.selectedCells.forEach((cell, index) => {

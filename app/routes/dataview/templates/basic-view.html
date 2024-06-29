@@ -27,16 +27,7 @@
             </div>
         </div>
 
-        <div id="doctorModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Selecione o Médico</h2>
-                <div id="doctorOptions"></div>
-                <button id="submitDoctors">Submit</button>
-            </div>
-        </div>
-
-        <div id="hourModal" class="modal">
+        <div id="hourModal" class="modal hidden">
             <div class="modal-content">
                 <span id="close" class="close">&times;</span>
                 <h2>Confirmar Ação</h2>
@@ -48,7 +39,7 @@
                 </div>
             </div>
         </div>
-        
+        <div id="overlay" class="overlay hidden"></div>
 
         <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/panelControl.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/cellHighlight.js') }}"></script>
