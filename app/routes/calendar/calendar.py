@@ -19,8 +19,8 @@ calendar_bp = Blueprint(
 def calendar(center):
     month = Month.get_current()
     current_user_schedule = gen_doctor_redundant_schedule(current_user.crm)
-    print(current_user_schedule)
     days_dict = gen_days_dict(center)
+    print(days_dict)
 
     kwargs = {
     'month_name': month.name,

@@ -72,14 +72,18 @@ def gen_redudant_hour_list(appointments, include_line=False):
         letters += ['c', 'v']
 
     letters = sorted(letters, key=appointments_letters_key)
-    
+    lines = [f"{l}: {hours_map[l][0]:02d}:00 - {hours_map[l][1]+1:02d}:00" for l in letters]
+
     if not remainder:
         if not include_line:
             return letters
-        return [f"{l}: {hours_map[l][0]:02d}:00 - {hours_map[l][1]:02d}:00" for l in letters]
+        return lines
     
     if max(remainder) - min(remainder) != len(remainder) - 1:
-        return letters + [f'x{len(remainder)}']
+        print("remainder", remainder)
+        if not include_line:
+            return letters + [f'x{len(remainder)}']
+        return lines + [f"x: {len(remainder)}"]
     
     for letter, hour in list(hours_map.items())[2:]:
         hour_list = gen_hour_range(hour)
@@ -150,4 +154,4 @@ def convert_hours_to_line(hour_list):
     if len(hour_list) == 1:
         return -1
     
-    return f"{hour_list[0]:02d}:00 - {hour_list[-1]:02d}:00"
+    return f"{hour_list[0]:02d}:00 - {hour_list[-1]+1:02d}:00"

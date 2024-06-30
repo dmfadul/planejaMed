@@ -121,8 +121,14 @@ class User(db.Model, UserMixin):
     
     @property
     def app_dict(self):
+        from app.models import Month
+
+        current_month = Month.get_current()
+        appointments = [app for app in self.appointments if app.day.month_id == current_month.id]
+        appointments = [app for app in appointments if app.is_confirmed]
+
         app_dict = {}
-        for app in self.appointments:
+        for app in appointments:
             center_abbr = app.center.abbreviation
             app_date = app.day.date
             
@@ -138,8 +144,9 @@ class User(db.Model, UserMixin):
     
     @property
     def schedule(self):
-        from app.hours_conversion import split_hours, convert_hours_to_line       
-        schedule = ["-"]
+        from app.hours_conversion import split_hours, convert_hours_to_line     
+
+        schedule = []
         for center in self.app_dict:
             for date in self.app_dict[center]:
                 appointments = split_hours(self.app_dict[center][date])
@@ -147,7 +154,12 @@ class User(db.Model, UserMixin):
                     hour = convert_hours_to_line(app)
                     schedule.append(f"{center} -- {date.strftime('%d/%m/%y')} -- {hour}")
 
-        return sorted(schedule)
+        def sort_key(item):
+            center, date_str, _ = item.split(" -- ")
+            date = datetime.strptime(date_str, "%d/%m/%y")
+            return (center, date)
+
+        return ["-"] + sorted(schedule, key=sort_key)
     
     @property
     def redundant_schedule(self):

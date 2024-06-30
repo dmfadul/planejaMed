@@ -64,22 +64,3 @@ def gen_doctor_redundant_schedule(doctor_crm):
     return month_schedule
 
 
-# def gen_doctors_dict(center_abbr):
-#     center = Center.query.filter_by(abbreviation=center_abbr).first()
-#     month = Month.get_current()
-#     month_dates = [day.date for day in month.days]
-#     doctors = User.query.all()
-
-#     doctors_dict = {}
-#     for doctor in doctors:
-#         if doctor.crm not in doctors_dict:
-#             doctors_dict[doctor.crm] = {}
-
-#         center_schedule = doctor.app_dict.get(center.abbreviation, [])
-#         for date in center_schedule:
-#             if date not in month_dates:
-#                 continue
-#             if date.day not in doctors_dict[doctor.crm]:
-#                 doctors_dict[doctor.crm][date.day] = gen_redudant_hour_list(center_schedule[date],
-#                                                                             include_line=True)
-#     return doctors_dict

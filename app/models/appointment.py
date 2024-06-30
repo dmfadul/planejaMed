@@ -64,6 +64,14 @@ class Appointment(db.Model):
         from app.global_vars import NIGHT_HOURS
         return self.hour in NIGHT_HOURS
     
+    def confirm(self):
+        self.is_confirmed = True
+        db.session.commit()
+
+    def unconfirm(self):
+        self.is_confirmed = False
+        db.session.commit()
+
     @staticmethod
     def add_entries(entries):
         """gets a list of entries and adds them to the database"""
