@@ -3,6 +3,7 @@ from app.models import User, Center, Month, Appointment, Day
 from app import create_app, db
 from app.routes.dataview.resolve_data import convert_hours
 from datetime import datetime
+from app.hours_conversion import appointments_letters_key
 
 
 # migration_funcs.drop_all_tables()
@@ -14,22 +15,13 @@ from datetime import datetime
 
 # print(convert_hours(["-", "01:00", "18:00"]))
 
+t = ["m6", "d11", "n"]
+t = sorted(t, key=appointments_letters_key)
+print(t)
+
 app = create_app()
 with app.app_context():
-    month = Month.query.filter_by(number=6, year=2024).first()
-    print(month.name)
 
-    for app in month.appointments:
-        if not app.user.crm == 26704:
-            continue
-        if not app.center.abbreviation == "CCG":
-            continue
-        if not app.day.date == datetime(2024, 6, 1).date():
-            continue
-
-        app.confirm()
-        
-        print(app.day.date, app.hour, app.center.abbreviation, app.user.full_name, app.is_confirmed)
 
     # days = []
     # for app in month.appointments:

@@ -80,21 +80,29 @@ def gen_redudant_hour_list(appointments, include_line=False):
         return lines
     
     if max(remainder) - min(remainder) != len(remainder) - 1:
-        print("remainder", remainder)
         if not include_line:
             return letters + [f'x{len(remainder)}']
-        return lines + [f"x: {len(remainder)}"]
+        return lines + [f"x{len(remainder)}: {remainder[0]:02d}:00 - {remainder[-1]+1:02d}:00"]
     
     for letter, hour in list(hours_map.items())[2:]:
         hour_list = gen_hour_range(hour)
 
         if set(appointments).issubset(set(hour_list)):
-            letters.append(f"{letter}{len([app for app in appointments if app in hour_list])}")
+            lt = f"{letter}{len([app for app in appointments if app in hour_list])}"
+            letters.append(lt)
+            lines.append(f"{lt}: {appointments[0]:02d}:00 - {appointments[-1]+1:02d}:00")
 
         elif remainder and set(remainder).issubset(set(hour_list)):
-            letters.append(f"{letter}{len([app for app in remainder if app in hour_list])}")
-            
-    return sorted(letters, key=appointments_letters_key)
+            lt = f"{letter}{len([app for app in remainder if app in hour_list])}"
+            letters.append(lt)
+            lines.append(f"{lt}: {remainder[0]:02d}:00 - {remainder[-1]+1:02d}:00")
+
+    letters = sorted(letters, key=appointments_letters_key)
+
+    if not include_line:
+        return letters
+
+    return sorted(lines, key=appointments_letters_key)
         
 
 def convert_to_letter(appointments):
