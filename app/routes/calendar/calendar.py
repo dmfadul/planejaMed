@@ -18,13 +18,13 @@ calendar_bp = Blueprint(
 @login_required
 def calendar(center):
     month = Month.get_current()
-    current_user_schedule = []
+    current_user_schedule = ["07:00 - 18:00"]
     days_dict = gen_days_dict(center)
 
     kwargs = {
     'month_name': month.name,
     'month_year': month.year,
-    'center': center,
+    'open_center': center,
     'calendar_days': month.calendar,
     'days_dict': days_dict,
     'curr_user_crm': current_user.crm,

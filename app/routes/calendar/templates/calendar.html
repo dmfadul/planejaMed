@@ -7,7 +7,7 @@
 {% block innerContent %}
     <table class="calendar">
         <tr class="calendar-header">
-            <th colspan="7">{{ month_name }} {{month_year }} {{center}}</th>
+            <th colspan="7">{{ month_name }} {{month_year }} {{open_center}}</th>
         </tr>
         <tr>
             <td>Seg</td>
@@ -30,8 +30,9 @@
     <div id="dictData"></div>
 
     <script>
-        var currentUserSchedule = {{ curr_user_schedule | tojson | safe }};
+        var currUserSchedule = {{ curr_user_schedule | tojson | safe }};
+        var currUserCRM = {{ curr_user_crm | tojson | safe }};
         var daysDict = {{ days_dict | tojson | safe }};
-        var currentUserCRM = {{ curr_user_crm | tojson | safe }};
+        var openCenter = {{ open_center | tojson | safe }};
     </script>
 {% endblock %}

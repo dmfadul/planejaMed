@@ -20,6 +20,7 @@ function processCalRequest(itemInfo, crm, action) {
 }
 
 function handleExclude(crm) {
+    infoDict = {};
     let redudantHoursList = daysDict[day][crm]["hours"][1];
     
     openModal('modal1', redudantHoursList, "Escolha Horas para Excluir:", "Horários: ", function(selectedValue) {
@@ -39,15 +40,22 @@ function handleInclude() {
     // Your code for handling include
 }
 
+function handleDonate() {
+    // Your code for handling donate
+}
+
 function handleExchange(crm) {
-    if (currentUserCRM === crm) {
+    infoDict = {};
+    if (currUserCRM === crm) {
         // handleExchangeStep1(crm);
         alert("Você não pode trocar horários consigo mesmo");
         return;
     }
     infoDict["day"] = day;
-    infoDict["current_user_crm"] = currentUserCRM;
+    infoDict["other_user_center"] = openCenter;
+    infoDict["current_user_crm"] = currUserCRM;
     infoDict["other_user_crm"] = crm;
+
     handleExchangeStep2(crm);
 }
 
@@ -66,7 +74,7 @@ function handleExchangeStep1(crm) {
 }
 
 function handleExchangeStep2(crm) {
-    let availableHours = ["08:00 - 12:00", "12:00 - 16:00", "16:00 - 20:00"];
+    let availableHours = daysDict[day][crm]["hours"][1];
 
     openModal("modal2", availableHours, "Escolha Horas para Trocar:", "Horários: ", function(selectedHrs) {
         selectedHours = selectedHrs;
@@ -81,6 +89,35 @@ function handleExchangeStep2(crm) {
 }
 
 function handleExchangeStep3(crm) {
+    let centers = ["CCG", "CCO", "CCQ"]
+
+    openModal("modal1", centers, "Escolha Centro para Trocar:", "Centros: ", function(selectedCenter) {
+        if (selectedCenter === null) {
+            // User cancelled on the third modal
+            return;
+        }
+
+        infoDict["current_user_center"] = selectedCenter;
+        handleExchangeStep4(crm);
+    });
+}
+
+function handleExchangeStep4(crm) {
+    let days = [1, 2, 3, 4, 5, 6, 7];
+
+    openModal("modal2", days, "Escolha Dia para Trocar:", "Dias: ", function(selectedDay) {
+        if (selectedDay === null) {
+            // User cancelled on the fourth modal
+            return;
+        }
+
+        infoDict["current_user_day"] = selectedDay;
+        handleExchangeStep5(crm);
+    });
+}
+
+function handleExchangeStep5(crm) {
+    console.log(currUserSchedule);
     let availableHours = ["08:00 - 12:00", "12:00 - 16:00", "16:00 - 20:00"];
 
     openModal("modal1", availableHours, "Escolha Horas para Trocar:", "Seus Horários: ", function(selectedHrs) {
@@ -94,11 +131,6 @@ function handleExchangeStep3(crm) {
         sendHoursToServer("cal_exchange", infoDict);
     });
 }
-
-function handleDonate() {
-    // Your code for handling donate
-}
-
 
 // Function to send selected hours to the server
 function sendHoursToServer(action, infoDict) {
