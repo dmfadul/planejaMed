@@ -32,5 +32,6 @@
     <script>
         var currentUserSchedule = {{ curr_user_schedule | tojson | safe }};
         var daysDict = {{ days_dict | tojson | safe }};
+        var currentUserCRM = {{ curr_user_crm | tojson | safe }};
     </script>
 {% endblock %}

@@ -27,6 +27,7 @@ def calendar(center):
     'center': center,
     'calendar_days': month.calendar,
     'days_dict': days_dict,
+    'curr_user_crm': current_user.crm,
     'curr_user_schedule': current_user_schedule
     }
     return render_template("calendar.html", **kwargs)

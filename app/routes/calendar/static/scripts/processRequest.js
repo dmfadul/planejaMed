@@ -1,19 +1,17 @@
+let infoDict = {};
+
 let selectedDoctor = null;
 let selectedHours = null;
-let globalCrm = null;
-let globalDay = null;
 
 
 function processCalRequest(itemInfo, crm, action) {
-    globalCrm = crm; // Store globally
-    globalDay = day; // Store globally
-
     if (action === "exclude") {
         handleExclude(crm);
     } else if (action === "include") {
         handleInclude();
     } else if (action === "exchange") {
-        handleExchangeStep1(crm);
+        handleExchange(crm);
+
     } else if (action === "donate") {
         handleDonate();
     } else {
@@ -22,14 +20,16 @@ function processCalRequest(itemInfo, crm, action) {
 }
 
 function handleExclude(crm) {
-    let redudantHoursList = daysDict[globalDay][crm]["hours"][1];
+    let redudantHoursList = daysDict[day][crm]["hours"][1];
     
     openModal('modal1', redudantHoursList, "Escolha Horas para Excluir:", "Horários: ", function(selectedValue) {
-        let infoDict = {
-            "day": globalDay,
-            "crmToExclude": crm,
-            "hoursToExclude": selectedValue
-        };
+        if (selectedValue === null) {
+            // User cancelled on the first modal
+            return;
+        }
+        infoDict["day"] = day;
+        infoDict["crmToExclude"] = crm;
+        infoDict["hoursToExclude"] = selectedValue;
 
         sendHoursToServer("cal_exclude", infoDict);
     });
@@ -39,8 +39,20 @@ function handleInclude() {
     // Your code for handling include
 }
 
+function handleExchange(crm) {
+    if (currentUserCRM === crm) {
+        // handleExchangeStep1(crm);
+        alert("Você não pode trocar horários consigo mesmo");
+        return;
+    }
+    infoDict["day"] = day;
+    infoDict["current_user_crm"] = currentUserCRM;
+    infoDict["other_user_crm"] = crm;
+    handleExchangeStep2(crm);
+}
+
 function handleExchangeStep1(crm) {
-    let doctorList = Object.keys(daysDict[globalDay]);
+    let doctorList = Object.keys(daysDict[day]);
 
     openModal("modal1", doctorList, "Com quem deseja trocar?", "Médicos: ", function(selectedDoc) {
         selectedDoctor = selectedDoc;
@@ -49,11 +61,11 @@ function handleExchangeStep1(crm) {
             return;
         }
         
-        handleExchangeStep2();
+        handleExchangeStep2(crm);
     });
 }
 
-function handleExchangeStep2() {
+function handleExchangeStep2(crm) {
     let availableHours = ["08:00 - 12:00", "12:00 - 16:00", "16:00 - 20:00"];
 
     openModal("modal2", availableHours, "Escolha Horas para Trocar:", "Horários: ", function(selectedHrs) {
@@ -63,13 +75,22 @@ function handleExchangeStep2() {
             return;
         }
 
-        let infoDict = {
-            "day": globalDay,
-            "crmToExchange": globalCrm,
-            "hoursToExchange": selectedHours,
-            "crmToReceive": selectedDoctor
-        };
+        infoDict["other_user_hours"] = selectedHours;
+        handleExchangeStep3(crm);
+    });
+}
 
+function handleExchangeStep3(crm) {
+    let availableHours = ["08:00 - 12:00", "12:00 - 16:00", "16:00 - 20:00"];
+
+    openModal("modal1", availableHours, "Escolha Horas para Trocar:", "Seus Horários: ", function(selectedHrs) {
+        selectedHours = selectedHrs;
+        if (selectedHours === null) {
+            // User cancelled on the second modal
+            return;
+        }
+
+        infoDict["current_user_hours"] = selectedHours;
         sendHoursToServer("cal_exchange", infoDict);
     });
 }
