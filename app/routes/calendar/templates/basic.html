@@ -17,20 +17,42 @@
     {% endblock %}
 
     <!-- Modal -->
-    <div id="modal" class="modal hidden">
+    <div id="modal1" class="modal hidden">
         <div class="modal-content">
-            <span id="close" class="close">&times;</span>
-            <h2 id="modalTitle">Title</h2>
-            <label id="modalLabel" for="option">TEXT</label>
-            <select class="dropdown" name="center">
-                <option value="value1">Value1</option>
-                <option value="value2">Value2</option>
-            </select>
+            <span onclick="closeModal('modal1')" id="close-button" class="close-button">&times;</span>
+            
+            <h2 class="modal-title" id="modalTitle">Title</h2>
+
+            <label class="modal-label" id="modal-label" for="option">TEXT</label>
+            <select class="dropdown" name="center"></select>
+            
             <div id="modalBody"></div>
+            
             <div class="button-group">
-                <button id="cancelButton" class="submit-button">Cancel</button>
-                <button id="saveButton" class="submit-button">Save</button>
+                <button onclick="closeModal('modal1')" id="cancelButton" class="submit-button">Cancel</button>
+                <button id="saveButton" class="save-button submit-button">Save</button>
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div id="modal2" class="modal hidden">
+        <div class="modal-content">
+            <span onclick="closeModal('modal2')" id="close-button" class="close-button">&times;</span>
+            
+            <h2 class="modal-title" id="modalTitle">Title</h2>
+
+            <label class="modal-label" id="modal-label" for="option">TEXT</label>
+            <select class="dropdown" name="center"></select>
+            
+            <div id="modalBody"></div>
+            
+            <div class="button-group">
+                <button onclick="closeModal('modal2')" id="cancelButton" class="submit-button">Cancel</button>
+                <button id="saveButton" class="save-button submit-button">Save</button>
+            </div>
+        </div>
+    </div>
+    <div id="overlay" class="overlay hidden"></div>
+    
 {% endblock %}

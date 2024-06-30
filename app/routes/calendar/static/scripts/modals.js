@@ -1,38 +1,65 @@
-function openModal() {
-    const modal = document.querySelector(".modal");
+function openModal(modalID, options, title, label, callback) {
+    // const modal = document.querySelector(".modal");
+    const modal = document.getElementById(modalID);
+    const overlay = document.querySelector(".overlay");
+    const modalTitle = modal.querySelector(".modal-title");
+    const modalLabel = modal.querySelector(".modal-label");
+    const dropdown = modal.querySelector(".dropdown");
+
     modal.classList.remove("hidden");
+    overlay.classList.remove("hidden");
+
+    modalTitle.textContent = title;
+    modalLabel.textContent = label;
+
+    // Clear existing options
+    while (dropdown.firstChild) {
+        dropdown.removeChild(dropdown.firstChild);
+    }
+
+    // Add new options
+    options.forEach(option => {
+        let optionElement = document.createElement('option');
+        optionElement.value = option;
+        optionElement.textContent = option;
+        dropdown.appendChild(optionElement);
+    });
+
+    const saveButton = modal.querySelector(".save-button");
+    saveButton.addEventListener("click", function() {
+        const selectedValue = dropdown.value;
+        callback(selectedValue);
+        closeModal(modalID);
+    }, { once: true }); // Ensure the event listener is added only once
 }
 
-//     // Append dropdown to modal body
-//     modalBody.appendChild(dropdown);
+function closeModal(modalID) {
+    // const modal = document.querySelector(".modal");
+    const modal = document.getElementById(modalID);
+    const overlay = document.querySelector(".overlay");
 
-//     // Display the modal
-//     modal.style.display = "block";
+    modal.classList.add("hidden");
+    overlay.classList.add("hidden");
+}
 
-//     // Get the <span> element that closes the modal
-//     var span = document.getElementById("close");
+document.addEventListener('keydown', function(e) {
+    if(e.key === 'Escape' && !document.querySelector(".modal").classList.contains("hidden")){
+        const modals = document.querySelectorAll(".modal");
+        modals.forEach(modal => {
+            if (!modal.classList.contains("hidden")) {
+                closeModal(modal.id);
+            }
+        });        
+    }
+});
 
-//     // When the user clicks on <span> (x), close the modal
-//     span.onclick = function() {
-//         modal.style.display = "none";
-//     };
-
-//     // When the user clicks on the cancel button, close the modal
-//     document.getElementById("cancelButton").onclick = function() {
-//         modal.style.display = "none";
-//     };
-
-//     // Add an event listener to the save button to get the selected value
-//     document.getElementById("saveButton").onclick = function() {
-//         var selectedValue = dropdown.value;
-//         callback(selectedValue);
-//         modal.style.display = "none";
-//     };
-
-//     // When the user clicks anywhere outside of the modal, close it
-//     window.onclick = function(event) {
-//         if (event.target == modal) {
-//             modal.style.display = "none";
-//         }
-//     };
-// }
+window.onclick = function(event) {
+    if (event.target === document.querySelector(".overlay")) {
+        const modals = document.querySelectorAll(".modal");
+        modals.forEach(modal => {
+            if (!modal.classList.contains("hidden")) {
+                closeModal(modal.id);
+            }
+        });
+    }
+};

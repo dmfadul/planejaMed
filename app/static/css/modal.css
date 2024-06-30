@@ -29,15 +29,15 @@ h2 {
 }
 
 /* The Close Button */
-.close {
+.close-button {
   color: #aaaaaa;
   float: right;
   font-size: 28px;
   font-weight: bold;
 }
 
-.close:hover,
-.close:focus {
+.close-button:hover,
+.close-button:focus {
   color: #000;
   text-decoration: none;
   cursor: pointer;
@@ -70,6 +70,18 @@ h2 {
 /* CLASSES TO MAKE MODAL WORK */
 .hidden {
   display: none;
+}
+
+.modal-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.modal-label {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 10px;
 }
 
 .modal {

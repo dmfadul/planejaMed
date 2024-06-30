@@ -1,27 +1,81 @@
-function processCalRequest(itemInfo, crm, action){
-    if(action=="exclude") {
-        let redudantHoursList = daysDict[day][crm]["hours"][1];
-        
-        openModal();
-            
-    }else if(action == "include") {
-    }else if(action == "exchange") {
-        populateIdDropdown();
+let selectedDoctor = null;
+let selectedHours = null;
+let globalCrm = null;
+let globalDay = null;
 
-    }else if(action == "donate") {
-    }else{
+
+function processCalRequest(itemInfo, crm, action) {
+    globalCrm = crm; // Store globally
+    globalDay = day; // Store globally
+
+    if (action === "exclude") {
+        handleExclude(crm);
+    } else if (action === "include") {
+        handleInclude();
+    } else if (action === "exchange") {
+        handleExchangeStep1(crm);
+    } else if (action === "donate") {
+        handleDonate();
+    } else {
         console.log("Invalid action");
     }
 }
 
-function processSchRequest(itemInfo, crm, action){
-    if(action=="exclude") {
-    }else if(action == "include") {
-    }else if(action == "exchange") {
-    }else if(action == "donate") {
-    }else{
-        console.log("Invalid action");
-    }
+function handleExclude(crm) {
+    let redudantHoursList = daysDict[globalDay][crm]["hours"][1];
+    
+    openModal('modal1', redudantHoursList, "Escolha Horas para Excluir:", "Horários: ", function(selectedValue) {
+        let infoDict = {
+            "day": globalDay,
+            "crmToExclude": crm,
+            "hoursToExclude": selectedValue
+        };
+
+        sendHoursToServer("cal_exclude", infoDict);
+    });
+}
+
+function handleInclude() {
+    // Your code for handling include
+}
+
+function handleExchangeStep1(crm) {
+    let doctorList = Object.keys(daysDict[globalDay]);
+
+    openModal("modal1", doctorList, "Com quem deseja trocar?", "Médicos: ", function(selectedDoc) {
+        selectedDoctor = selectedDoc;
+        if (selectedDoctor === null) {
+            // User cancelled on the first modal
+            return;
+        }
+        
+        handleExchangeStep2();
+    });
+}
+
+function handleExchangeStep2() {
+    let availableHours = ["08:00 - 12:00", "12:00 - 16:00", "16:00 - 20:00"];
+
+    openModal("modal2", availableHours, "Escolha Horas para Trocar:", "Horários: ", function(selectedHrs) {
+        selectedHours = selectedHrs;
+        if (selectedHours === null) {
+            // User cancelled on the second modal
+            return;
+        }
+
+        let infoDict = {
+            "day": globalDay,
+            "crmToExchange": globalCrm,
+            "hoursToExchange": selectedHours,
+            "crmToReceive": selectedDoctor
+        };
+
+        sendHoursToServer("cal_exchange", infoDict);
+    });
+}
+
+function handleDonate() {
+    // Your code for handling donate
 }
 
 
@@ -29,23 +83,19 @@ function processSchRequest(itemInfo, crm, action){
 function sendHoursToServer(action, infoDict) {
     fetch('/update_hours/', {
         method: 'POST',
-        body: JSON.stringify({ action: action, infoDict: infoDict}),
+        body: JSON.stringify({ action: action, infoDict: infoDict }),
         headers: {
             'Content-Type': 'application/json'
         }
     })
     .then(response => response.json())
     .then(data => {
-        if(data.status == "success") {
+        if (data.status === "success") {
             alert("Requisição Realizada com Sucesso");
             console.log('The request was successful and returned:', data.message);
-        } else if(data.status == "failure") {
+        } else {
             alert("Requisição Não Realizada:\nVerifique os dados e tente novamente");
             console.log('The request failed and returned:', data.message);
-        } else {
-            let counter = +data.counter;
-            counter++;
-            openModal(data.info, data.newLabel, data.action, counter, extraInfo);
         }
     })
     .catch((error) => {
