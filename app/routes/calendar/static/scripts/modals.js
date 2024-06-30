@@ -31,6 +31,18 @@ function openModal(modalID, options, title, label, callback) {
         callback(selectedValue);
         closeModal(modalID);
     }, { once: true }); // Ensure the event listener is added only once
+
+    const cancelButton = modal.querySelector(".cancel-button");
+    cancelButton.addEventListener("click", function() {
+        callback(null);
+        closeModal(modalID);
+    }, { once: true }); // Ensure the event listener is added only once
+
+    const closeButton = modal.querySelector(".close-button");
+    closeButton.addEventListener("click", function() {
+        callback(null);
+        closeModal(modalID);
+    }, { once: true }); // Ensure the event listener is added only once
 }
 
 function closeModal(modalID) {

@@ -14,9 +14,7 @@ from app.routes.dataview.resolve_data import convert_hours
 # print(convert_hours(["-", "01:00", "18:00"]))
 
 app = create_app()
-with app.app_context():
-    
-    
+with app.app_context():   
     # days = []
     # for app in month.appointments:
     #     days.append(app.day.date)

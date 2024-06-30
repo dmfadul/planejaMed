@@ -149,6 +149,20 @@ class User(db.Model, UserMixin):
 
         return sorted(schedule)
     
+    @property
+    def redundant_schedule(self):
+        from app.hours_conversion import gen_redudant_hour_list
+        schedule = []
+        for center in self.app_dict:
+            for date in self.app_dict[center]:
+
+                appointments = gen_redudant_hour_list(self.app_dict[center][date], include_line=True)
+                for app in appointments:
+                    schedule.append(f"{center} -- {date.strftime('%d/%m/%y')} -- {app}")
+
+        return sorted(schedule)
+    
+
     def hours(self, month_id):
         appointments = [app for app in self.appointments if app.day.month_id == month_id]
 

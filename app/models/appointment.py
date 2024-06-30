@@ -66,6 +66,7 @@ class Appointment(db.Model):
     
     @staticmethod
     def add_entries(entries):
+        """gets a list of entries and adds them to the database"""
         from app import db
         db.session.bulk_save_objects(entries)
         db.session.commit()
