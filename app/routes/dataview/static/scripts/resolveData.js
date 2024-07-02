@@ -152,13 +152,14 @@ function handleDropdownChange(firstDropdown, dropdown2, dropdown3) {
 
 function setupModalEvents(resolve, reject) {
     const modal = document.getElementById('hourModal');
+    const overlay = document.getElementById('overlay');
 
     function closeModal() {
-        modal.style.display = 'none';
+        modal.classList.add('hidden');
+        overlay.classList.add('hidden');
         reject('User cancelled the operation');
     }
 
-    document.getElementById('close').onclick = closeModal;
     document.getElementById('cancelButton').onclick = closeModal;
 
     document.getElementById('saveButton').onclick = () => {
@@ -173,7 +174,7 @@ function setupModalEvents(resolve, reject) {
     };
 
     window.onclick = event => {
-        if (event.target == modal) {
+        if (event.target == overlay) {
             closeModal();
         }
     };

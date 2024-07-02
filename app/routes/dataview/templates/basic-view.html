@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block head_links %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/modal.css') }}">
+{% endblock %}
+
 {% block outsideContent %}
     {% block title %}
     {% endblock %}
@@ -29,13 +33,12 @@
 
         <div id="hourModal" class="modal hidden">
             <div class="modal-content">
-                <span id="close" class="close">&times;</span>
                 <h2>Confirmar Ação</h2>
                 <!-- Dynamic content will be loaded here -->
                 <div id="modalBody"></div>
                 <div class="button-group">
-                    <button id="cancelButton" class="cancel-button">Cancel</button>
-                    <button id="saveButton" class="save-button">Save</button>
+                    <button id="cancelButton" class="submit-button cancel-button">Cancel</button>
+                    <button id="saveButton" class="submit-button save-button">Save</button>
                 </div>
             </div>
         </div>

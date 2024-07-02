@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('calendar.static', filename='css/kebab.css') }}">
     {% block more_head_links %}
     {% endblock %}
-    <script type="text/javascript" src="{{ url_for('calendar.static', filename='scripts/modals.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='scripts/modals.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('calendar.static', filename='scripts/kebabButton.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('calendar.static', filename='scripts/processRequest.js') }}"></script>
 {% endblock %}
@@ -28,10 +28,7 @@
             
             <div id="modalBody"></div>
             
-            <div class="button-group">
-                <button id="cancelButton" class="cancel-button submit-button">Cancel</button>
-                <button id="saveButton" class="save-button submit-button">Save</button>
-            </div>
+            <div class="button-group"></div>
         </div>
     </div>
 
@@ -47,10 +44,7 @@
             
             <div id="modalBody"></div>
             
-            <div class="button-group">
-                <button id="cancelButton" class="cancel-button submit-button">Cancel</button>
-                <button id="saveButton" class="save-button submit-button">Save</button>
-            </div>
+            <div class="button-group"></div>
         </div>
     </div>
     <div id="overlay" class="overlay hidden"></div>
