@@ -1,5 +1,3 @@
-let infoDict = {};
-
 let selectedDoctor = null;
 let selectedHours = null;
 
@@ -9,11 +7,11 @@ function processCalRequest(itemInfo, crm, action) {
         handleExclude(crm);
     } else if (action === "include") {
         handleInclude();
+    } else if (action === "donate") {
+        let infoDict = {};
+        handleDonate(crm);
     } else if (action === "exchange") {
         handleExchange(crm);
-
-    } else if (action === "donate") {
-        handleDonate();
     } else {
         console.log("Invalid action");
     }
@@ -36,12 +34,36 @@ function handleExclude(crm) {
     });
 }
 
-function handleInclude() {
-    // Your code for handling include
+function handleDonate(crm) {
+    infoDict = {};
+    if (currUserCRM === parseInt(crm)) {
+        alert("Você não pode doar horários para si mesmo");
+        return;
+    }else{
+        handleRequestDonation(crm);
+    }
 }
 
-function handleDonate() {
-    // Your code for handling donate
+function handleRequestDonation(donorCRM) {
+    infoDict["donorDay"] = day;
+    infoDict["donorCenter"] = openCenter;
+    infoDict["donorCRM"] = donorCRM;
+
+    let availableHours = daysDict[day][donorCRM]["hours"][1];
+    let title = "Escolha Horas para Receber:"
+    let label = "Horários: "
+    openModal("modal1", availableHours, title, label, function(selectedHrs) {
+        selectedHours = selectedHrs;
+        if (selectedHours === "null") {
+            infoDict = {};
+            action = "cancel";
+        } else {
+            infoDict["donorHours"] = selectedHours;
+            action = "cal_donate";
+        }
+        
+        sendHoursToServer(action, infoDict);
+    });
 }
 
 function handleExchange(crm) {
@@ -79,7 +101,6 @@ function handleExchangeStep2(crm) {
     openModal("modal2", availableHours, "Escolha Horas para Trocar:", "Horários: ", function(selectedHrs) {
         selectedHours = selectedHrs;
         if (selectedHours === null) {
-            console.log("selectedHours");
             return;
         }
         
@@ -103,6 +124,10 @@ function handleExchangeStep3(crm) {
         infoDict["current_user_center_date_hours"] = selectedInfo;
         sendHoursToServer("cal_exchange", infoDict);
     });
+}
+
+function handleInclude() {
+    // Your code for handling include
 }
 
 // Function to send selected hours to the server
