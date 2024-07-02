@@ -25,11 +25,11 @@ class Appointment(db.Model):
     
     @classmethod
     def add_entry(cls, user_id, center_id, day_id, hour):
-        existing_apps = cls.query.all()
+        existing_apps = cls.query.filter_by(user_id=user_id, day_id=day_id, hour=hour).all()
 
-        existing_apps = [app for app in existing_apps if app.user_id == user_id]
-        existing_apps = [app for app in existing_apps if app.day_id == day_id]
-        existing_apps = [app for app in existing_apps if app.hour == hour]
+        # existing_apps = [app for app in existing_apps if app.user_id == user_id]
+        # existing_apps = [app for app in existing_apps if app.day_id == day_id]
+        # existing_apps = [app for app in existing_apps if app.hour == hour]
         existing_apps_other_centers = [app for app in existing_apps if app.center_id != center_id]
         existing_apps_same_center = [app for app in existing_apps if app.center_id == center_id]
 
