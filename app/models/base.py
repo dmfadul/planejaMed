@@ -38,23 +38,6 @@ class BaseAppointment(db.Model):
             app = existing_apps_same_center[0]
             return 0
 
-
-    @classmethod
-    def add_entries(cls, entries):
-        for entry in entries:
-            flag = cls.check_conflicts(**entry)
-
-            flags = []
-            if flag:
-                flags.append(flag)
-                continue
-
-            new_base_appointment = cls(**entry)
-            db.session.add(new_base_appointment)
-        db.session.commit()
-        return flags or 0
-
-
     @classmethod
     def add_entry(cls, user_id, center_id, week_day, week_index, hour):
         flag = cls.check_conflicts(user_id, center_id, week_day, week_index, hour)
@@ -104,3 +87,12 @@ class BaseAppointment(db.Model):
     def is_night(self):
         from app.global_vars import NIGHT_HOURS
         return self.hour in NIGHT_HOURS
+    
+    @staticmethod
+    def add_entries(entries):
+        """gets a list of entries and adds them to the database"""
+        from app import db
+        db.session.bulk_save_objects(entries)
+        db.session.commit()
+
+        return 0

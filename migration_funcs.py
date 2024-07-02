@@ -186,18 +186,20 @@ def migrate_base(base_id):
             else:
                 hour_list = list(range(hours[0], 24)) + list(range(hours[1]+1))
 
+            entries = []
             with app.app_context():
-                entries = []
                 for hour in hour_list:
                     print(doctor.id, center.id, week_day, week_index, hour)
-                    entries.append({"user_id": doctor.id,
-                                    "center_id": center.id,
-                                    "week_day": week_day,
-                                    "week_index": week_index,
-                                    "hour": hour})
-            
-                flags = BaseAppointment.add_entries(entries)
-                print(flags)
+                    entries.append(BaseAppointment(
+                        user_id=doctor.id,
+                        center_id=center.id,
+                        week_day=week_day,
+                        week_index=week_index,
+                        hour=hour
+                    ))
+
+    if entries:
+        BaseAppointment.add_entries(entries)
 
 
 def prepare_month(month_num, year):
@@ -264,10 +266,20 @@ def migrate_month(center_abbr, month_num, year):
             else:
                 hour_list = list(range(hours[0], 24)) + list(range(hours[1]+1))
 
-            for hour in hour_list:
-                with app.app_context():
+            entries = []
+            with app.app_context():
+                for hour in hour_list:
+                    print(doctor.id, center.id, day.id, hour)
                     day = Day.query.filter_by(month_id=month.id, date=month_date).first()
                     if month_day in holidays:
                         day.add_holiday()
-                    # flag = Appointment.add_entry(doctor.id, center.id, day.id, hour)
-                    print(doctor.id, center.id, day.id, hour)
+
+                    entries.append(Appointment(
+                                   user_id=doctor.id,
+                                   center_id=center.id,
+                                   day_id=day.id,
+                                   hour=hour
+                                  ))
+
+    if entries and False:
+        Appointment.add_entries(entries)
