@@ -50,21 +50,16 @@ tr:nth-child(even) {
     background-color: #e6e6e6; /* Slightly darker grey for contrast */
 }
 
-/* Sticky Header and First Two Rows */
-#hours_table tbody tr:nth-child(1) {
+.sticky-row {
     position: sticky;
-    top: 109px; /* Stick to the top */
-    background-color: #333; /* Dark grey to match header */
-    color: white; /* White text for contrast */
-    z-index: 98;
+    top: 0;
+    background-color: #333;
+    color: white;
+    z-index: 100;
 }
-
-#hours_table tbody tr:nth-child(2) {
-    position: sticky;
-    top: 141px; /* Height of the first row */
-    background-color: #333; /* Dark grey to match header */
-    color: white; /* White text for contrast */
-    z-index: 97;
+  
+.sticky-row:nth-child(2) {
+    top: 30px; /* Ajustar conforme a altura da primeira linha */
 }
 
 .holiday {

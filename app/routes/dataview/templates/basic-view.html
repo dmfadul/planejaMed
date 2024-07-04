@@ -2,9 +2,10 @@
 
 {% block head_links %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/modal.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('dataview.static', filename='css/table.css') }}">
 {% endblock %}
 
-{% block outsideContent %}
+{% block mainContent %}
     {% block title %}
     {% endblock %}
 
@@ -56,31 +57,37 @@
         {% block otherScriptVariables %}
         {% endblock %}
 
-        <div id="hours_table">
+        <div class="table-responsive" id="hours_table">
             <table>
+                <thead>
+                    <!-- First row as table header -->
+                    <tr class="sticky-row">
+                        {% set month_days = data[1] %}
+                        {% for c in data[0] %}
+                            <th id="{{ c[1] }}" class="_col_{{ month_days[loop.index0] }}">{{ c }}</th>
+                        {% endfor %}
+                    </tr>
+                    <!-- Second row also as header, but could be moved to <tbody> if needed -->
+                    <tr class="sticky-row">
+                        {% for c in data[1] %}
+                            <th class="_col_{{ month_days[loop.index0] }}">{{ c }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
                 <tbody>
                     {% set month_days = data[1] %}
-    
-                    {% for row in data %}
-                        {% if loop.index0 == 0 or loop.index0 == 1 %}
-                            {% set first_rows = True %}
-                        {% endif %}
-    
+                    {% for row in data[2:] %}
                         <tr>
-                        {% for c in row %}
-                            {% if loop.index0 == 0 %}
-                                <td id="{{ c[1] }}" class="_col_{{ month_days[loop.index0] }}">{{ c[0] }}</td>
-                            {% elif first_rows %}
-                                <td class="_col_{{ month_days[loop.index0] }}">{{ c }}</td>
-
-                            {% else %}
-                                <td class="col_{{ month_days[loop.index0] }}" onclick="cellClicked(this)">{{ c }}</td>
-                            {% endif %}
-                        {% endfor %}
+                            {% for c in row %}
+                                {% if loop.index0 == 0 %}
+                                    <td id="{{ c[1] }}" class="_col_{{ month_days[loop.index0] }}">{{ c[0] }}</td>
+                                {% else %}
+                                    <td class="col_{{ month_days[loop.index0] }}" onclick="cellClicked(this)">{{ c }}</td>
+                                {% endif %}
+                            {% endfor %}
                         </tr>
                     {% endfor %}
                 </tbody>
-                
                 {% block holidayScript %}
                 {% endblock %}
                 <script>
@@ -93,7 +100,6 @@
                     var isAdmin = {{ is_admin | tojson | safe }};
                 </script>
                 <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/buttonListeners.js') }}"></script>
-
             </table>
         </div>
     </div>

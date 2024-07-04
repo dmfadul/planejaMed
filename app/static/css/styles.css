@@ -49,6 +49,7 @@ header {
 
 .button-logout {
   margin: 0;
+  bottom: 10px;
 }
 
 .button-logout button {
@@ -68,10 +69,9 @@ header {
 
 main {
   display: block;
-  width: 90%;
-  max-width: 665px;
+  width: 100%;
   margin: 20px auto;
-  padding: 20px;
+  padding: 2px;
   background-color: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -83,16 +83,6 @@ main > * {
 a {
   color: black;
   text-decoration: none;
-}
-
-.backdrop {
-  position: sticky; /* Match the position property of your button container */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 90px; /* Adjust to match the height of your button container */
-  background-color: white;
-  z-index: 99; /* Below the button container but above the table */
 }
 
 .keep-in-window {
@@ -115,6 +105,39 @@ input[type=password] {
   margin: 8px 0;
 }
 
+.table-responsive {
+  width: 99%;
+  height: 100%;
+  overflow-x: auto;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background-color: white; /* Ajuste conforme necessário */
+  z-index: 1000; /* Garante que o cabeçalho esteja acima de outros conteúdos */
+}
+
+.table-responsive {
+  /* Defina uma altura máxima ou permita a rolagem vertical */
+  max-height: 600px;  /* Ajuste conforme necessário */
+  overflow-y: auto;
+  width: 100%;
+}
+
+
 /* Tablets (até 768px) */
 @media (max-width: 768px) {
   .header-content {
@@ -128,19 +151,22 @@ input[type=password] {
   .button-logout{
     width: 100%;
     position: relative;
-    top: 20px;
   }
   .user-name {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     margin-top: 0.1rem;
     font-size: 18px;
   }
+
   .user-name a {
-    margin-right: 5px;
-    color: #add8e6;
-    text-decoration: none;
-  }
+  white-space: nowrap;
+  width: 200px; /* Defina uma largura apropriada */
+ }
+
+ form#logout {
+  display: contents;
+ }
 }
 
 /* Celulares Grandes (até 590px) */
@@ -150,14 +176,30 @@ input[type=password] {
     justify-content: center;
     align-items: center;
   }
+
   .flex-container{
     display: flex;
     flex-wrap: wrap;
   }
+
   .button-logout{
     width: 100%;
     position: relative;
-    top: 20px;
+  }
+  .user-name {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 0.1rem;
+    font-size: 18px;
+  }
+
+  .user-name a {
+  white-space: nowrap;
+  width: 200px; /* Defina uma largura apropriada */
+  }
+
+  form#logout {
+    display: contents;
   }
 }
 
@@ -176,6 +218,26 @@ input[type=password] {
     position: relative;
     top: 20px;
   }
+
+  .button-logout{
+    width: 100%;
+    position: relative;
+  }
+  .user-name {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 0.1rem;
+    font-size: 18px;
+  }
+
+  .user-name a {
+  white-space: nowrap;
+  width: 200px; /* Defina uma largura apropriada */
+  }
+
+  form#logout {
+    display: contents;
+  }
 }
 
 /* Celulares Médios (até 375px) */
@@ -193,7 +255,21 @@ input[type=password] {
   .button-logout{
     width: 100%;
     position: relative;
-    top: 20px;
+  }
+  .user-name {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 0.1rem;
+    font-size: 18px;
+  }
+
+  .user-name a {
+  white-space: nowrap;
+  width: 250px; /* Defina uma largura apropriada */
+  } 
+
+  form#logout {
+    display: contents;
   }
 }
 
@@ -212,6 +288,14 @@ input[type=password] {
   .button-logout{
     width: 100%;
     position: relative;
-    top: 20px;
+    bottom: 10px;
+  }
+  .user-name a {
+    white-space: nowrap;
+    width: 200px; /* Defina uma largura apropriada */
+  }
+
+  form#logout {
+    display: contents;
   }
 }

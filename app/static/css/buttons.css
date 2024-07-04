@@ -51,7 +51,7 @@
   top: 20px; /* Adjust this value as needed */
   z-index: 100; /* To ensure it stays above other content */
   background-color: white; /* Or any other color, to ensure text readability */
-  margin: 20px;
+  /* margin: 20px; */
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -60,7 +60,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  /* justify-content: flex-start; */
 }
 
 /* General Button Styles */

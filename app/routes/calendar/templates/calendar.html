@@ -6,25 +6,28 @@
 
 {% block innerContent %}
     <table class="calendar">
-        <tr class="calendar-header">
-            <th colspan="7">{{ month_name }} {{month_year }} {{open_center}}</th>
-        </tr>
-        <tr>
-            <td>Seg</td>
-            <td>Ter</td>
-            <td>Qua</td>
-            <td>Qui</td>
-            <td>Sex</td>
-            <td>Sab</td>
-            <td>Dom</td>
-        </tr>
-        {% for week in calendar_days %}
-            <tr>
-                {% for day in week %}
-                    <td>{{ day }}</td>
-                {% endfor %}
+        <tbody class="calendar-body">
+            <tr class="calendar-header">
+                <th colspan="7">{{ month_name }} {{month_year }} {{open_center}}</th>
             </tr>
-        {% endfor %}
+            <tr>
+                <td>Seg</td>
+                <td>Ter</td>
+                <td>Qua</td>
+                <td>Qui</td>
+                <td>Sex</td>
+                <td>Sab</td>
+                <td>Dom</td>
+            </tr>
+            
+            {% for week in calendar_days %}
+                <tr>
+                    {% for day in week %}
+                        <td>{{ day }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
 
     <div id="dictData"></div>
