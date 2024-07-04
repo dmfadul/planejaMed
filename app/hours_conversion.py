@@ -158,8 +158,5 @@ def split_hours(hour_list):
 def convert_hours_to_line(hour_list):
     if not hour_list:
         return ""
-    
-    if len(hour_list) == 1:
-        return -1
-    
+
     return f"{hour_list[0]:02d}:00 - {hour_list[-1]+1:02d}:00"
