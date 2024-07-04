@@ -68,4 +68,6 @@ def gen_doctors_dict():
             if date in month_dates:
                 doctors_dict[doctor.crm ].append(app)
     
+    doctors_list = sorted(doctors_list, key=lambda x: x[1])
+
     return doctors_dict, doctors_list

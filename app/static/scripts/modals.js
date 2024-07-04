@@ -21,8 +21,8 @@ function openModal(modalID, options, title, label, callback) {
     // Add new options
     options.forEach(option => {
         let optionElement = document.createElement('option');
-        optionElement.value = option;
-        optionElement.textContent = option;
+        optionElement.value = option[0];
+        optionElement.textContent = option[1];
         dropdown.appendChild(optionElement);
     });
 

@@ -30,10 +30,11 @@
     <div id="dictData"></div>
 
     <script>
-        var doctorsList = {{ doctors_list | tojson | safe }};
-        var doctorsDict = {{ doctors_dict | tojson | safe }};
-        var currUserData = {{ curr_user_data | tojson | safe }};
-        var daysDict = {{ days_dict | tojson | safe }};
         var openCenter = {{ open_center | tojson | safe }};
+        var currUserData = {{ curr_user_data | tojson | safe }};
+
+        var daysDict = {{ days_dict | tojson | safe }};
+        var doctorsDict = {{ doctors_dict | tojson | safe }};
+        var doctorsList = {{ doctors_list | tojson | safe }};
     </script>
 {% endblock %}

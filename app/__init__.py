@@ -48,6 +48,7 @@ def create_app(config_filename=None):
 
 create_app()
 
+# TODO: PUT CALANDER HOURS IN ALPHABETICAL ORDER
 
 # TODO: FINISH ADMIN FUNCTIONS
 # TODO: list of months in db
