@@ -47,7 +47,7 @@ def cal_exchange(info_dict):
                                                 day_id=day.id,
                                                 hour=hour))
         
-    if pending_appointments:
-        Appointment.add_entries(pending_appointments)
+    # if pending_appointments:
+    #     Appointment.add_entries(pending_appointments)
     
 

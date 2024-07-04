@@ -26,6 +26,17 @@ function openModal(modalID, options, title, label, callback) {
         dropdown.appendChild(optionElement);
     });
 
+    const cancelButton = document.createElement("button");
+    cancelButton.textContent = "Cancelar";
+    cancelButton.id = "cancelButton";
+    cancelButton.className = "cancel-button";
+    cancelButton.classList.add("submit-button");
+    buttonDiv.appendChild(cancelButton);
+
+    cancelButton.addEventListener("click", function() {
+        closeModal(modalID);
+    }, { once: true }); // Ensure the event listener is added only once
+
     const saveButton = document.createElement("button");
     saveButton.textContent = "Confirmar";
     saveButton.id = "saveButton";
@@ -36,17 +47,6 @@ function openModal(modalID, options, title, label, callback) {
     saveButton.addEventListener("click", function() {
         const selectedValue = dropdown.value;
         callback(selectedValue);
-        closeModal(modalID);
-    }, { once: true }); // Ensure the event listener is added only once
-
-    const cancelButton = document.createElement("button");
-    cancelButton.textContent = "Cancelar";
-    cancelButton.id = "cancelButton";
-    cancelButton.className = "cancel-button";
-    cancelButton.classList.add("submit-button");
-    buttonDiv.appendChild(cancelButton);
-
-    cancelButton.addEventListener("click", function() {
         closeModal(modalID);
     }, { once: true }); // Ensure the event listener is added only once
 
