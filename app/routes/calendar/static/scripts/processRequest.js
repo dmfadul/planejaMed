@@ -40,7 +40,7 @@ function handleDonate(crm) {
     infoDict["donorCenter"] = openCenter;
     infoDict["donorCRM"] = crm;
 
-    if (currUserCRM === parseInt(crm)) {
+    if (currUserData[0] === parseInt(crm)) {
         handleOfferDonation(crm);
     }else{
         handleRequestDonation(crm);
@@ -86,10 +86,11 @@ function handleExchange(crm) {
 
     infoDict["day"] = day;
     infoDict["other_user_center"] = openCenter;
-    infoDict["current_user_crm"] = currUserCRM;
+    infoDict["current_user_crm"] = currUserData[0];
     infoDict["other_user_crm"] = crm;
+    
 
-    if (currUserCRM === parseInt(crm)) {
+    if (currUserData[0] === parseInt(crm)) {
         getExchangerCRM();
     } else {
         getExchangerHour(crm);
@@ -97,6 +98,7 @@ function handleExchange(crm) {
 }
 
 function getExchangerCRM() {
+    console.log("getExchangerCRM");
     let doctorList = Object.keys(daysDict[day]);
     let title = "Escolha com quem Trocar:"
     let label = "Médicos: "
@@ -119,7 +121,7 @@ function getExchangerHour(crm) {
 }
 
 function getCurrentUserHour() {
-    let availableHours = currUserSchedule;
+    let availableHours = doctorsDict[currUserData[0]];
     let title = "Escolha Horários para Trocar:"
     let label = "Seus Horários: "
 

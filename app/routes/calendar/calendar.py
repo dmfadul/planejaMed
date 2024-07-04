@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, jsonify, request
 from flask_login import login_required, current_user
-from .gen_data import gen_days_dict, gen_doctor_redundant_schedule
+from .gen_data import gen_days_dict, gen_doctors_dict
 from .resolve_data import resolve_data
 from app.models import Month
 
@@ -18,17 +18,19 @@ calendar_bp = Blueprint(
 @login_required
 def calendar(center):
     month = Month.get_current()
-    current_user_schedule = gen_doctor_redundant_schedule(current_user.crm)
     days_dict = gen_days_dict(center)
+
+    doctors_dict, doctors_list = gen_doctors_dict()
 
     kwargs = {
     'month_name': month.name,
     'month_year': month.year,
     'open_center': center,
     'calendar_days': month.calendar,
+    'curr_user_data': (current_user.crm, current_user.full_name),
     'days_dict': days_dict,
-    'curr_user_crm': current_user.crm,
-    'curr_user_schedule': current_user_schedule
+    'doctors_dict': doctors_dict,
+    'doctors_list': doctors_list
     }
     return render_template("calendar.html", **kwargs)
 
