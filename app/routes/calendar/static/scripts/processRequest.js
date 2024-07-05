@@ -143,7 +143,22 @@ function getCurrentUserHour() {
 }
 
 function handleInclude() {
-    // Your code for handling include
+    infoDict = {};
+
+    infoDict["day"] = day;
+    infoDict["center"] = openCenter;
+
+    let doctors = doctorsList.filter(d => d[0] !== currUserData[0]);
+    let title = "Escolha com quem Trocar:"
+    let label = "Médicos: "
+
+    openModal("modal1", doctors, title, label, function(selectedDoc) {
+        infoDict["user_to_include_crm"] = selectedDoc;
+        openHourModal(function(selectedValue){
+            infoDict["hours"] = selectedValue;
+            sendHoursToServer("cal_include", infoDict);
+        });
+    });
 }
 
 // Function to send selected hours to the server
