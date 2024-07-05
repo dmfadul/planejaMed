@@ -1,15 +1,30 @@
 from app.models import Appointment, Request, User, Center, Day, Month
-from app.hours_conversion import gen_hour_range
+from app.hours_conversion import gen_hour_range, convert_hours
 from flask_login import current_user
 from datetime import datetime
 
 
 def resolve_data(action, info_dict):
-    if action == "cal_exclude":
-        return cal_exclude(info_dict)
+    if action == "cal_include":
+        return cal_include(info_dict)
     elif action == "cal_exchange":
         return cal_exchange(info_dict)
-    
+    elif action == "cal_exclude":
+        return cal_exclude(info_dict)
+    elif action == "cal_donate":
+        return cal_donate(info_dict)
+
+
+
+def cal_include(info_dict):
+    day = info_dict.get('day')
+    center = info_dict.get('center')
+    crm = info_dict.get('crmToInclude')
+
+    hours = convert_hours(info_dict.get('hoursToInclude'))
+
+    print(day, center, crm)
+
 
 def cal_exclude(info_dict):
     day = info_dict.get('day')
@@ -51,3 +66,5 @@ def cal_exchange(info_dict):
     #     Appointment.add_entries(pending_appointments)
     
 
+def cal_donate(info_dict):
+    pass

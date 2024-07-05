@@ -160,3 +160,31 @@ def convert_hours_to_line(hour_list):
         return ""
 
     return f"{hour_list[0]:02d}:00 - {hour_list[-1]+1:02d}:00"
+
+
+def convert_hours(hour_list):
+    """convert the string hour list from the frontend to a list of integers
+    Hour_list has the format ["-", "00:00", "00:00"]"""
+    hours_map = global_vars.HOURS_MAP
+
+    if hour_list[0] == "-":
+        start_hour, end_hour = int(hour_list[1].split(":")[0]), int(hour_list[2].split(":")[0])
+        if start_hour == end_hour and not start_hour == 7:
+            return "Horários Inválidos - A hora de Início e de Fim são iguais"
+        
+        if start_hour >= end_hour:
+            hours = list(range(start_hour, 24)) + list(range(end_hour))
+        else:
+            hours = list(range(start_hour, end_hour))
+    else:
+        start_hour, end_hour = hours_map[hour_list[0]]
+        
+        if start_hour > end_hour:
+            hours = list(range(start_hour, 24)) + list(range(end_hour + 1))
+        else:
+            hours = list(range(start_hour, end_hour + 1))
+
+    if 7 in hours[1:]:
+        return "Horários Inválidos - A hora de Fim Passa para o Dia Seguinte"
+
+    return hours

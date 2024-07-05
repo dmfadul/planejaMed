@@ -46,7 +46,6 @@ def update_hours():
     data = request.json
     action = data.get('action')
     info_dict = data.get('infoDict')
-    print(info_dict)
 
     flag = resolve_data(action, info_dict)
 

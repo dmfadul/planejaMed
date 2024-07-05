@@ -148,14 +148,14 @@ function handleInclude() {
     infoDict["day"] = day;
     infoDict["center"] = openCenter;
 
-    let doctors = doctorsList.filter(d => d[0] !== currUserData[0]);
+    let doctors = doctorsList;
     let title = "Escolha com quem Trocar:"
     let label = "Médicos: "
 
     openModal("modal1", doctors, title, label, function(selectedDoc) {
-        infoDict["user_to_include_crm"] = selectedDoc;
+        infoDict["crmToInclude"] = selectedDoc;
         openHourModal(function(selectedValue){
-            infoDict["hours"] = selectedValue;
+            infoDict["hoursToInclude"] = selectedValue;
             sendHoursToServer("cal_include", infoDict);
         });
     });
