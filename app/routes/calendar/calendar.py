@@ -49,7 +49,7 @@ def update_hours():
 
     flag = resolve_data(action, info_dict)
     if flag == 0:
-        flash("Horários excluídos com sucesso", "success")
+        flash("Pedido feito com sucesso", "success")
         return jsonify({"status": "success", 'message': "Horários excluídos com sucesso"})
     
     flash(flag, "danger")

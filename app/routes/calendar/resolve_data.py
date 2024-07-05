@@ -6,28 +6,6 @@ import app.global_vars as global_vars
 
 
 def resolve_data(action, info_dict):
-    if action == "cal_include":
-        return cal_include(info_dict)
-    elif action == "cal_exchange":
-        return cal_exchange(info_dict)
-    elif action == "cal_exclude":
-        return cal_exclude(info_dict)
-    elif action == "cal_donate":
-        return cal_donate(info_dict)
-
-
-
-def cal_include(info_dict):
-    day = info_dict.get('day')
-    center = info_dict.get('center')
-    crm = info_dict.get('crmToInclude')
-
-    hours = convert_hours(info_dict.get('hoursToInclude'))
-
-    print(day, center, crm)
-
-
-def cal_exclude(info_dict):
     year = info_dict.get('year')
     month_name = info_dict.get('month_name')
     month = Month.query.filter_by(number=global_vars.MESES.index(month_name)+1, year=year).first()
@@ -44,12 +22,34 @@ def cal_exclude(info_dict):
     if not center:
         return "Centro não encontrado"
 
-    crm = info_dict.get('crmToExclude')
+    crm = info_dict.get('crm')
     doctor = User.query.filter_by(crm=crm).first()
     if not doctor:
         return "Médico não encontrado"
+    
+    hours = convert_hours(info_dict.get('hours'))
 
-    hours = convert_hours(info_dict.get('hoursToExclude'))
+    if action == "cal_include":
+        return cal_include(doctor, center, day, hours)
+    elif action == "cal_exchange":
+        return cal_exchange(info_dict)
+    elif action == "cal_exclude":
+        return cal_exclude(doctor, center, day, hours)
+    elif action == "cal_donate":
+        return cal_donate(info_dict)
+
+
+def cal_include(doctor, center, day, hours):
+    for hour in hours:
+        Appointment.add_entry(user_id=doctor.id,
+                              center_id=center.id,
+                              day_id=day.id,
+                              hour=hour)
+    
+    return 0
+
+
+def cal_exclude(doctor, center, day, hours):
     apps_to_delete = []
     for hour in hours:
         app = Appointment.query.filter_by(day_id=day.id,

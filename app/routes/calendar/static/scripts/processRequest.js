@@ -12,6 +12,27 @@ function processCalRequest(itemInfo, crm, action) {
     }
 }
 
+function handleInclude() {
+    infoDict = {};
+
+    infoDict["day"] = day;
+    infoDict["month_name"] = monthName;
+    infoDict["year"] = monthYear;
+    infoDict["center"] = openCenter;
+
+    let doctors = doctorsList;
+    let title = "Escolha com quem Trocar:"
+    let label = "Médicos: "
+
+    openModal("modal1", doctors, title, label, function(selectedDoc) {
+        infoDict["crm"] = selectedDoc;
+        openHourModal(function(selectedValue){
+            infoDict["hours"] = selectedValue;
+            sendHoursToServer("cal_include", infoDict);
+        });
+    });
+}
+
 function handleExclude(crm) {
     infoDict = {};
 
@@ -19,7 +40,7 @@ function handleExclude(crm) {
     infoDict["month_name"] = monthName;
     infoDict["year"] = monthYear;
     infoDict["center"] = openCenter;
-    infoDict["crmToExclude"] = crm;
+    infoDict["crm"] = crm;
 
     let redudantHoursList = daysDict[day][crm]["hours"][1];
     redudantHoursList = redudantHoursList.map(h => [h, h]);
@@ -28,7 +49,7 @@ function handleExclude(crm) {
     let label = "Horários: "
     
     openModal('modal1', redudantHoursList, title, label, function(selectedValue) {
-        infoDict["hoursToExclude"] = selectedValue;
+        infoDict["hours"] = selectedValue;
         sendHoursToServer("cal_exclude", infoDict);
     });
 }
@@ -142,25 +163,6 @@ function getCurrentUserHour() {
     openModal("modal1", availableHours, title, label, function(selectedInfo) {
         infoDict["current_user_center_date_hours"] = selectedInfo;
         sendHoursToServer("cal_exchange", infoDict);
-    });
-}
-
-function handleInclude() {
-    infoDict = {};
-
-    infoDict["day"] = day;
-    infoDict["center"] = openCenter;
-
-    let doctors = doctorsList;
-    let title = "Escolha com quem Trocar:"
-    let label = "Médicos: "
-
-    openModal("modal1", doctors, title, label, function(selectedDoc) {
-        infoDict["crmToInclude"] = selectedDoc;
-        openHourModal(function(selectedValue){
-            infoDict["hoursToInclude"] = selectedValue;
-            sendHoursToServer("cal_include", infoDict);
-        });
     });
 }
 
