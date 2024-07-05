@@ -16,6 +16,9 @@ function handleExclude(crm) {
     infoDict = {};
 
     infoDict["day"] = day;
+    infoDict["month_name"] = monthName;
+    infoDict["year"] = monthYear;
+    infoDict["center"] = openCenter;
     infoDict["crmToExclude"] = crm;
 
     let redudantHoursList = daysDict[day][crm]["hours"][1];
@@ -182,5 +185,8 @@ function sendHoursToServer(action, infoDict) {
     })
     .catch((error) => {
         console.error('Error:', error);
+    })
+    .finally(() => {
+        window.location.reload();
     });
 }

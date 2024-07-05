@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify, request
+from flask import Blueprint, render_template, jsonify, request, flash
 from flask_login import login_required, current_user
 from .gen_data import gen_days_dict, gen_doctors_dict
 from .resolve_data import resolve_data
@@ -48,5 +48,9 @@ def update_hours():
     info_dict = data.get('infoDict')
 
     flag = resolve_data(action, info_dict)
-
-    return jsonify({"status": "success"})
+    if flag == 0:
+        flash("Horários excluídos com sucesso", "success")
+        return jsonify({"status": "success", 'message': "Horários excluídos com sucesso"})
+    
+    flash(flag, "danger")
+    return jsonify({"status": "error", 'message': 'Appointments not updated'})

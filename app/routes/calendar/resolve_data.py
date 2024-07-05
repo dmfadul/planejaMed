@@ -2,6 +2,7 @@ from app.models import Appointment, Request, User, Center, Day, Month
 from app.hours_conversion import gen_hour_range, convert_hours
 from flask_login import current_user
 from datetime import datetime
+import app.global_vars as global_vars
 
 
 def resolve_data(action, info_dict):
@@ -27,9 +28,43 @@ def cal_include(info_dict):
 
 
 def cal_exclude(info_dict):
-    day = info_dict.get('day')
+    year = info_dict.get('year')
+    month_name = info_dict.get('month_name')
+    month = Month.query.filter_by(number=global_vars.MESES.index(month_name)+1, year=year).first()
+    if not month:
+        return "Mês não encontrado"
+    
+    day_number = int(info_dict.get('day'))
+    day = month.get_day(day_number)
+    if not day:
+        return "Dia não encontrado"
+
+    center_abbr = info_dict.get('center')
+    center = Center.query.filter_by(abbreviation=center_abbr).first()
+    if not center:
+        return "Centro não encontrado"
+
     crm = info_dict.get('crmToExclude')
-    hours_to_exclude_line = info_dict.get('hoursToExclude')
+    doctor = User.query.filter_by(crm=crm).first()
+    if not doctor:
+        return "Médico não encontrado"
+
+    hours = convert_hours(info_dict.get('hoursToExclude'))
+    apps_to_delete = []
+    for hour in hours:
+        app = Appointment.query.filter_by(day_id=day.id,
+                                          user_id=doctor.id,
+                                          center_id=center.id,
+                                          hour=hour).first()
+        if app:
+            apps_to_delete.append(app)
+        else:
+            return f"Horário {hour} não encontrado"
+
+    for app in apps_to_delete:
+        app.delete_entry()
+    
+    return 0
 
 
 def cal_exchange(info_dict):

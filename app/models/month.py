@@ -134,6 +134,7 @@ class Month(db.Model):
         return [appointment for day in self.days for appointment in day.appointments]
     
     def get_day(self, day_num):
+        day_num = int(day_num)
         return [day for day in self.days if day.date.day == day_num][0]
 
     def populate(self):
