@@ -57,9 +57,11 @@ function handleExclude(crm) {
 function handleDonate(crm) {
     infoDict = {};
 
-    infoDict["donorDay"] = day;
-    infoDict["donorCenter"] = openCenter;
-    infoDict["donorCRM"] = crm;
+    infoDict["day"] = day;
+    infoDict["month_name"] = monthName;
+    infoDict["year"] = monthYear;
+    infoDict["center"] = openCenter;
+    infoDict["crm"] = crm;
 
     if (currUserData[0] === parseInt(crm)) {
         handleOfferDonation(crm);
@@ -75,7 +77,7 @@ function handleOfferDonation(currentUserCRM) {
     let label = "Horários: "
     
     openModal("modal1", availableHours, title, label, function(selectedHrs) {
-        infoDict["donorHours"] = selectedHrs;
+        infoDict["hours"] = selectedHrs;
         action = "cal_donate";
 
         let doctors = doctorsList.filter(d => d[0] !== parseInt(currentUserCRM));
@@ -97,7 +99,7 @@ function handleRequestDonation(donorCRM) {
     let label = "Horários: "
     
     openModal("modal1", availableHours, title, label, function(selectedHrs) {
-        infoDict["donorHours"] = selectedHrs;  
+        infoDict["hours"] = selectedHrs;  
         sendHoursToServer("cal_donate", infoDict);
     });
 }

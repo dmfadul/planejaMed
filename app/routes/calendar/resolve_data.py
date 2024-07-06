@@ -6,9 +6,8 @@ import app.global_vars as global_vars
 
 
 def resolve_data(action, info_dict):
-    year = info_dict.get('year')
-    month_name = info_dict.get('month_name')
-    month = Month.query.filter_by(number=global_vars.MESES.index(month_name)+1, year=year).first()
+    month = Month.query.filter_by(number=global_vars.MESES.index(info_dict.get('month_name'))+1,
+                                  year=info_dict.get('year')).first()
     if not month:
         return "Mês não encontrado"
     
@@ -36,7 +35,10 @@ def resolve_data(action, info_dict):
     elif action == "cal_exclude":
         return cal_exclude(doctor, center, day, hours)
     elif action == "cal_donate":
-        return cal_donate(info_dict)
+        receiver_crm = info_dict.get('receiverCRM')
+        receiver = User.query.filter_by(crm=receiver_crm).first() or current_user
+
+        return cal_donate(doctor, center, day, hours, receiver)
 
 
 def cal_include(doctor, center, day, hours):
@@ -68,38 +70,52 @@ def cal_exclude(doctor, center, day, hours):
 
 
 def cal_exchange(info_dict):
-    other_user_day = info_dict.get('day')
-    other_user_center = info_dict.get('other_user_center')
-    other_user_crm = info_dict.get('other_user_crm')
-    other_user_hours = info_dict.get('other_user_hours').split(': ')[1].strip()
-    str_hour, end_hour = other_user_hours.split('-')
+    print(info_dict)
+    # other_user_day = info_dict.get('day')
+    # other_user_center = info_dict.get('other_user_center')
+    # other_user_crm = info_dict.get('other_user_crm')
+    # other_user_hours = info_dict.get('other_user_hours').split(': ')[1].strip()
+    # str_hour, end_hour = other_user_hours.split('-')
 
-    str_hour = int(str_hour.split(':')[0])
-    end_hour = int(end_hour.split(':')[0])
-    hours = gen_hour_range((str_hour, end_hour))
+    # str_hour = int(str_hour.split(':')[0])
+    # end_hour = int(end_hour.split(':')[0])
+    # hours = gen_hour_range((str_hour, end_hour))
 
-    current_month = Month.get_current()
-    date = datetime(current_month.year, current_month.number, int(other_user_day))
-    center = Center.query.filter_by(abbreviation=other_user_center).first()
-    day = Day.query.filter_by(date=date).first()
+    # current_month = Month.get_current()
+    # date = datetime(current_month.year, current_month.number, int(other_user_day))
+    # center = Center.query.filter_by(abbreviation=other_user_center).first()
+    # day = Day.query.filter_by(date=date).first()
 
-    curent_user_crm = info_dict.get('current_user_crm')
-    current_user_center = info_dict.get('current_user_center_date_hours').split('--')[0].strip()
-    current_user_date = info_dict.get('current_user_center_date_hours').split('--')[1].strip()
-    current_user_hours = info_dict.get('current_user_center_date_hours').split('--')[2].strip()
+    # curent_user_crm = info_dict.get('current_user_crm')
+    # current_user_center = info_dict.get('current_user_center_date_hours').split('--')[0].strip()
+    # current_user_date = info_dict.get('current_user_center_date_hours').split('--')[1].strip()
+    # current_user_hours = info_dict.get('current_user_center_date_hours').split('--')[2].strip()
     
-    current_user_day = int(current_user_date.split('/')[0])
+    # current_user_day = int(current_user_date.split('/')[0])
 
-    pending_appointments = []
-    for hour in hours:
-        pending_appointments.append(Appointment(user_id=current_user.id,
-                                                center_id=center.id,
-                                                day_id=day.id,
-                                                hour=hour))
+    # pending_appointments = []
+    # for hour in hours:
+    #     pending_appointments.append(Appointment(user_id=current_user.id,
+    #                                             center_id=center.id,
+    #                                             day_id=day.id,
+    #                                             hour=hour))
         
     # if pending_appointments:
     #     Appointment.add_entries(pending_appointments)
-    
 
-def cal_donate(info_dict):
-    pass
+def cal_donate(donor, center, day, hours, receiver):
+    apps = []
+    for hour in hours:
+        app = Appointment.query.filter_by(day_id=day.id,
+                                          user_id=donor.id,
+                                          center_id=center.id,
+                                          hour=hour).first()
+        if app:
+            apps.append(app)
+        else:
+            return f"Horário {hour} não encontrado"
+    
+    for app in apps:
+        app.change_doctor(receiver.id)
+        
+    return 0
