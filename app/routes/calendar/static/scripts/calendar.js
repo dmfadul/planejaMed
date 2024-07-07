@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             day = clickedDay.innerText;
             let dayList = daysDict[day];
-
             let output = '<ul>';
 
             output += `
@@ -28,7 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
             </li>`;
             
             let index = 1;
-            for (let [crm, infoDict] of Object.entries(dayList)) {
+            let dayValues = Object.entries(dayList).sort((a, b) => a[1].name.localeCompare(b[1].name))
+            for (let [crm, infoDict] of dayValues) {
                 let name = infoDict['name'];
                 let hourLine = infoDict['hours'][0];
 
