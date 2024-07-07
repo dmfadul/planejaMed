@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, jsonify, request, flash
 from flask_login import login_required, current_user
 from .gen_data import gen_days_dict, gen_doctors_dict
 from .resolve_data import resolve_data
-from app.models import Month
+from app.models import Month, Center
 
 
 calendar_bp = Blueprint(
@@ -18,9 +18,10 @@ calendar_bp = Blueprint(
 @login_required
 def calendar(center):
     month = Month.get_current()
-    days_dict = gen_days_dict(center)
 
+    days_dict = gen_days_dict(center)
     doctors_dict, doctors_list = gen_doctors_dict()
+    centers = [center.abbreviation for center in Center.query.all()]
 
     kwargs = {
     'month_name': month.name,

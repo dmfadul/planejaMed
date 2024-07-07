@@ -56,18 +56,18 @@ def gen_doctors_dict():
     for doctor in doctors:
         if doctor.crm not in doctors_dict:
             doctors_list.append((doctor.crm, doctor.full_name))
-            doctors_dict[doctor.crm] = []
-        
-        month = Month.get_current()
-        month_dates = [day.date for day in month.days]
+            doctors_dict[doctor.crm] = {}
 
-        schedule = doctor.redundant_schedule
-    
-        for app in schedule:
-            date = datetime.strptime(app.split(" -- ")[1], "%d/%m/%y").date()
-            if date in month_dates:
-                doctors_dict[doctor.crm ].append(app)
-    
-    doctors_list = sorted(doctors_list, key=lambda x: x[1])
+        schedule = doctor.app_dict
+        for center, date_hours in schedule.items():
+            if center not in doctors_dict:
+                doctors_dict[doctor.crm][center] = {}
+            
+            for date, hours in date_hours.items():
+                if date.day not in doctors_dict[doctor.crm][center]:
+                    doctors_dict[doctor.crm][center][date.day] = []
+
+                redudant_hours = gen_redudant_hour_list(hours, include_line=True)
+                doctors_dict[doctor.crm][center][date.day].append(redudant_hours)       
 
     return doctors_dict, doctors_list
