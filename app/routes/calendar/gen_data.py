@@ -68,6 +68,8 @@ def gen_doctors_dict():
                     doctors_dict[doctor.crm][center][date.day] = []
 
                 redudant_hours = gen_redudant_hour_list(hours, include_line=True)
-                doctors_dict[doctor.crm][center][date.day].append(redudant_hours)       
+                doctors_dict[doctor.crm][center][date.day].append(redudant_hours)
+
+    doctors_list = sorted(doctors_list, key=lambda x: x[1])       
 
     return doctors_dict, doctors_list

@@ -8,11 +8,11 @@ function processCalRequest(itemInfo, crm, action) {
     }
 
     infoDict = {};
-    infoDict["day"] = day;
-    infoDict["month_name"] = monthName;
     infoDict["year"] = monthYear;
+    infoDict["month_name"] = monthName;
+    infoDict["day"] = day;
     infoDict["center"] = openCenter;
-    infoDict["crm"] = crm;
+    infoDict["crm"] = parseInt(crm);
 
 
     if (action === "include") {
@@ -28,7 +28,7 @@ function processCalRequest(itemInfo, crm, action) {
     }
 }
 
-// include functions
+// include function
 function handleInclude(infoDict) {
     let doctors = doctorsList;
     let title = "Escolha quem Incluir:"
@@ -45,7 +45,7 @@ function handleInclude(infoDict) {
 
 // exchange functions
 function handleExchange(infoDict) {
-    if (currUserData[0] === parseInt(infoDict["crm"])) {
+    if (parseInt(infoDict["crm"]) === currUserData[0]) {
         handleExchangeFromCurrentUser(infoDict);
     } else {
         handleExchangeFromOtherUser(infoDict);
@@ -53,57 +53,97 @@ function handleExchange(infoDict) {
 }
 
 function handleExchangeFromCurrentUser(infoDict) {
-    getOtherUserCRM(infoDict);
+    let availableHours = redudantHoursList;
+    let title = "Especifique as Horas das quais Você quer Sair";
+    let label = "Horários: ";
+    
+    openModal('modal1', availableHours, title, label, function(selectedValue) {
+        infoDict["hours"] = selectedValue;
+
+        let doctors = doctorsList.filter(d => d[0] !== currUserData[0]);
+        let title = "Escolha com quem Trocar";
+        let label = "Médicos: ";
+
+        openModal("modal2", doctors, title, label, function(selectedDoc) {
+            infoDict["crm2"] = selectedDoc;
+
+            let centers = Object.keys(doctorsDict[selectedDoc]);
+            centers = centers.map(h => [h, h]);
+            let title = "Escolha o Centro que você quer entrar";
+            let label = "Centros: ";
+
+            openModal("modal1", centers, title, label, function(selectedCenter) {
+                infoDict["center2"] = selectedCenter;
+
+                let days = Object.keys(doctorsDict[selectedDoc][selectedCenter])
+                days = days.map(h => [h, h])
+                let title = "Escolha o dia que você quer entrar";
+                let label = "Dias: ";
+
+                openModal("modal2", days, title, label, function(selectedDay) {
+                    infoDict["day2"] = selectedDay;
+
+                    let hours = doctorsDict[selectedDoc][selectedCenter][selectedDay]
+                    let title = "Escolha as Horas que você quer entrar";
+                    let label = "Horas: ";
+
+                    openModal("modal1", hours, title, label, function(selectedHour){
+                        infoDict["hours2"] = selectedHour;
+
+                        sendHoursToServer("cal_exchange", infoDict)
+                    });
+                });
+            });
+        });
+    });
 }
 
 function handleExchangeFromOtherUser(infoDict) {
-    getOtherUserHour(infoDict, true);
-}
+    let selectedDoc = currUserData[0];
 
-function getOtherUserCRM(infoDict) {
-    let doctors = doctorsList.filter(d => d[0] !== currUserData[0]);
-    let title = "Escolha com quem Trocar:"
-    let label = "Médicos: "
+    let availableHours = redudantHoursList;
+    let title = "Especifique as Horas nas quais Você quer Entrar";
+    let label = "Horários: ";
+    
+    openModal('modal2', availableHours, title, label, function(selectedValue) {
+        infoDict["hours"] = selectedValue;
+        infoDict["crm2"] = currUserData[0];
 
-    openModal("modal1", doctors, title, label, function(selectedDoc) {
-        infoDict["other_user_crm"] = selectedDoc;
-        getOtherUserHour("cal_exchange", selectedDoc);
+        let centers = Object.keys(doctorsDict[selectedDoc]);
+        centers = centers.map(h => [h, h]);
+        let title = "Escolha o Centro que você quer entrar";
+        let label = "Centros: ";
+
+        openModal("modal1", centers, title, label, function(selectedCenter) {
+            infoDict["center2"] = selectedCenter;
+
+            let days = Object.keys(doctorsDict[selectedDoc][selectedCenter])
+            days = days.map(h => [h, h])
+            let title = "Escolha o dia que você quer entrar";
+            let label = "Dias: ";
+
+            openModal("modal2", days, title, label, function(selectedDay) {
+                infoDict["day2"] = selectedDay;
+
+                let hours = doctorsDict[selectedDoc][selectedCenter][selectedDay]
+                let title = "Escolha as Horas que você quer entrar";
+                let label = "Horas: ";
+                
+                openModal("modal1", hours, title, label, function(selectedHour){
+                    infoDict["hours2"] = selectedHour;
+
+                    sendHoursToServer("cal_exchange", infoDict)
+                });
+            });
+        });
     });
 }
 
-function getOtherUserHour(infoDict, dayOnly=false) {
-    let availableHours = null;
-    if (dayOnly) {
-        availableHours = daysDict[day][infoDict["crm"]]["hours"][1];
-    } else {
-        availableHours = doctorsDict[infoDict["other_user_crm"]];
-    }
-    availableHours = availableHours.map(h => [h, h]);
-    let title = "Escolha Horas para Receber:"
-    let label = "Horários: "
 
-    openModal("modal2", availableHours, title, label, function(selectedHrs) {
-        infoDict["hours"] = selectedHrs;
-        getCurrentUserHour();
-    });
-}
-
-function getCurrentUserHour() {
-    let availableHours = doctorsDict[currUserData[0]];
-    availableHours = availableHours.map(h => [h, h]);
-    let title = "Escolha Horários para Trocar:"
-    let label = "Seus Horários: "
-
-    openModal("modal1", availableHours, title, label, function(selectedInfo) {
-        infoDict["current_user_center_date_hours"] = selectedInfo;
-        sendHoursToServer("cal_exchange", infoDict);
-    });
-}
-
-// exclude functions
+// exclude function
 function handleExclude(infoDict) {
     let availableHours = redudantHoursList;
-    let title = "Escolha Horas para Excluir:"
+    let title = "Especifique Horas para Excluir:"
     let label = "Horários: "
     
     openModal('modal1', availableHours, title, label, function(selectedValue) {

@@ -21,7 +21,6 @@ def calendar(center):
 
     days_dict = gen_days_dict(center)
     doctors_dict, doctors_list = gen_doctors_dict()
-    centers = [center.abbreviation for center in Center.query.all()]
 
     kwargs = {
     'month_name': month.name,
