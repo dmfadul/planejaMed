@@ -1,20 +1,27 @@
 {% extends 'base.html' %}
 
-{% block mainContent %}
-    <form id="login" method="POST" action="">
-        {{ form.hidden_tag() }}
+{% block head_links %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('login.static', filename='css/login.css') }}">
+{% endblock %}
 
-        <h2>Login</h2>
-        {{ form.crm_number(id="crm", placeholder="CRM", autofocus=True) }}
+{% block outsideContent %}
+    <div class="container">
+        <div class="login-inicial">
+            <form class="login-form" id="login" method="POST" action="">
+                {{ form.hidden_tag() }}
 
-        {{ form.password(id="password", placeholder="SENHA") }}
+                <h2>Login</h2>
+                {{ form.crm_number(id="crm", placeholder="CRM", autofocus=True) }}
 
-        {{ form.submit(class="button") }}
-    </form>
-    <div style="padding: 10px;">
+                {{ form.password(id="password", placeholder="SENHA") }}
+
+                {{ form.submit(class="button") }}
+            </form>
+        </div>
+    </div>
+    <div class="inscrever">
         <small>
             <a href="{{ url_for('login.register') }}"> Inscreva-se </a>
         </small>
     </div>
-
 {% endblock %}
