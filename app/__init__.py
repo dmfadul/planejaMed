@@ -48,6 +48,9 @@ def create_app(config_filename=None):
 
 create_app()
 
+# TODO: PUT CALANDER HOURS IN ALPHABETICAL ORDER
+# TODO: fix split hours bug (no line between two hours)
+# TODO: CLEAN UP MODALS.JS
 
 # TODO: FINISH ADMIN FUNCTIONS
 # TODO: list of months in db

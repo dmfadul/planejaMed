@@ -48,19 +48,28 @@ def gen_day_hours(center_abbr, day_num):
     return appointments_dict
 
 
-def gen_doctor_redundant_schedule(doctor_crm):
-    doctor = User.query.filter_by(crm=doctor_crm).first()
-    month = Month.get_current()
-    month_dates = [day.date for day in month.days]
+def gen_doctors_dict():
+    doctors = User.query.all()
 
-    schedule = doctor.redundant_schedule
-    
-    month_schedule = []
-    for app in schedule:
-        date = datetime.strptime(app.split(" -- ")[1], "%d/%m/%y").date()
-        if date in month_dates:
-            month_schedule.append(app)
-    
-    return month_schedule
+    doctors_dict = {}
+    doctors_list = []
+    for doctor in doctors:
+        if doctor.crm not in doctors_dict:
+            doctors_list.append((doctor.crm, doctor.full_name))
+            doctors_dict[doctor.crm] = {}
 
+        schedule = doctor.app_dict
+        for center, date_hours in schedule.items():
+            if center not in doctors_dict:
+                doctors_dict[doctor.crm][center] = {}
+            
+            for date, hours in date_hours.items():
+                if date.day not in doctors_dict[doctor.crm][center]:
+                    doctors_dict[doctor.crm][center][date.day] = []
 
+                redudant_hours = gen_redudant_hour_list(hours, include_line=True)
+                doctors_dict[doctor.crm][center][date.day].append(redudant_hours)
+
+    doctors_list = sorted(doctors_list, key=lambda x: x[1])       
+
+    return doctors_dict, doctors_list

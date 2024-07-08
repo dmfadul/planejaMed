@@ -64,6 +64,10 @@ class Appointment(db.Model):
         from app.global_vars import NIGHT_HOURS
         return self.hour in NIGHT_HOURS
     
+    def change_doctor(self, new_doctor_id):
+        self.user_id = new_doctor_id
+        db.session.commit()
+    
     def confirm(self):
         self.is_confirmed = True
         db.session.commit()

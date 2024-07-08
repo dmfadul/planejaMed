@@ -15,12 +15,14 @@ from app.hours_conversion import appointments_letters_key
 
 # print(convert_hours(["-", "01:00", "18:00"]))
 
-t = ["m6", "d11", "n"]
-t = sorted(t, key=appointments_letters_key)
-print(t)
+# t = ["m6", "d11", "n"]
+# t = sorted(t, key=appointments_letters_key)
+# print(t)
 
-app = create_app()
-with app.app_context():
+# app = create_app()
+# with app.app_context():
+#     test = User.query.filter_by(crm=26704).first()
+#     print(test.app_dict)
 
 
     # days = []
@@ -52,4 +54,4 @@ with app.app_context():
     # month = Month.query.filter_by(number=12, year=2023).first()
     # month.populate()
     # month.gen_appointments()
-    pass
+    # pass
