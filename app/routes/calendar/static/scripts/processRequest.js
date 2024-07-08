@@ -3,15 +3,16 @@ let redudantHoursList = [];
 
 function processSchRequest(item, action) {
     let infoDict = {};
-    if (action !=="sch_include") {
+    if (action !=="include") {
         let center = item.split("--")[0].trim();
         let date = item.split("--")[1].trim();
         let hours = item.split("--")[2].trim();
 
         let day = parseInt(date.split("/")[0].trim());
 
+        infoDict["day"] = parseInt(date.split("/")[0]);
         infoDict["center"] = center;
-        infoDict["date"] = date;
+        infoDict["crm"] = currUserData[0];
         infoDict["hours"] = hours;
 
         redudantHoursList = doctorsDict[currUserData[0]][center][day][0];
@@ -23,7 +24,7 @@ function processSchRequest(item, action) {
     } else if (action === "exclude") {
         handleSchExclude(infoDict);
     } else if (action === "donate") {
-        handleSchDonate(infoDict);
+        handleOfferDonation(infoDict);
     } else if (action === "exchange") {
         handleSchExchange(infoDict);
     } else {
@@ -32,12 +33,34 @@ function processSchRequest(item, action) {
 }
 
 function handleSchInclude(infoDict) {
+    let availableCenters = centers;
+    availableCenters = availableCenters.map(h => [h, h]);
+    let title = "Escolha em que Centro Entrar";
+    let label = "Centros: ";
+
+    openModal("modal1", availableCenters, title, label, function(selectedCenter) {
+        infoDict["center"] = selectedCenter;
+
+        let availableDays = days;
+        availableDays = availableDays.map(h => [h, h]);
+        let title = "Escolha em que Dia Entrar";
+        let label = "Centros: ";
+        
+        openModal("modal2", availableDays, title, label, function(selectedDay) {
+            infoDict["day"] = selectedDay;
+            
+            openHourModal(function(selectedValue){
+                infoDict["hours"] = selectedValue;
+                sendHoursToServer("cal_include", infoDict);
+            });
+        });
+    });
 }
 
 function handleSchExclude(infoDict) {
     let availableHours = redudantHoursList;
-    let title = "Especifique Horas para Excluir:"
-    let label = "Horários: "
+    let title = "Especifique Horas para Excluir";
+    let label = "Horários: ";
     
     openModal('modal1', availableHours, title, label, function(selectedValue) {
         infoDict["hours"] = selectedValue;
@@ -60,8 +83,8 @@ function processCalRequest(crm, action) {
     }
 
     infoDict = {};
-    infoDict["year"] = monthYear;
-    infoDict["month_name"] = monthName;
+    // infoDict["year"] = monthYear;
+    // infoDict["month_name"] = monthName;
     infoDict["day"] = day;
     infoDict["center"] = openCenter;
     infoDict["crm"] = parseInt(crm);
@@ -82,8 +105,8 @@ function processCalRequest(crm, action) {
 // include function
 function handleInclude(infoDict) {
     let doctors = doctorsList;
-    let title = "Escolha quem Incluir:"
-    let label = "Médicos: "
+    let title = "Escolha quem Incluir";
+    let label = "Médicos: ";
 
     openModal("modal1", doctors, title, label, function(selectedDoc) {
         infoDict["crm"] = selectedDoc;
@@ -194,7 +217,7 @@ function handleExchangeFromOtherUser(infoDict) {
 // exclude function
 function handleExclude(infoDict) {
     let availableHours = redudantHoursList;
-    let title = "Especifique Horas para Excluir:"
+    let title = "Especifique Horas para Excluir";
     let label = "Horários: "
     
     openModal('modal1', availableHours, title, label, function(selectedValue) {
@@ -214,16 +237,16 @@ function handleDonate(infoDict) {
 
 function handleOfferDonation(infoDict) {
     let availableHours = redudantHoursList;
-    let title = "Escolha Horas para Doar:"
-    let label = "Horários: "
+    let title = "Escolha Horas para Doar";
+    let label = "Horários: ";
     
     openModal("modal1", availableHours, title, label, function(selectedHrs) {
         infoDict["hours"] = selectedHrs;
         action = "cal_donate";
 
-        let doctors = doctorsList.filter(d => d[0] !== parseInt(currentUserCRM));
-        let title = "Escolha para quem Doar:"
-        let label = "Médicos: "
+        let doctors = doctorsList.filter(d => d[0] !== parseInt(currUserData[0]));
+        let title = "Escolha para quem Doar";
+        let label = "Médicos: ";
 
         openModal("modal2", doctors, title, label, function(selectedDoc) {
             infoDict["receiverCRM"] = selectedDoc;
@@ -234,8 +257,8 @@ function handleOfferDonation(infoDict) {
 
 function handleRequestDonation(infoDict) {
     let availableHours = redudantHoursList;
-    let title = "Escolha Horas para Receber:"
-    let label = "Horários: "
+    let title = "Escolha Horas para Receber";
+    let label = "Horários: ";
     
     openModal("modal1", availableHours, title, label, function(selectedHrs) {
         infoDict["hours"] = selectedHrs;  

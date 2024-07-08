@@ -6,10 +6,7 @@ import app.global_vars as global_vars
 
 
 def resolve_data(action, info_dict):
-    month = Month.query.filter_by(number=global_vars.MESES.index(info_dict.get('month_name'))+1,
-                                  year=info_dict.get('year')).first()
-    if not month:
-        return "Mês não encontrado"
+    month = Month.get_current()
     
     day_number = int(info_dict.get('day'))
     day = month.get_day(day_number)

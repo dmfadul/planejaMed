@@ -43,9 +43,12 @@ def schedule():
 
     kwargs = {
     'days': month.days_list,
+    'centers': [center.abbreviation for center in Center.query.all()],
     'curr_user_data': (current_user.crm, current_user.full_name),
-    'doctors_dict': doctors_dict
+    'doctors_dict': doctors_dict,
+    'doctors_list': doctors_list
     }
+    
     return render_template("schedule.html", schedule=current_user.schedule, **kwargs)
 
 
