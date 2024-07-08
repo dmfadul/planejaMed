@@ -10,4 +10,10 @@
     <div id="data-container" data-items='{{ schedule|tojson|safe }}'></div>
     <div id="dictData"></div>
 
+    <script>        
+        var days = {{ days | tojson | safe }};
+        var currUserData = {{ curr_user_data | tojson | safe }};
+        var doctorsDict = {{ doctors_dict | tojson | safe }};
+    </script>
+
 {% endblock %}

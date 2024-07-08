@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="kebab-menu">
                     <button class="kebab-button">&#8942;</button>
                     <div class="kebab-content">
-                        <a href="#" onclick="processCalRequest('-', '0', 'include')" data-action="include">Inclusão</a>
+                        <a href="#" onclick="processCalRequest('0', 'include')" data-action="include">Inclusão</a>
                     </div>
                 </div>
             </li>`;
@@ -40,9 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="kebab-menu">
                             <button class="kebab-button">&#8942;</button>
                             <div class="kebab-content">
-                                <a href="#" onclick="processCalRequest('${itemContent}', '${crm}', 'exchange')" data-action="exchange">Troca</a>
-                                <a href="#" onclick="processCalRequest('${itemContent}', '${crm}', 'exclude')" data-action="exclude">Exclusão</a>
-                                <a href="#" onclick="processCalRequest('${itemContent}', '${crm}', 'donate')" data-action="donation">Doação</a>
+                                <a href="#" onclick="processCalRequest('${crm}', 'exchange')" data-action="exchange">Troca</a>
+                                <a href="#" onclick="processCalRequest('${crm}', 'exclude')" data-action="exclude">Exclusão</a>
+                                <a href="#" onclick="processCalRequest('${crm}', 'donate')" data-action="donation">Doação</a>
                             </div>
                         </div>
                     </li>`;

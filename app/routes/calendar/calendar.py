@@ -38,7 +38,15 @@ def calendar(center):
 @calendar_bp.route("/schedule/", methods=["GET"])
 @login_required
 def schedule():
-    return render_template("schedule.html", schedule=current_user.schedule)
+    month = Month.get_current()
+    doctors_dict, doctors_list = gen_doctors_dict()
+
+    kwargs = {
+    'days': month.days_list,
+    'curr_user_data': (current_user.crm, current_user.full_name),
+    'doctors_dict': doctors_dict
+    }
+    return render_template("schedule.html", schedule=current_user.schedule, **kwargs)
 
 
 @calendar_bp.route("/update_hours/", methods=["POST"])

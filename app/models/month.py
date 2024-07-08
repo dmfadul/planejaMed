@@ -91,6 +91,10 @@ class Month(db.Model):
         return sorted(self.days, key=lambda x: x.date)[-1]
     
     @property
+    def days_list(self):
+        return [day.date.day for day in self.days]
+    
+    @property
     def dates_row(self):
         start_date = datetime(self.previous_month[1], self.previous_month[0], global_vars.STR_DAY)
         end_date = datetime(self.year, self.number, global_vars.STR_DAY-1)

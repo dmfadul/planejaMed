@@ -1,7 +1,59 @@
 let redudantHoursList = [];
 
 
-function processCalRequest(itemInfo, crm, action) {
+function processSchRequest(item, action) {
+    let infoDict = {};
+    if (action !=="sch_include") {
+        let center = item.split("--")[0].trim();
+        let date = item.split("--")[1].trim();
+        let hours = item.split("--")[2].trim();
+
+        let day = parseInt(date.split("/")[0].trim());
+
+        infoDict["center"] = center;
+        infoDict["date"] = date;
+        infoDict["hours"] = hours;
+
+        redudantHoursList = doctorsDict[currUserData[0]][center][day][0];
+        redudantHoursList = redudantHoursList.map(h => [h, h]);
+    }
+
+    if (action === "include") {
+        handleSchInclude(infoDict);
+    } else if (action === "exclude") {
+        handleSchExclude(infoDict);
+    } else if (action === "donate") {
+        handleSchDonate(infoDict);
+    } else if (action === "exchange") {
+        handleSchExchange(infoDict);
+    } else {
+        console.log("Invalid action");
+    }
+}
+
+function handleSchInclude(infoDict) {
+}
+
+function handleSchExclude(infoDict) {
+    let availableHours = redudantHoursList;
+    let title = "Especifique Horas para Excluir:"
+    let label = "Horários: "
+    
+    openModal('modal1', availableHours, title, label, function(selectedValue) {
+        infoDict["hours"] = selectedValue;
+        sendHoursToServer("cal_exclude", infoDict);
+    });
+}
+
+function handleSchDonate(infoDict) {
+}
+
+function handleSchExchange(infoDict) {
+}
+
+
+// Calendar functions
+function processCalRequest(crm, action) {
     if (parseInt(crm) !== 0) {
         redudantHoursList = daysDict[day][crm]["hours"][1];
         redudantHoursList = redudantHoursList.map(h => [h, h]);
@@ -13,7 +65,6 @@ function processCalRequest(itemInfo, crm, action) {
     infoDict["day"] = day;
     infoDict["center"] = openCenter;
     infoDict["crm"] = parseInt(crm);
-
 
     if (action === "include") {
         handleInclude(infoDict);
