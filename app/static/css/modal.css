@@ -115,7 +115,6 @@
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
-
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     animation: slideIn 0.4s;
@@ -130,4 +129,46 @@
   background-color: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(3px);
   z-index: 999;
+}
+
+/* Tablets (até 768px) */
+@media (max-width: 768px) {
+
+  .modal{
+    padding: 3rem;
+  }
+}
+
+/* Celulares Grandes (até 590px) */
+@media (max-width: 590px) {
+
+  .modal{
+    padding: 3rem;
+  }
+
+}
+
+/* Celulares Grandes (até 425px) */
+@media (max-width: 425px) {
+
+  .modal{
+    padding: 3rem;
+  }
+  
+}
+
+/* Celulares Médios (até 375px) */
+@media (max-width: 375px) {
+
+  .modal{
+    padding: 2rem;
+  }
+}
+
+/* Celulares Pequenos (até 320px) */
+@media (max-width: 320px) {
+ 
+  .modal{
+    padding: 2rem;
+  }
 }
