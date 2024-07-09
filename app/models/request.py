@@ -62,17 +62,28 @@ class Request(db.Model):
                 day_id=day.id,
                 user_id=doctor.id,
                 center_id=center.id,
-                hour=hour,
-                is_confirmed=False
+                hour=hour
             ).first()
 
             if not app:
-                return f"Horário {hour} não encontrado"
+                app = Appointment.add_entry(
+                    user_id=doctor.id,
+                    center_id=center.id,
+                    day_id=day.id,
+                    hour=hour,
+                )
+                app.unconfirm()
             
-            new_request.appointments.append(app)
-
+            new_request.add_appointment(app)
+        
         return new_request
     
+    def delete(self):
+        self.appointments = []
+
+        db.session.delete(self)
+        db.session.commit()
+
     @classmethod
     def filter_by_user(cls, user_id):
         return [req for req in cls.query.filter_by(is_open=True).all() if user_id in req.receivers]
@@ -90,6 +101,9 @@ class Request(db.Model):
     
         return user_ids
     
+    def add_appointment(self, appointment):
+        self.appointments.append(appointment)
+        db.session.commit()
 
     def respond(self, responder_id, response):
         self.responder_id = responder_id

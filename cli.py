@@ -22,9 +22,11 @@ from app.hours_conversion import appointments_letters_key
 app = create_app()
 with app.app_context():
     requests = Request.query.all()
-    
+
     for request in requests:
-        print(request.id, request.action)
+        print(request.requester.full_name, request.action, len(request.appointments))
+    # for app in request.appointments:
+    #     print(app.day.date, app.hour)
     
 #     print(20 * "-")
 #     print(appointment.requests)

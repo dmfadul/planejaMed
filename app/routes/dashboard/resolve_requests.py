@@ -11,7 +11,8 @@ def resolve_req(req_id, authorized):
     if req.action == 'include_user':
         new_user = User.query.get(req.requester_id)
         new_user.unlock()
-        req.respond(current_user.id, "autorizado")
+        req.respond(responder_id=current_user.id,
+                    response="autorizado")
         return f"O usuário {new_user.full_name} foi incluído com sucesso"
     
     return "Ação não reconhecida"
