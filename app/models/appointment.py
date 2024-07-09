@@ -1,5 +1,7 @@
 from app import db
 from sqlalchemy import ForeignKey, UniqueConstraint, CheckConstraint
+from sqlalchemy.orm import relationship as relationship
+from .associations import request_appointment_association
 
 
 class Appointment(db.Model):
@@ -16,7 +18,14 @@ class Appointment(db.Model):
     user = db.relationship('User', back_populates='appointments', lazy=True)
     center = db.relationship('Center', back_populates='appointments', lazy=True)
     day = db.relationship('Day', back_populates='appointments', lazy=True)
-    request = db.relationship('Request', back_populates='appointments', lazy=True)
+
+    # request = db.relationship('Request', back_populates='appointments', lazy=True)
+    requests = relationship(
+        'Request',
+        secondary=request_appointment_association,
+        back_populates='appointments'
+    )
+
 
     is_confirmed = db.Column(db.Boolean, default=True)
     
