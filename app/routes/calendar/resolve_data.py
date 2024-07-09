@@ -59,7 +59,9 @@ def resolve_data(action, info_dict):
 
 
 def include(doctor, center, day, hours):
-    flag = Request.inclusion(doctor, center, day, hours)    
+    flag = Request.inclusion(doctor, center, day, hours)
+    if isinstance(flag, str):
+        return flag   
     return 0
 
 

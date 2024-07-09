@@ -5,6 +5,10 @@ def resolve_req(req_id, authorized):
     req = Request.query.get(req_id)
 
     if not authorized:
+        for app in req.appointments:
+            if app.unconfirmed:
+                app.delete_entry()
+        
         req.respond(current_user.id, False)
         return "A solicitação foi negada com sucesso"
     
@@ -14,6 +18,10 @@ def resolve_req(req_id, authorized):
         req.respond(responder_id=current_user.id,
                     response="autorizado")
         return f"O usuário {new_user.full_name} foi incluído com sucesso"
+    
+    if req.action == "include_appointments":
+        pass
+
     
     return "Ação não reconhecida"
 

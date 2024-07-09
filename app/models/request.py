@@ -57,6 +57,7 @@ class Request(db.Model):
         db.session.add(new_request)
         db.session.commit()
 
+        unconfirmed_apps = []
         for hour in hours:
             app = Appointment.query.filter_by(
                 day_id=day.id,
@@ -65,6 +66,10 @@ class Request(db.Model):
                 hour=hour
             ).first()
 
+           
+            if app and app.unconfirmed:
+                unconfirmed_apps.append(app)
+
             if not app:
                 app = Appointment.add_entry(
                     user_id=doctor.id,
@@ -72,9 +77,17 @@ class Request(db.Model):
                     day_id=day.id,
                     hour=hour,
                 )
+
+                if isinstance(app, str):
+                    return app
+                
                 app.unconfirm()
             
             new_request.add_appointment(app)
+        
+        if unconfirmed_apps:
+            return f"""Conflito - Já há Requisição pendente para {doctor.full_name} em {center.abbreviation}
+                        no dia {day.date} para o horário pedido (ou parte dele)."""
         
         return new_request
     
