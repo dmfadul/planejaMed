@@ -3,6 +3,8 @@ let redudantHoursList = [];
 
 function processSchRequest(item, action) {
     let infoDict = {};
+    infoDict["crm"] = currUserData[0];
+
     if (action !=="include") {
         let center = item.split("--")[0].trim();
         let date = item.split("--")[1].trim();
@@ -12,7 +14,6 @@ function processSchRequest(item, action) {
 
         infoDict["day"] = parseInt(date.split("/")[0]);
         infoDict["center"] = center;
-        infoDict["crm"] = currUserData[0];
         infoDict["hours"] = hours;
 
         redudantHoursList = doctorsDict[currUserData[0]][center][day][0];
@@ -51,7 +52,7 @@ function handleSchInclude(infoDict) {
             
             openHourModal(function(selectedValue){
                 infoDict["hours"] = selectedValue;
-                sendHoursToServer("cal_include", infoDict);
+                sendHoursToServer("include", infoDict);
             });
         });
     });
@@ -112,7 +113,7 @@ function handleInclude(infoDict) {
         infoDict["crm"] = selectedDoc;
         openHourModal(function(selectedValue){
             infoDict["hours"] = selectedValue;
-            sendHoursToServer("cal_include", infoDict);
+            sendHoursToServer("include", infoDict);
         });
     });
 }

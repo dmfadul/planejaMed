@@ -1,6 +1,7 @@
 from app.models import Appointment, Request, User, Center, Day, Month
 from app.hours_conversion import gen_hour_range, convert_hours
 from flask_login import current_user
+
 from datetime import datetime
 import app.global_vars as global_vars
 
@@ -25,46 +26,40 @@ def resolve_data(action, info_dict):
     
     hours = convert_hours(info_dict.get('hours'))
 
-    if action == "cal_include":
-        return cal_include(doctor, center, day, hours)
-    elif action == "cal_exchange":
-            day2_number = int(info_dict.get('day2'))
-            day_2 = month.get_day(day2_number)
-            if not day:
-                return "Dia não encontrado"
-
-            center2_abbr = info_dict.get('center2')
-            center_2 = Center.query.filter_by(abbreviation=center2_abbr).first()
-            if not center:
-                return "Centro não encontrado"
-
-            crm2 = info_dict.get('crm2')
-            doctor_2 = User.query.filter_by(crm=crm2).first()
-            if not doctor:
-                return "Médico não encontrado"
-        
-            hours_2 = convert_hours(info_dict.get('hours2'))
-        
-            return cal_exchange(doctor, center, day, hours,
-                                doctor_2, center_2, day_2, hours_2)
-
-
+    if action == "include":
+        return include(doctor, center, day, hours)
+    
     elif action == "cal_exclude":
         return cal_exclude(doctor, center, day, hours)
+    
     elif action == "cal_donate":
         receiver_crm = info_dict.get('receiverCRM')
         receiver = User.query.filter_by(crm=receiver_crm).first() or current_user
 
         return cal_donate(doctor, center, day, hours, receiver)
-
-
-def cal_include(doctor, center, day, hours):
-    for hour in hours:
-        Appointment.add_entry(user_id=doctor.id,
-                              center_id=center.id,
-                              day_id=day.id,
-                              hour=hour)
     
+    elif action == "cal_exchange":
+        day2_number = int(info_dict.get('day2'))
+        day_2 = month.get_day(day2_number)
+        if not day:
+            return "Dia não encontrado"
+        center2_abbr = info_dict.get('center2')
+        center_2 = Center.query.filter_by(abbreviation=center2_abbr).first()
+        if not center:
+            return "Centro não encontrado"
+        crm2 = info_dict.get('crm2')
+        doctor_2 = User.query.filter_by(crm=crm2).first()
+        if not doctor:
+            return "Médico não encontrado"
+    
+        hours_2 = convert_hours(info_dict.get('hours2'))
+    
+        return cal_exchange(doctor, center, day, hours,
+                            doctor_2, center_2, day_2, hours_2)
+
+
+def include(doctor, center, day, hours):
+    flag = Request.inclusion(doctor, center, day, hours)    
     return 0
 
 

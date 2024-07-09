@@ -34,12 +34,43 @@ class Request(db.Model):
     
     @classmethod
     def new_user(cls, doctor_to_include_id):
-        new_request = cls(requester_id=doctor_to_include_id,
-                          receivers_code="*",
-                          action="include_user",
-                          )
+        new_request = cls(
+            requester_id=doctor_to_include_id,
+            receivers_code="*",
+            action="include_user",
+        )
+
         db.session.add(new_request)
         db.session.commit()
+        return new_request
+    
+    @classmethod
+    def inclusion(cls, doctor, center, day, hours):
+        from app.models.appointment import Appointment
+        
+        new_request = cls(
+            requester_id=doctor.id,
+            receivers_code="*",
+            action="include_appointments",
+        )
+
+        db.session.add(new_request)
+        db.session.commit()
+
+        for hour in hours:
+            app = Appointment.query.filter_by(
+                day_id=day.id,
+                user_id=doctor.id,
+                center_id=center.id,
+                hour=hour,
+                is_confirmed=False
+            ).first()
+
+            if not app:
+                return f"Horário {hour} não encontrado"
+            
+            new_request.appointments.append(app)
+
         return new_request
     
     @classmethod
