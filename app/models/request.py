@@ -23,7 +23,6 @@ class Request(db.Model):
     requester = db.relationship('User', foreign_keys=[requester_id], back_populates='requests_sent', lazy=True)
     responder = db.relationship('User', foreign_keys=[responder_id], back_populates='requests_received', lazy=True)
 
-    # appointments = db.relationship('Appointment', back_populates='request', lazy=True)
     appointments = relationship(
         'Appointment',
         secondary=request_appointment_association,

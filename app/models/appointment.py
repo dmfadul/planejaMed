@@ -19,7 +19,6 @@ class Appointment(db.Model):
     center = db.relationship('Center', back_populates='appointments', lazy=True)
     day = db.relationship('Day', back_populates='appointments', lazy=True)
 
-    # request = db.relationship('Request', back_populates='appointments', lazy=True)
     requests = relationship(
         'Request',
         secondary=request_appointment_association,

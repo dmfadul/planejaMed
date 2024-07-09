@@ -19,14 +19,14 @@ from app.hours_conversion import appointments_letters_key
 # t = sorted(t, key=appointments_letters_key)
 # print(t)
 
-app = create_app()
-with app.app_context():
-    request = Request.query.filter_by(id=1).first()
-    appointment = Appointment.query.filter_by(id=1).first()
+# app = create_app()
+# with app.app_context():
+#     request = Request.query.filter_by(id=1).first()
+#     appointment = Appointment.query.filter_by(id=1).first()
 
-    print(request.appointments)
-    print(20 * "-")
-    print(appointment.requests)
+#     print(request.appointments)
+#     print(20 * "-")
+#     print(appointment.requests)
 #     test = User.query.filter_by(crm=26704).first()
 #     print(test.app_dict)
 
