@@ -128,7 +128,7 @@ class Request(db.Model):
             return f"""Conflito - Já há Requisição pendente para {doctor.full_name} em {center.abbreviation}
                         no dia {day.date} para o horário pedido (ou parte dele)."""
         
-        db.commit()
+        db.session.commit()
         return new_request
     
     def delete(self):

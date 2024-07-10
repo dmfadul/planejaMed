@@ -7,7 +7,6 @@ import app.global_vars as global_vars
 
 
 def resolve_data(action, info_dict):
-    print(action)
     month = Month.get_current()
     
     day_number = int(info_dict.get('day'))
@@ -25,6 +24,7 @@ def resolve_data(action, info_dict):
     if not doctor:
         return "Médico não encontrado"
     
+    print(info_dict.get('hours'))
     hours = convert_hours(info_dict.get('hours'))
 
     if action == "include":
