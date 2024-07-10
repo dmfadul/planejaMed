@@ -126,4 +126,26 @@ class Request(db.Model):
 
         db.session.commit()
         return 0
-            
+    
+    def resolve(self, responder_id, authorized):
+        from app.models import User
+
+        if not authorized:
+            for app in self.appointments:
+                if not app.is_confirmed:
+                    app.delete_entry()
+
+            self.respond(responder_id=responder_id, response="denied")
+            return "A solicitação foi Negada"
+        
+        if self.action == 'include_user':
+            new_user = User.query.get(self.requester_id)
+            new_user.unlock()
+
+            self.respond(responder_id=responder_id, response='authorized')
+            return f"O usuário {new_user.full_name} foi incluído com sucesso"
+
+        if self.action == "include_appointments":
+            pass
+
+        return "ação não reconhecida"
