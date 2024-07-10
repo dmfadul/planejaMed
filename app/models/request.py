@@ -30,7 +30,7 @@ class Request(db.Model):
     )
     
     def __repr__(self):
-        return f'{self.requester} - {self.action} - {self.is_open}'
+        return self.translate()
     
     @classmethod
     def new_user(cls, doctor_to_include_id):
@@ -200,3 +200,12 @@ class Request(db.Model):
             return "Os horários foram excluídos com sucesso"
 
         return "ação não reconhecida"
+    
+    def translate(self):
+        apps_date = [app.day.date for app in self.appointments][0]
+        apps_center = [app.center.abbreviation for app in self.appointments][0]
+        apps_hours = [app.hour for app in self.appointments]
+        translation = f"{self.requester.full_name} - {self.action} - {apps_center} - {apps_date} - {apps_hours}"
+
+        return translation
+    

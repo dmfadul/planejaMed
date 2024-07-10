@@ -62,8 +62,6 @@ def gen_redudant_hour_list(appointments, include_line=False):
         return []
     
     hours_map = global_vars.HOURS_MAP
-    print(appointments)
-    print(prepare_appointments(appointments))
     letters, remainder = prepare_appointments(appointments)
 
     for letter in letters:
