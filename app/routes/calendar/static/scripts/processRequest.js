@@ -223,7 +223,7 @@ function handleExclude(infoDict) {
     
     openModal('modal1', availableHours, title, label, function(selectedValue) {
         infoDict["hours"] = selectedValue;
-        sendHoursToServer("cal_exclude", infoDict);
+        sendHoursToServer("exclude", infoDict);
     });
 }
 

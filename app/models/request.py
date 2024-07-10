@@ -45,6 +45,40 @@ class Request(db.Model):
         return new_request
     
     @classmethod
+    def exclusion(cls, doctor_id, center_id, day_id, hours):
+        from app.models.appointment import Appointment
+
+        new_request = cls(
+            requester_id=doctor_id,
+            receivers_code="*",
+            action="exclude_appointments",
+        )
+
+        db.session.add(new_request)
+        
+        apps_not_found = []
+        for hour in hours:
+            app = Appointment.query.filter_by(
+                day_id=day_id,
+                user_id=doctor_id,
+                center_id=center_id,
+                hour=hour
+            ).first()
+
+            if not app:
+                apps_not_found.append(hour)
+                continue
+
+            new_request.appointments.append(app)
+
+        if apps_not_found:
+            db.session.rollback()
+            return f"Horário (ou parte dele) não foi encontrado"
+        
+        db.session.commit()
+        return new_request
+
+    @classmethod
     def inclusion(cls, doctor, center, day, hours):
         from app.models.appointment import Appointment
         
@@ -55,9 +89,9 @@ class Request(db.Model):
         )
 
         db.session.add(new_request)
-        db.session.commit()
 
         unconfirmed_apps = []
+        confirmed_apps = []
         for hour in hours:
             app = Appointment.query.filter_by(
                 day_id=day.id,
@@ -66,11 +100,11 @@ class Request(db.Model):
                 hour=hour
             ).first()
 
-           
-            if app and app.unconfirmed:
+            if app and not app.is_confirmed:
                 unconfirmed_apps.append(app)
-
-            if not app:
+            elif app and app.is_confirmed:
+                confirmed_apps.append(app)
+            elif not app:
                 app = Appointment.add_entry(
                     user_id=doctor.id,
                     center_id=center.id,
@@ -83,12 +117,18 @@ class Request(db.Model):
                 
                 app.unconfirm()
             
-            new_request.add_appointment(app)
+            new_request.appointments.append(app)
         
+        if confirmed_apps:
+            db.session.rollback()
+            return f"O Médico {doctor.full_name} está Ocupado no Horário Requisitado ou em Parte dele."
+         
         if unconfirmed_apps:
+            db.session.rollback()
             return f"""Conflito - Já há Requisição pendente para {doctor.full_name} em {center.abbreviation}
                         no dia {day.date} para o horário pedido (ou parte dele)."""
         
+        db.commit()
         return new_request
     
     def delete(self):
@@ -146,6 +186,17 @@ class Request(db.Model):
             return f"O usuário {new_user.full_name} foi incluído com sucesso"
 
         if self.action == "include_appointments":
-            pass
+            for app in self.appointments:
+                app.confirm()
+
+            self.respond(responder_id=responder_id, response='authorized')
+            return "Os horários foram incluídos com sucesso"
+        
+        if self.action == "exclude_appointments":
+            for app in self.appointments:
+                app.delete_entry()
+
+            self.respond(responder_id=responder_id, response='authorized')
+            return "Os horários foram excluídos com sucesso"
 
         return "ação não reconhecida"

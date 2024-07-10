@@ -7,6 +7,7 @@ import app.global_vars as global_vars
 
 
 def resolve_data(action, info_dict):
+    print(action)
     month = Month.get_current()
     
     day_number = int(info_dict.get('day'))
@@ -29,8 +30,8 @@ def resolve_data(action, info_dict):
     if action == "include":
         return include(doctor, center, day, hours)
     
-    elif action == "cal_exclude":
-        return cal_exclude(doctor, center, day, hours)
+    elif action == "exclude":
+        return exclude(doctor, center, day, hours)
     
     elif action == "cal_donate":
         receiver_crm = info_dict.get('receiverCRM')
@@ -65,21 +66,10 @@ def include(doctor, center, day, hours):
     return 0
 
 
-def cal_exclude(doctor, center, day, hours):
-    apps_to_delete = []
-    for hour in hours:
-        app = Appointment.query.filter_by(day_id=day.id,
-                                          user_id=doctor.id,
-                                          center_id=center.id,
-                                          hour=hour).first()
-        if app:
-            apps_to_delete.append(app)
-        else:
-            return f"Horário {hour} não encontrado"
-
-    for app in apps_to_delete:
-        app.delete_entry()
-    
+def exclude(doctor, center, day, hours):
+    flag = Request.exclusion(doctor.id, center.id, day.id, hours)
+    if isinstance(flag, str):
+        return flag 
     return 0
 
 
