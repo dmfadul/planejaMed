@@ -1,5 +1,5 @@
 from app.models import Appointment, Request, User, Center, Day, Month
-from app.hours_conversion import gen_hour_range, convert_hours
+from app.hours_conversion import convert_hours, convert_line_to_hour
 from flask_login import current_user
 
 from datetime import datetime
@@ -24,8 +24,7 @@ def resolve_data(action, info_dict):
     if not doctor:
         return "Médico não encontrado"
     
-    print(info_dict.get('hours'))
-    hours = convert_hours(info_dict.get('hours'))
+    hours = convert_line_to_hour(info_dict.get('hours'))
 
     if action == "include":
         return include(doctor, center, day, hours)

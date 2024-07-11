@@ -40,6 +40,29 @@ def prepare_appointments(appointments):
     return letters, appointments
 
 
+def split_hours(hour_list):
+    """splits a list of hours into consecutive ranges of hours, representing periods of the day"""
+    hours_key = global_vars.HOURS_KEY
+    if not hour_list:
+        return []
+    
+    hour_list = sorted(hour_list, key=lambda x: hours_key.index(x))
+
+    split_hours = []
+    current = [hour_list[0]]
+    for i in range(1, len(hour_list)):
+        if hour_list[i] == hour_list[i - 1] + 1 or hour_list[i] == 0 and hour_list[i - 1] == 23:
+            current.append(hour_list[i])
+        else:
+            split_hours.append(current)
+            current = [hour_list[i]]
+    
+    split_hours.append(current)
+    split_hours = sorted(split_hours, key=lambda x: x[0])
+
+    return split_hours
+
+
 def gen_hour_range(hours):
     """enter a tuple and get a list of a range"""
     starting_hour, ending_hour = hours
@@ -133,34 +156,22 @@ def convert_to_letter(appointments):
     return ''.join(letters)
 
 
-def split_hours(hour_list):
-    """splits a list of hours into consecutive ranges of hours, representing periods of the day"""
-    hours_key = global_vars.HOURS_KEY
-    if not hour_list:
-        return []
-    
-    hour_list = sorted(hour_list, key=lambda x: hours_key.index(x))
-
-    split_hours = []
-    current = [hour_list[0]]
-    for i in range(1, len(hour_list)):
-        if hour_list[i] == hour_list[i - 1] + 1 or hour_list[i] == 0 and hour_list[i - 1] == 23:
-            current.append(hour_list[i])
-        else:
-            split_hours.append(current)
-            current = [hour_list[i]]
-    
-    split_hours.append(current)
-    split_hours = sorted(split_hours, key=lambda x: x[0])
-
-    return split_hours
-
-
 def convert_hours_to_line(hour_list):
     if not hour_list:
         return ""
 
     return f"{hour_list[0]:02d}:00 - {hour_list[-1]+1:02d}:00"
+
+
+def convert_line_to_hour(line):
+    """convert a string representing a period of time to a list of hours"""
+    if not line:
+        return []
+   
+    start_hour, end_hour = [int(h.split(":")[0]) for h in line.split(": ")[1].split(" - ")]
+    hour_range = gen_hour_range((start_hour, end_hour))
+
+    return hour_range
 
 
 def convert_hours(hour_list):
