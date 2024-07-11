@@ -35,9 +35,11 @@ def gen_day_hours(center_abbr, day_num):
     for doctor_crm, hour_range in appointments_dict.items():
         hour_list = split_hours(hour_range)
         
-        all_hours = ""
+        all_hours = []
         for hour in hour_list:
-            all_hours += convert_hours_to_line(hour)
+            all_hours.append(convert_hours_to_line(hour))
+        
+        all_hours = '*'.join(all_hours)
         
         redudant_list = gen_redudant_hour_list(hour_range, include_line=True)
         doctor_name = User.query.filter_by(crm=doctor_crm).first().full_name

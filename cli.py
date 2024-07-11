@@ -4,6 +4,7 @@ from app import create_app, db
 from app.routes.dataview.resolve_data import convert_hours
 from datetime import datetime
 from app.hours_conversion import appointments_letters_key, gen_redudant_hour_list, convert_line_to_hour
+from app.routes.calendar.gen_data import gen_days_dict
 
 
 # migration_funcs.drop_all_tables()
@@ -17,9 +18,13 @@ from app.hours_conversion import appointments_letters_key, gen_redudant_hour_lis
 # hours = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5]
 # print(gen_redudant_hour_list(hours, include_line=True))
 
-# app = create_app()
+app = create_app()
 
-# with app.app_context():
-#     requests = Request.query.all()
-#     for request in requests:
-#         request.delete()
+with app.app_context():
+    day_dict = gen_days_dict("CCG")
+    doc_dict = day_dict[28][42390]
+    print(doc_dict)
+    
+    # requests = Request.query.all()
+    # for request in requests:
+    #     request.delete()

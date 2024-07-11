@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
             for (let [crm, infoDict] of dayValues) {
                 let name = infoDict['name'];
                 let hourLine = infoDict['hours'][0];
+                hourLine = hourLine.replace(/\*/g, '<br>');
 
                 const itemContent = [name, hourLine].join("<br>");
                 
