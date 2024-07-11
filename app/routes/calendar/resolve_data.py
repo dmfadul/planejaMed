@@ -24,7 +24,11 @@ def resolve_data(action, info_dict):
     if not doctor:
         return "Médico não encontrado"
     
-    hours = convert_line_to_hour(info_dict.get('hours'))
+    selected_hours = info_dict.get('hours')
+    if isinstance(selected_hours, str):
+        hours = convert_line_to_hour()
+    elif isinstance(selected_hours, list):
+        hours = convert_hours(selected_hours)
 
     if action == "include":
         return include(doctor, center, day, hours)
