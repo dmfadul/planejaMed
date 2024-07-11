@@ -26,7 +26,7 @@ def resolve_data(action, info_dict):
     
     selected_hours = info_dict.get('hours')
     if isinstance(selected_hours, str):
-        hours = convert_line_to_hour()
+        hours = convert_line_to_hour(selected_hours)
     elif isinstance(selected_hours, list):
         hours = convert_hours(selected_hours)
 

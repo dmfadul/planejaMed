@@ -69,11 +69,20 @@ class Request(db.Model):
                 apps_not_found.append(hour)
                 continue
 
+            apps_with_del_req = []
+            if app.requests and any(r.is_open and r.action == "exclude_appointments" for r in app.requests):
+                apps_with_del_req.append(app)
+                continue 
+
             new_request.appointments.append(app)
 
         if apps_not_found:
             db.session.rollback()
             return f"Horário (ou parte dele) não foi encontrado"
+        
+        if apps_with_del_req:
+            db.session.rollback()
+            return f"Horário (ou parte dele) já está marcado para exclusão"    
         
         db.session.commit()
         return new_request
