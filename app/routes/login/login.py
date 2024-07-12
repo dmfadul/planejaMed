@@ -28,11 +28,11 @@ def login():
         if not user or not user.password == form.password.data:
             flash("Login Inválido. Verifique CRM e Senha", "danger")
             return redirect(url_for('login.login'))
-        if not user.is_active:
-            flash("Usuário Não Está Ativo. Entre em Contato com Admin", "danger")
+        if user.is_locked and user.is_waiting_for_approval:
+            flash("Aguarde Liberação do Admin", "danger")
             return redirect(url_for('login.login'))
         if user.is_locked:
-            flash("Aguarde Liberação do Admin", "danger")
+            flash("Usuário Não Está Ativo. Entre em Contato com Admin", "danger")
             return redirect(url_for('login.login'))
 
         login_user(user, remember=form.remember.data)
