@@ -18,9 +18,8 @@ from app.routes.calendar.gen_data import gen_days_dict
 # hours = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5]
 # print(gen_redudant_hour_list(hours, include_line=True))
 
-# app = create_app()
+app = create_app()
 
-# with app.app_context():  
-#     requests = Request.query.all()
-#     for request in requests:
-#         request.delete()
+with app.app_context():  
+    user = User.query.filter_by(crm=17000).first()
+    print(user.is_waiting_for_approval)

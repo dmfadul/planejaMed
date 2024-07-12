@@ -197,6 +197,11 @@ class User(db.Model, UserMixin):
 
         return sorted(schedule)
     
+    @property
+    def is_waiting_for_approval(self):
+        open_requests = [req for req in self.requests_sent if req.is_open]
+
+        return open_requests
 
     def hours(self, month_id):
         appointments = [app for app in self.appointments if app.day.month_id == month_id]

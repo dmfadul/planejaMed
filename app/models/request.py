@@ -211,6 +211,9 @@ class Request(db.Model):
         return "ação não reconhecida"
     
     def translate(self):
+        if self.action == "include_user":
+            return f"Inclusão de Usuário - {self.requester.full_name}"
+        
         apps_date = [app.day.date for app in self.appointments][0]
         apps_center = [app.center.abbreviation for app in self.appointments][0]
         apps_hours = [app.hour for app in self.appointments]

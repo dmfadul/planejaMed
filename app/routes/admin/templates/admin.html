@@ -61,7 +61,7 @@
 
     <section>
         <form method="post" action="{{ url_for('admin.create_month') }}">
-              <label for="create-month">Incluir Novo Médico:</label>
+              <label for="create-month">Bloquear Médico:</label>
               <select id="create-month" name="month">
                 {% for month in months %}
                     <option value="{{ month }}" {% if month == current_month_name %} selected {% endif %}>{{ month }}</option>
@@ -79,7 +79,7 @@
 
     <section>
         <form method="post" action="{{ url_for('admin.create_month') }}">
-              <label for="create-month">Bloquear Médico:</label>
+              <label for="create-month">Incluir Novo Médico:</label>
               <select id="create-month" name="month">
                 {% for month in months %}
                     <option value="{{ month }}" {% if month == current_month_name %} selected {% endif %}>{{ month }}</option>
