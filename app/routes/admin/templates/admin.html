@@ -42,26 +42,24 @@
     </section>
 
     <section>
-        <form method="post" action="{{ url_for('admin.create_month') }}">
-              <label for="create-month">Criar Novo Centro:</label>
-              <select id="create-month" name="month">
-                {% for month in months %}
-                    <option value="{{ month }}" {% if month == current_month_name %} selected {% endif %}>{{ month }}</option>
+        <form method="post" action="{{ url_for('admin.exclude_doctor') }}">
+
+              <label for="exclude-doctor">Excluir Médico:</label>
+              <select id="exclude-doctor" name="crm">
+
+                {% for doctor in doctors_list %}
+                    <option value="{{ doctor[0] }}">{{ doctor[1] }}</option>
                 {% endfor %}
+
               </select>
 
-              <select id="create-year" name="year">
-                  {% for year in range(2020, 2031) %}
-                    <option value="{{ year }}" {% if year == current_year %} selected {% endif %}>{{ year }}</option>
-                  {% endfor %}
-              </select>
-              <button type="submit">Criar</button>
+              <button type="submit">Excluir</button>
         </form>
     </section>
 
     <section>
-        <form method="post" action="{{ url_for('admin.create_month') }}">
-              <label for="create-month">Bloquear Médico:</label>
+        <form method="post" action="">
+              <label for="create-month">Criar Novo Centro:</label>
               <select id="create-month" name="month">
                 {% for month in months %}
                     <option value="{{ month }}" {% if month == current_month_name %} selected {% endif %}>{{ month }}</option>

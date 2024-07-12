@@ -2,7 +2,9 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import current_user, login_required
 
 import app.global_vars as global_vars
-from app.models import Center, Month
+from app.models import Center, Month, User
+from app.routes.calendar.gen_data import gen_doctors_dict
+
 
 admin_bp = Blueprint(
                     'admin',
@@ -24,6 +26,8 @@ def admin():
     current_month_name = current_month.name
     next_month_name = current_month.next_month_name
     centers = [center.abbreviation for center in Center.query.filter_by(is_active=True).all()]
+    _, doctors_list = gen_doctors_dict()
+ 
     return render_template(
                            "admin.html",
                            title="Admin",
@@ -36,6 +40,7 @@ def admin():
                            next_month_name=next_month_name,
                            next_month_year=current_month.next_month[1],
                            curr_is_latest=current_month.is_latest,
+                           doctors_list=doctors_list,
                            )
 
 
@@ -102,6 +107,25 @@ def delete_month():
         # flag = Month.delete(center, month, year)
         flash(f"Foi deletado o mês {month} de {year} para o centro {center.abbreviation}")
 
+    return redirect(url_for('admin.admin'))
+
+
+@admin_bp.route('/admin/exclude-doctor', methods=['POST'])
+@login_required
+def exclude_doctor():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    doctor_crm = request.form.get('crm')
+    doctor = User.query.filter_by(crm=doctor_crm).first()
+    
+    if not doctor:
+        return "Doctor not found", 404
+    
+    doctor.deactivate()
+    doctor.lock()
+
+    flash(f"Foi excluído o médico {doctor.full_name} - {doctor.crm}", 'success')
     return redirect(url_for('admin.admin'))
 
 

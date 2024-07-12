@@ -51,7 +51,7 @@ def gen_day_hours(center_abbr, day_num):
 
 
 def gen_doctors_dict():
-    doctors = User.query.all()
+    doctors = User.query.filter_by(is_active=True).all()
 
     doctors_dict = {}
     doctors_list = []
