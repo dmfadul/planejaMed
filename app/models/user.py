@@ -200,8 +200,10 @@ class User(db.Model, UserMixin):
     @property
     def is_waiting_for_approval(self):
         open_requests = [req for req in self.requests_sent if req.is_open]
+        if any([req.action == 'include_user' for req in open_requests]):
+            return True
 
-        return open_requests
+        return False
 
     def hours(self, month_id):
         appointments = [app for app in self.appointments if app.day.month_id == month_id]

@@ -21,5 +21,5 @@ from app.routes.calendar.gen_data import gen_days_dict
 app = create_app()
 
 with app.app_context():  
-    user = User.query.filter_by(crm=17000).first()
+    user = User.query.filter_by(crm=10000).first()
     print(user.is_waiting_for_approval)
