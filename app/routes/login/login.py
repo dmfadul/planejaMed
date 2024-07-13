@@ -64,6 +64,7 @@ def register():
                             #   hashed_password)
 
         if isinstance(flag, User):
+            flag.deactivate()
             request = Request.new_user(flag.id)
             if isinstance(request, Request):
                 flash("Conta Criada Com Sucesso! Aguarde a Liberação do Administrador", "success")
