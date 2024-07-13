@@ -25,17 +25,16 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(crm=form.crm_number.data).first()
         if not user or not bcrypt.check_password_hash(user.password, form.password.data):
-        # if not user or not user.password == form.password.data:
             flash("Login Inválido. Verifique CRM e Senha", "danger")
             return redirect(url_for('login.login'))
-        if user.is_locked and user.is_waiting_for_approval:
+        if user.is_waiting_for_approval:
             flash("Aguarde Liberação do Admin", "danger")
             return redirect(url_for('login.login'))
-        if user.is_locked:
+        if not user.is_active:
             flash("Usuário Não Está Ativo. Entre em Contato com Admin", "danger")
             return redirect(url_for('login.login'))
 
-        print(login_user(user, remember=form.remember.data))
+        login_user(user, remember=form.remember.data)
         next_page = request.args.get('next')
         return redirect(next_page) if next_page else redirect(url_for('dashboard.dashboard'))
 
@@ -63,7 +62,6 @@ def register():
                               hashed_password)
 
         if isinstance(flag, User):
-            flag.deactivate()
             request = Request.new_user(flag.id)
             if isinstance(request, Request):
                 flash("Conta Criada Com Sucesso! Aguarde a Liberação do Administrador", "success")

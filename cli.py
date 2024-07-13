@@ -18,8 +18,7 @@ from app.routes.calendar.gen_data import gen_days_dict
 
 app = create_app()
 with app.app_context():
-    user = User.query.filter_by(crm=10000).first()
-    user.deactivate()    
+    user = User.query.filter_by(crm=10000).first()  
 
 
 # print(convert_line_to_hour("n11: 19:00 - 06:00"))

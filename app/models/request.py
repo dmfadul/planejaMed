@@ -189,8 +189,8 @@ class Request(db.Model):
         
         if self.action == 'include_user':
             new_user = User.query.get(self.requester_id)
-            new_user.unlock()
             new_user.activate()
+            new_user.make_visible()
 
             self.respond(responder_id=responder_id, response='authorized')
             return f"O usuário {new_user.full_name} foi incluído com sucesso"

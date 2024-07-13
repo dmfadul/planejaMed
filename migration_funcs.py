@@ -108,7 +108,8 @@ def migrate_users():
                 print(f"{old_user.get("full_name")} name already exists")
                 continue
             new_user.date_joined = date_joined
-            new_user.unlock()
+            new_user.activate()
+            new_user.make_visible()
 
 def adjust_users():
     app = create_app()
@@ -130,8 +131,9 @@ def adjust_users():
         new_user.make_admin()
         new_user.make_sudo()
         new_user.make_root()
-        new_user.unlock()
-        new_user.deactivate()
+        
+        new_user.activate()
+        new_user.make_invisible()
 
 
 def add_centers():

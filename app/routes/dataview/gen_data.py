@@ -11,7 +11,7 @@ def gen_base_table(center_abbr, names_only=False, abbr_names=False):
     table_header = [['']+weekdays, ['']+weekindexes]
 
     table = table_header
-    users = sorted(User.query.filter_by(is_active=True).all(), key=lambda x: x.full_name)
+    users = sorted(User.query.filter_by(is_visible=True).all(), key=lambda x: x.full_name)
     for user in users:
         name = user.abbreviated_name if abbr_names else user.full_name
         if names_only:

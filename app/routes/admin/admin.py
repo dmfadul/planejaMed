@@ -123,7 +123,7 @@ def exclude_doctor():
         return "Doctor not found", 404
     
     doctor.deactivate()
-    doctor.lock()
+    doctor.make_invisible()
 
     flash(f"Foi excluído o médico {doctor.full_name} - {doctor.crm}", 'success')
     return redirect(url_for('admin.admin'))
