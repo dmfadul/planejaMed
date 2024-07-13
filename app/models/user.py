@@ -61,11 +61,11 @@ class User(db.Model, UserMixin):
         )
 
         db.session.add(new_user)
-        if existing_user and existing_user.is_active and not existing_user.is_locked:
+        if existing_user and existing_user.is_active:
             db.session.rollback()
             # TODO: send message to admin - user is trying to create a new account with an existing one
             return "CRM já cadastrado"
-        if existing_user and existing_user.is_active and existing_user.is_locked:
+        if existing_user and existing_user.is_waiting_for_approval:
             db.session.rollback()
             # TODO: send message to admin - user is asking for inclusion (check if he has been denied before)
             return "Conta já existe. Aguarde a Liberação do Administrador"
@@ -73,9 +73,6 @@ class User(db.Model, UserMixin):
             db.session.rollback()
             # TODO: send message to admin - removed user is trying to create a new account
             return "Conta já existe, mas usuário não está ativo. Entre em contato com o Admin"
-        if existing_user:
-            db.session.rollback()
-            return "CRM já cadastrado"
         if new_user.full_name in names:
             db.session.rollback()
             return "Nome já cadastrado"
@@ -259,12 +256,12 @@ class User(db.Model, UserMixin):
         
         return apps
 
-    def lock(self):
-        self.is_locked = True
+    def make_invisible(self):
+        self.is_visible = False
         db.session.commit()
     
-    def unlock(self):
-        self.is_locked = False
+    def make_visible(self):
+        self.is_visible = True
         db.session.commit()
 
     def make_admin(self):
