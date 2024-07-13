@@ -1,4 +1,5 @@
 import app.global_vars as global_vars
+import re
 
 
 def appointments_key(hour):
@@ -154,6 +155,36 @@ def convert_to_letter(appointments):
             remainder = [app for app in remainder if app not in hour_list]
 
     return ''.join(letters)
+
+
+def convert_letter_to_hours(letter):
+    """convert a string of letters to a list of hours"""
+    hours_map = global_vars.HOURS_MAP
+    
+    if not letter:
+        return []
+    
+    pattern = re.compile(r'[A-Za-z](?:\d+)?')
+    
+    string_list = pattern.findall(letter)
+    string_list = sorted(string_list, key=appointments_letters_key)
+
+    appointments = []
+    for item in string_list:
+        if item in hours_map:
+            appointments += gen_hour_range(hours_map.get(item))
+        else:
+            letter = item[0]
+            number = int(item[1:])
+
+            if letter == 'x':
+                return 1
+
+            whole_letter = hours_map.get(letter)
+
+            appointments += gen_hour_range((whole_letter[0], whole_letter[0] + number))
+
+    return appointments
 
 
 def convert_hours_to_line(hour_list):

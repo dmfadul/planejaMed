@@ -1,9 +1,12 @@
 from app import create_app, db, bcrypt
 from app.models import User, Center, BaseAppointment, Appointment, Month, Day
 from datetime import datetime
+from app.hours_conversion import convert_letter_to_hours, convert_line_to_hour
+
 import app.global_vars as global_vars
 import sqlite3
 import json
+
 
 DATABASE = 'old_db.db'
 
@@ -250,14 +253,6 @@ def migrate_month(center_abbr, month_num, year):
 
     app = create_app()
 
-    with app.app_context():
-        center = Center.query.filter_by(abbreviation=center_abbr).first()
-        month = Month.query.filter_by(number=month_num, year=year).first()
-
-        if month is None:
-            month = Month.create_new_month(number=month_num, year=year)
-            month.populate()
-
     entries = []
     for i in range(len(data)):
         if i in [0, 1]:
@@ -274,43 +269,42 @@ def migrate_month(center_abbr, month_num, year):
                 continue
             if data[i][j] == '' or data[i][j] is None:
                 continue
-
-            month_day = int(data[1][j])
-    #         actual_month = month_num -1 if 26 <= month_day <= 31 else month_num
-    #         month_date = datetime(year, actual_month, month_day)       
-                    
-    #         hours_str = data[i][j].strip().lower()
-    #         hours_str = hours_str.replace("n6", "c")
-    #         hours_str = hours_str
             
-    #         hours_str = sorted(list(hours_str), key=lambda x: ['dn', 'd', 'm', 't', 'n', 'c', 'v'].index(x))
-    #         hours_str = ''.join(hours_str)
+            with app.app_context():
+                center = Center.query.filter_by(abbreviation=center_abbr).first()
+                month = Month.query.filter_by(number=month_num, year=year).first()
 
-    #         hours = hours_map.get(hours_str)
+                if month is None:
+                    month = Month.create_new_month(number=month_num, year=year)
+                    month.populate()
+                
+                day_num = int(data[1][j])
+                day = month.get_day(day_num)
+                  
+                hours_str = data[i][j].strip().lower()
+                hours_str = hours_str.replace("n6", "c")
             
-    #         if hours is None:
-    #             continue
+                hour_list = convert_letter_to_hours(hours_str)
             
-    #         if hours_str == 'mn':
-    #             hour_list = list(range(7, 13)) + list(range(19, 24)) + list(range(1, 7))
-    #         elif hours[0] < hours[1]:
-    #             hour_list = list(range(hours[0], hours[1]+1))
-    #         else:
-    #             hour_list = list(range(hours[0], 24)) + list(range(hours[1]+1))
+                if not hour_list:
+                    continue
 
-    #         with app.app_context():
-    #             for hour in hour_list:
-    #                 print(doctor.id, center.id, day.id, hour)
-    #                 day = Day.query.filter_by(month_id=month.id, date=month_date).first()
-    #                 if month_day in holidays:
-    #                     day.add_holiday()
+                if  hour_list == 1:
+                    print("there was an X in the hours_str")
+                    continue
+        
+                for hour in hour_list:
+                    print(doctor.full_name, center.abbreviation, day.date, hour)
+                    if day_num in holidays:
+                        day.add_holiday()
 
-    #                 entries.append(Appointment(
-    #                                user_id=doctor.id,
-    #                                center_id=center.id,
-    #                                day_id=day.id,
-    #                                hour=hour
-    #                               ))
+                    entries.append(Appointment(
+                                   user_id=doctor.id,
+                                   center_id=center.id,
+                                   day_id=day.id,
+                                   hour=hour
+                                  ))
 
-    # if entries and False:
-    #     Appointment.add_entries(entries)
+    if entries:
+        with app.app_context():
+            Appointment.add_entries(entries)
