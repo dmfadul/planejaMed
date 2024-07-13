@@ -1,4 +1,4 @@
-from app import create_app, db
+from app import create_app, db, bcrypt
 from app.models import User, Center, BaseAppointment, Appointment, Month, Day
 from datetime import datetime
 import app.global_vars as global_vars
@@ -81,7 +81,7 @@ def migrate_user(user_id):
     user_dict["rqe"] = user[6]
     user_dict["phone"] = user[7]
     user_dict["email"] = user[8]
-    user_dict["password"] = user[1]
+    user_dict["password"] = bcrypt.generate_password_hash(user[1]).decode('utf-8')
     user_dict["date_joined"] = datetime.strptime(user[9], "%Y-%m-%d")
 
     return user_dict

@@ -24,8 +24,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(crm=form.crm_number.data).first()
-        # if not user or not bcrypt.check_password_hash(user.password, form.password.data):
-        if not user or not user.password == form.password.data:
+        if not user or not bcrypt.check_password_hash(user.password, form.password.data):
             flash("Login Inválido. Verifique CRM e Senha", "danger")
             return redirect(url_for('login.login'))
         if user.is_locked and user.is_waiting_for_approval:
@@ -52,7 +51,7 @@ def logout():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         flag = User.add_entry(form.first_name.data,
                               form.middle_name.data,
                               form.last_name.data,
@@ -60,8 +59,7 @@ def register():
                               form.rqe_number.data,
                               form.cellphone.data,
                               form.email.data,
-                              form.password.data)
-                            #   hashed_password)
+                              hashed_password)
 
         if isinstance(flag, User):
             flag.deactivate()
