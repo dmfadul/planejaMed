@@ -1,4 +1,4 @@
-# import migration_funcs
+import migration_funcs
 from app.models import User, Center, Month, Appointment, Day, Request
 from app import create_app, db
 from app.routes.dataview.resolve_data import convert_hours
@@ -12,6 +12,13 @@ from app.routes.calendar.gen_data import gen_days_dict
 # migration_funcs.migrate_users()
 # migration_funcs.adjust_users()
 # migration_funcs.migrate_base("CCG--BASE")
+
+
+# app = create_app()
+# with app.app_context():
+#     user = User.query.filter_by(crm=215651).first()
+#     print(user)
+#     user.unlock()
 
 # print(convert_line_to_hour("n11: 19:00 - 06:00"))
 

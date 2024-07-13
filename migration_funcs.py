@@ -108,11 +108,13 @@ def migrate_users():
                 print(f"{old_user.get("full_name")} name already exists")
                 continue
             new_user.date_joined = date_joined
+            new_user.unlock()
 
 def adjust_users():
     app = create_app()
     with app.app_context():
         user = User.query.filter_by(crm=26704).first()
+        user.set_password("741852")
         user.make_admin()
         user.make_sudo()
 
@@ -123,10 +125,13 @@ def adjust_users():
                                 rqe=10000,
                                 phone="(41)99257-4321",
                                 email="dmf030@gmail.com",
-                                password="741852")
+                                password="123456")
+        new_user.set_password("741852")
         new_user.make_admin()
         new_user.make_sudo()
         new_user.make_root()
+        new_user.unlock()
+        new_user.deactivate()
 
 
 def add_centers():
@@ -155,6 +160,7 @@ def migrate_base(base_id):
 
     app = create_app()
 
+    entries = []
     for i in range(len(data)):
         if i in [0, 1]:
             continue
@@ -186,7 +192,6 @@ def migrate_base(base_id):
             else:
                 hour_list = list(range(hours[0], 24)) + list(range(hours[1]+1))
 
-            entries = []
             with app.app_context():
                 for hour in hour_list:
                     print(doctor.id, center.id, week_day, week_index, hour)
@@ -199,7 +204,8 @@ def migrate_base(base_id):
                     ))
 
     if entries:
-        BaseAppointment.add_entries(entries)
+        with app.app_context():
+            BaseAppointment.add_entries(entries)
 
 
 def prepare_month(month_num, year):

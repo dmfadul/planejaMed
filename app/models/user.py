@@ -326,8 +326,7 @@ class User(db.Model, UserMixin):
     def set_password(self, new_password):
         hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
 
-        # self.password = hashed_password
-        self.password = new_password
+        self.password = hashed_password
         db.session.commit()
 
         return 0
