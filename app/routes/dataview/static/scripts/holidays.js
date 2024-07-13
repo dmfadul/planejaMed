@@ -30,7 +30,7 @@ function askForHoliday() {
         const newWindow = window.open('', '', `width=${width},height=${height},left=${left},top=${top}`);
 
         newWindow.document.write('<html><head><title>Enter Number</title>');
-        newWindow.document.write('<link rel="stylesheet" type="text/css" href="/static/css/tableaux/popup.css">');
+        newWindow.document.write('<link rel="stylesheet" type="text/css" href="/static/css/popup.css">');
         newWindow.document.write('</head><body>');
         newWindow.document.write('<input type="number" id="numberInput" placeholder="Enter a number"/>');
         newWindow.document.write('<button id="cancelButton">Cancel</button>');
@@ -67,12 +67,15 @@ function askForHoliday() {
 }
 
 function sendHoliday(holiday, action) {
-    fetch('/resolve_holiday', {
+    fetch('/resolve-holidays', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({'holiday': holiday, 'action': action}),
+        body: JSON.stringify({'day': holiday,
+                              'action': action,
+                              'monthName': monthValue,
+                              'year': yearValue}),
     })
     .then(response => response.json())
     .then(data => {

@@ -1,0 +1,29 @@
+/* styles.css */
+
+/* Style the container holding each message and dropdown */
+.message-container {
+    display: flex; /* Enables flexbox layout */
+    align-items: center; /* Vertically centers items in the container */
+    margin-bottom: 10px; /* Adds some space below each container */
+    background-color: #f4f4f4; /* Light grey to match body background */
+    padding: 10px; /* Adds padding around the content */
+    border-radius: 5px; /* Softens the corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+}
+
+/* Style for each message */
+.message {
+    margin-right: 10px; /* Adds some space to the right of the message */
+    color: #333; /* Dark grey to match other text elements */
+    font-family: Arial, sans-serif; /* Ensures consistency in font */
+}
+
+/* Style for each dropdown */
+.dropdown {
+    background-color: white; /* White background for contrast */
+    border: 1px solid #333; /* Dark border to match the theme */
+    color: #333; /* Dark grey text for readability */
+    padding: 5px; /* Adds padding inside the dropdown */
+    border-radius: 3px; /* Rounds the corners of the dropdown */
+    font-family: Arial, sans-serif; /* Ensures font consistency */
+}

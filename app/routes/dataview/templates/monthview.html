@@ -21,15 +21,15 @@
     <button type="button" id="remove-holiday" onclick="removeHoliday()">Excluir Feriado</button>
 {% endblock %}
 
-{% block otherScripts %}
-    <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/holidays.js') }}"></script>
-{% endblock %}
-
 {% block otherScriptVariables %}
     <script>
         var monthValue = {{ month | tojson | safe }};
         var yearValue = {{ year | tojson | safe }};
     </script>
+{% endblock %}
+
+{% block otherScripts %}
+    <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/holidays.js') }}"></script>
 {% endblock %}
 
 {% block holidayScript %}

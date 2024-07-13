@@ -69,6 +69,32 @@ def update_appointments():
     return jsonify({"status": "error", 'message': 'Appointments not updated'})
 
 
+@dataview_bp.route("/resolve-holidays", methods=["POST"])
+@login_required
+def resolve_holidays():
+    if not current_user.is_admin:
+        return jsonify({"status": "error", 'message': 'You are not an admin'})
+    
+    action = request.get_json().get("action")
+
+    day_num = request.get_json().get("day")
+    month_name = request.get_json().get("monthName")
+    year = request.get_json().get("year")
+
+    month = Month.query.filter_by(number=global_vars.MESES.index(month_name)+1, year=year).first()
+    day = month.get_day(day_num)
+
+    if not day:
+        return jsonify({"status": "error", 'message': 'Day not found'})
+
+    if action == "add":
+        day.add_holiday()
+
+    elif action == "remove":
+        day.remove_holiday()
+
+    return jsonify({"status": "success", 'message': 'Holidays updated'})
+
 @dataview_bp.route("/sum-doctors", methods=["POST"])
 @login_required
 def sum_by_doctor():
