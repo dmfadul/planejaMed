@@ -35,7 +35,7 @@ def login():
             flash("Usuário Não Está Ativo. Entre em Contato com Admin", "danger")
             return redirect(url_for('login.login'))
 
-        login_user(user, remember=form.remember.data)
+        print(login_user(user, remember=form.remember.data))
         next_page = request.args.get('next')
         return redirect(next_page) if next_page else redirect(url_for('dashboard.dashboard'))
 
@@ -79,6 +79,7 @@ def register():
         print("form did not validate")
 
     return render_template('register.html', title="Register", form=form, dont_show_logout=True)
+
 
 @login_bp.route('/profile/', methods=['GET', 'POST'])
 @login_required

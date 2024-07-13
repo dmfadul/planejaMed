@@ -29,8 +29,8 @@ class User(db.Model, UserMixin):
     is_sudo = db.Column(db.Boolean, default=False)
     is_root = db.Column(db.Boolean, default=False)
 
-    is_active = db.Column(db.Boolean, default=True)
-    is_locked = db.Column(db.Boolean, default=True)
+    is_visible = db.Column(db.Boolean, default=False)
+    is_active = db.Column(db.Boolean, default=False)
     
     password = db.Column(db.Text, nullable=False)
 

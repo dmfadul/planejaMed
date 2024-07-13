@@ -216,6 +216,27 @@ def prepare_month(month_num, year):
     return month
 
 
+def migrate_months():
+    months_ids = get_all_ids("months")
+    months = []
+    for month_id in months_ids:
+        center_abbr = month_id[:3]
+        month_num = int(month_id[3:-5])
+        month_type = month_id[-1]
+        year = int(month_id[-5:-1])
+
+        if month_type == '0':
+            continue
+        
+        months.append((center_abbr, month_num, year))
+
+    months = sorted(months, key=lambda x: (x[2], x[1]))
+
+    for month in months:
+        # print(month)
+        migrate_month(*month)
+
+
 def migrate_month(center_abbr, month_num, year):
     month_id = f"{center_abbr}{month_num}{year}1"
     month_data = load_from_db('months', month_id)
@@ -227,21 +248,24 @@ def migrate_month(center_abbr, month_num, year):
 
     app = create_app()
 
+    with app.app_context():
+        center = Center.query.filter_by(abbreviation=center_abbr).first()
+        month = Month.query.filter_by(number=month_num, year=year).first()
+
+        if month is None:
+            month = Month.create_new_month(number=month_num, year=year)
+            month.populate()
+
+    entries = []
     for i in range(len(data)):
         if i in [0, 1]:
             continue
         doctor_name = data[i][0]
+
         with app.app_context():
-            center = Center.query.filter_by(abbreviation=center_abbr).first()
             doctor = User.get_by_name(doctor_name)
             if doctor == -1:
                 continue
-            month = Month.query.filter_by(number=month_num, year=year).first()
-            if month.is_populated:
-                continue
-            if month is None:
-                month = Month.add_entry(number=month_num, year=year, center_id=center.id)
-                month.populate()
 
         for j in range(len(data[i])):
             if j == 0:
@@ -250,42 +274,41 @@ def migrate_month(center_abbr, month_num, year):
                 continue
 
             month_day = int(data[1][j])
-            actual_month = month_num -1 if 26 <= month_day <= 31 else month_num
-            month_date = datetime(year, actual_month, month_day)       
+    #         actual_month = month_num -1 if 26 <= month_day <= 31 else month_num
+    #         month_date = datetime(year, actual_month, month_day)       
                     
-            hours_str = data[i][j].strip().lower()
-            hours_str = hours_str.replace("n6", "c")
-            hours_str = hours_str
+    #         hours_str = data[i][j].strip().lower()
+    #         hours_str = hours_str.replace("n6", "c")
+    #         hours_str = hours_str
             
-            hours_str = sorted(list(hours_str), key=lambda x: ['dn', 'd', 'm', 't', 'n', 'c', 'v'].index(x))
-            hours_str = ''.join(hours_str)
+    #         hours_str = sorted(list(hours_str), key=lambda x: ['dn', 'd', 'm', 't', 'n', 'c', 'v'].index(x))
+    #         hours_str = ''.join(hours_str)
 
-            hours = hours_map.get(hours_str)
+    #         hours = hours_map.get(hours_str)
             
-            if hours is None:
-                continue
+    #         if hours is None:
+    #             continue
             
-            if hours_str == 'mn':
-                hour_list = list(range(7, 13)) + list(range(19, 24)) + list(range(1, 7))
-            elif hours[0] < hours[1]:
-                hour_list = list(range(hours[0], hours[1]+1))
-            else:
-                hour_list = list(range(hours[0], 24)) + list(range(hours[1]+1))
+    #         if hours_str == 'mn':
+    #             hour_list = list(range(7, 13)) + list(range(19, 24)) + list(range(1, 7))
+    #         elif hours[0] < hours[1]:
+    #             hour_list = list(range(hours[0], hours[1]+1))
+    #         else:
+    #             hour_list = list(range(hours[0], 24)) + list(range(hours[1]+1))
 
-            entries = []
-            with app.app_context():
-                for hour in hour_list:
-                    print(doctor.id, center.id, day.id, hour)
-                    day = Day.query.filter_by(month_id=month.id, date=month_date).first()
-                    if month_day in holidays:
-                        day.add_holiday()
+    #         with app.app_context():
+    #             for hour in hour_list:
+    #                 print(doctor.id, center.id, day.id, hour)
+    #                 day = Day.query.filter_by(month_id=month.id, date=month_date).first()
+    #                 if month_day in holidays:
+    #                     day.add_holiday()
 
-                    entries.append(Appointment(
-                                   user_id=doctor.id,
-                                   center_id=center.id,
-                                   day_id=day.id,
-                                   hour=hour
-                                  ))
+    #                 entries.append(Appointment(
+    #                                user_id=doctor.id,
+    #                                center_id=center.id,
+    #                                day_id=day.id,
+    #                                hour=hour
+    #                               ))
 
-    if entries and False:
-        Appointment.add_entries(entries)
+    # if entries and False:
+    #     Appointment.add_entries(entries)

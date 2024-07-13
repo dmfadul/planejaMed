@@ -12,13 +12,15 @@ from app.routes.calendar.gen_data import gen_days_dict
 # migration_funcs.migrate_users()
 # migration_funcs.adjust_users()
 # migration_funcs.migrate_base("CCG--BASE")
+# migration_funcs.migrate_months()
+# migration_funcs.migrate_month("CCG", 12, 2023)
 
 
-# app = create_app()
-# with app.app_context():
-#     user = User.query.filter_by(crm=215651).first()
-#     print(user)
-#     user.unlock()
+app = create_app()
+with app.app_context():
+    user = User.query.filter_by(crm=10000).first()
+    user.deactivate()    
+
 
 # print(convert_line_to_hour("n11: 19:00 - 06:00"))
 
