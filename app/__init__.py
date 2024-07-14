@@ -52,13 +52,11 @@ create_app()
 
 # TODO: FINISH ADMIN FUNCTIONS
 # TODO: list of months in db
-# TODO: Create exclude user function
 # TODO: add logic to user add a new center
 
 # TODO: ADD REQUESTS
 # TODO: !!stop doctor from offering same hour to two people
 
-# TODO: Include: delete holidays
 # TODO: add replies to answered requests
 # TODO: change admin table interaction
 # TODO: add an actual settings file.
