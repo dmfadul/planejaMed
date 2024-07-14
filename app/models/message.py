@@ -9,9 +9,9 @@ class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     sender_id = db.Column(db.Integer, ForeignKey('users.id'), nullable=False)
-    request_id = db.Column(db.Integer, ForeignKey('requests.id'), nullable=False)
+    request_id = db.Column(db.Integer, ForeignKey('requests.id'), nullable=True)
     receivers_code = db.Column(db.Text, nullable=False)
-    action = db.Column(db.Text, nullable=False)
+    action = db.Column(db.Text, nullable=False, default="info")
     content = db.Column(db.Text, nullable=False)
 
     creation_date = db.Column(db.Date, nullable=False, default=datetime.now())
@@ -21,16 +21,21 @@ class Message(db.Model):
     request = db.relationship('Request', back_populates='messages', lazy=True) 
 
     def __repr__(self):
-        return f'{self.sender} - {self.receiver} - {self.creation_date}'
+        return self.content
     
     @classmethod
-    def new_message(cls, sender_id, receiver_id, content):
+    def new_message(cls, sender_id, receivers_code, content):
         new_message = cls(sender_id=sender_id,
-                          receiver_id=receiver_id,
+                          receivers_code=receivers_code,
                           content=content)
+        
         db.session.add(new_message)
         db.session.commit()
         return new_message
+    
+    @classmethod
+    def filter_by_user(cls, user_id):
+        return [m for m in cls.query.filter_by(is_archived=False).all() if user_id in m.receivers]
     
     @property
     def receivers(self):

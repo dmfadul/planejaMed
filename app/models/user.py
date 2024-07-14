@@ -40,6 +40,7 @@ class User(db.Model, UserMixin):
     requests_sent = db.relationship('Request', foreign_keys='Request.requester_id', back_populates='requester', lazy=True)
     requests_received = db.relationship('Request', foreign_keys='Request.responder_id', back_populates='responder', lazy=True)
 
+    messages_sent = db.relationship('Message', foreign_keys='Message.sender_id', back_populates='sender', lazy=True)
     logs = db.relationship('Log', back_populates='user', lazy=True)
 
     def __repr__(self):
@@ -47,33 +48,43 @@ class User(db.Model, UserMixin):
     
     @classmethod
     def add_entry(cls, first_name, middle_name, last_name, crm, rqe, phone, email, password):
+        from app.models import Message
         users = cls.query.all()
-        existing_user = cls.query.filter_by(crm=crm).first()
         names = [user.full_name for user in users]
-        
-        new_user = cls(
-            first_name = first_name,
-            middle_name = middle_name,
-            last_name = last_name,
-            crm = crm,
-            rqe = rqe,
-            phone = phone,
-            email = email,
-            password = password
-        )
 
-        db.session.add(new_user)
-        if existing_user and existing_user.is_active:
+        existing_user = cls.query.filter_by(crm=crm).first()
+        
+        if not existing_user:       
+            new_user = cls(
+                first_name = first_name,
+                middle_name = middle_name,
+                last_name = last_name,
+                crm = crm,
+                rqe = rqe,
+                phone = phone,
+                email = email,
+                password = password
+            )
+
+            db.session.add(new_user)
+
+        if existing_user.is_active:
             db.session.rollback()
-            # TODO: send message to admin - user is trying to create a new account with an existing one
+            Message.new_message(sender_id=existing_user.id,
+                                receivers_code="*",
+                                content=f"""{existing_user.full_name}, usuário ativo,
+                                está tentando criar uma nova conta com CRM já cadastrado""")
+            
             return "CRM já cadastrado"
-        if existing_user and existing_user.is_waiting_for_approval:
+        if existing_user.is_waiting_for_approval:
             db.session.rollback()
-            # TODO: send message to admin - user is asking for inclusion (check if he has been denied before)
             return "Conta já existe. Aguarde a Liberação do Administrador"
-        if existing_user and not existing_user.is_active:
+        if not existing_user.is_active:
             db.session.rollback()
-            # TODO: send message to admin - removed user is trying to create a new account
+            Message.new_message(sender_id=existing_user.id,
+                    receivers_code="*",
+                    content=f"""{existing_user.full_name}, ex-usuário,
+                    está tentando criar uma nova conta""")
             return "Conta já existe, mas usuário não está ativo. Entre em contato com o Admin"
         if new_user.full_name in names:
             db.session.rollback()

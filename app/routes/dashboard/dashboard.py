@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, flash
 from flask_login import login_required, current_user
 import app.global_vars as global_vars
-from app.models import Center, Month, Request
+from app.models import Center, Month, Request, Message
 
 dashboard_bp = Blueprint(
                         'dashboard',
@@ -18,7 +18,7 @@ def dashboard():
     months = global_vars.MESES
     current_year = Month.get_current().year
     current_month = Month.get_current().name
-    pending_requests = Request.filter_by_user(current_user.id)
+    pending_requests = Request.filter_by_user(current_user.id) + Message.filter_by_user(current_user.id)
     centers = [center.abbreviation for center in Center.query.filter_by(is_active=True).all()]
 
     return render_template(
@@ -36,7 +36,8 @@ def dashboard():
 @dashboard_bp.route('/requests')
 @login_required
 def requests():
-    reqs = Request.filter_by_user(current_user.id)
+    reqs = Request.filter_by_user(current_user.id) + Message.filter_by_user(current_user.id)
+    
     return render_template("requests.html", title="Requests", requests=reqs)
 
 
