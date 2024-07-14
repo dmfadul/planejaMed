@@ -22,6 +22,7 @@ class Request(db.Model):
 
     requester = db.relationship('User', foreign_keys=[requester_id], back_populates='requests_sent', lazy=True)
     responder = db.relationship('User', foreign_keys=[responder_id], back_populates='requests_received', lazy=True)
+    messages = relationship('Message', back_populates='request', lazy=True)
 
     appointments = relationship(
         'Appointment',
