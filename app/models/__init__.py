@@ -5,3 +5,5 @@ from .day import Day
 from .month import Month
 from .request import Request
 from .user import User
+from .message import Message
+from .log import Log

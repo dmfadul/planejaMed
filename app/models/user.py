@@ -40,6 +40,8 @@ class User(db.Model, UserMixin):
     requests_sent = db.relationship('Request', foreign_keys='Request.requester_id', back_populates='requester', lazy=True)
     requests_received = db.relationship('Request', foreign_keys='Request.responder_id', back_populates='responder', lazy=True)
 
+    logs = db.relationship('Log', back_populates='user', lazy=True)
+
     def __repr__(self):
         return f'{self.first_name} {self.last_name}'
     

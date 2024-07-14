@@ -6,6 +6,7 @@ class Log(db.Model):
     __tablename__ = 'logs'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     action = db.Column(db.String(255), nullable=False)
     creation_date = db.Column(db.Date, nullable=False, default=datetime.now())
