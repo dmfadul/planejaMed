@@ -180,9 +180,9 @@ def convert_letter_to_hours(letter):
             if letter == 'x':
                 return 1
 
-            whole_letter = hours_map.get(letter)
+            hours_tuple = hours_map.get(letter)
 
-            appointments += gen_hour_range((whole_letter[0], whole_letter[0] + number))
+            appointments += gen_hour_range((hours_tuple[0], hours_tuple[0] + number-1))
 
     return appointments
 
