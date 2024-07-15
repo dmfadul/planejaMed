@@ -58,9 +58,21 @@ function openModal() {
     const modal = document.getElementById('hourModal');
     const overlay = document.getElementById('overlay');
 
+    // Set the modal position based on the current scroll position
+    modal.style.top = `${window.scrollY + window.innerHeight / 2 - modal.offsetHeight / 2}px`;
+    modal.style.left = `${window.innerWidth / 2 - modal.offsetWidth / 2}px`;
+
     modal.classList.remove('hidden');
     overlay.classList.remove('hidden');
 }
+
+window.addEventListener('resize', () => {
+    const modal = document.getElementById('hourModal');
+    if (!modal.classList.contains('hidden')) {
+        modal.style.top = `${window.scrollY + window.innerHeight / 2 - modal.offsetHeight / 2}px`;
+        modal.style.left = `${window.innerWidth / 2 - modal.offsetWidth / 2}px`;
+    }
+});
 
 function confirmData() {
     return new Promise((resolve, reject) => {
