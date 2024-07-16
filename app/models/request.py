@@ -3,6 +3,9 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from .associations import request_appointment_association
+from app.models.appointment import Appointment
+
+
 
 
 class Request(db.Model):
@@ -47,8 +50,6 @@ class Request(db.Model):
     
     @classmethod
     def exclusion(cls, doctor_id, center_id, day_id, hours):
-        from app.models.appointment import Appointment
-
         new_request = cls(
             requester_id=doctor_id,
             receivers_code="*",
@@ -57,41 +58,30 @@ class Request(db.Model):
 
         db.session.add(new_request)
         
-        apps_not_found = []
         for hour in hours:
             app = Appointment.query.filter_by(
                 day_id=day_id,
                 user_id=doctor_id,
                 center_id=center_id,
-                hour=hour
+                hour=hour,
+                is_confirmed=True
             ).first()
 
             if not app:
-                apps_not_found.append(hour)
-                continue
+                db.session.rollback()
+                return f"Horário (ou parte dele) não foi encontrado"
 
-            apps_with_del_req = []
-            if app.requests and any(r.is_open and r.action == "exclude_appointments" for r in app.requests):
-                apps_with_del_req.append(app)
-                continue 
-
+            if app.has_open_requests:
+                db.session.rollback()
+                return f"Horário (ou parte dele) tem requisição pendente"
+            
             new_request.appointments.append(app)
-
-        if apps_not_found:
-            db.session.rollback()
-            return f"Horário (ou parte dele) não foi encontrado"
-        
-        if apps_with_del_req:
-            db.session.rollback()
-            return f"Horário (ou parte dele) já está marcado para exclusão"    
-        
+                           
         db.session.commit()
         return new_request
 
     @classmethod
     def inclusion(cls, doctor, center, day, hours):
-        from app.models.appointment import Appointment
-        
         new_request = cls(
             requester_id=doctor.id,
             receivers_code="*",
@@ -140,6 +130,29 @@ class Request(db.Model):
         
         db.session.commit()
         return new_request
+    
+    @classmethod
+    def donate(cls, donor_id, center_id, day_id, hours, receiver_id):
+        new_request = cls(
+            requester_id=donor_id,
+            receivers_code=str(receiver_id),
+            action="donate",
+        )
+
+        db.session.add(new_request)
+
+        apps_not_found = []
+        for hour in hours:
+            app = Appointment.query.filter_by(
+                day_id=day_id,
+                user_id=donor_id,
+                center_id=center_id,
+                hour=hour
+            ).first()
+
+            if not app:
+                apps_not_found.append(hour)
+                continue
     
     def delete(self):
         self.appointments = []

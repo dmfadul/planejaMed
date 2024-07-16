@@ -69,6 +69,11 @@ class Appointment(db.Model):
         db.session.commit()
 
     @property
+    def has_open_requests(self):
+        print(self.requests)
+        return any(request.is_open for request in self.requests)
+    
+    @property
     def is_night(self):
         from app.global_vars import NIGHT_HOURS
         return self.hour in NIGHT_HOURS

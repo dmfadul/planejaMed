@@ -69,9 +69,6 @@ function handleSchExclude(infoDict) {
     });
 }
 
-function handleSchDonate(infoDict) {
-}
-
 function handleSchExchange(infoDict) {
 }
 
@@ -251,7 +248,7 @@ function handleOfferDonation(infoDict) {
 
         openModal("modal2", doctors, title, label, function(selectedDoc) {
             infoDict["receiverCRM"] = selectedDoc;
-            sendHoursToServer("cal_donate", infoDict);
+            sendHoursToServer("donate", infoDict);
         });
     });
 }

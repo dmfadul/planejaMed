@@ -43,11 +43,10 @@ def resolve_data(action, info_dict):
             return flag 
         return 0
     
-    elif action == "cal_donate":
+    elif action == "donate":
         receiver_crm = info_dict.get('receiverCRM')
         receiver = User.query.filter_by(crm=receiver_crm).first() or current_user
-
-        return cal_donate(doctor, center, day, hours, receiver)
+        return donate(doctor, center, day, hours, receiver)
     
     elif action == "cal_exchange":
         day2_number = int(info_dict.get('day2'))
@@ -71,18 +70,18 @@ def resolve_data(action, info_dict):
 
 
 def cal_exchange(doctor_1, center_1, day_1, hours_1, doctor_2, center_2, day_2, hours_2):
-    flag = cal_donate(doctor_1, center_1, day_1, hours_1, doctor_2)
+    flag = donate(doctor_1, center_1, day_1, hours_1, doctor_2)
     if flag:
         return flag
     
-    flag = cal_donate(doctor_2, center_2, day_2, hours_2, doctor_1)
+    flag = donate(doctor_2, center_2, day_2, hours_2, doctor_1)
     if flag:
         return flag
     
     return 0
  
 
-def cal_donate(donor, center, day, hours, receiver):
+def donate(donor, center, day, hours, receiver):
     apps = []
     for hour in hours:
         app = Appointment.query.filter_by(day_id=day.id,
