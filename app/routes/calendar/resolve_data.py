@@ -30,11 +30,18 @@ def resolve_data(action, info_dict):
     elif isinstance(selected_hours, list):
         hours = convert_hours(selected_hours)
 
+    # Check request's action
     if action == "include":
-        return include(doctor, center, day, hours)
-    
+        flag = Request.inclusion(doctor, center, day, hours)
+        if isinstance(flag, str):
+            return flag   
+        return 0
+
     elif action == "exclude":
-        return exclude(doctor, center, day, hours)
+        flag = Request.exclusion(doctor.id, center.id, day.id, hours)
+        if isinstance(flag, str):
+            return flag 
+        return 0
     
     elif action == "cal_donate":
         receiver_crm = info_dict.get('receiverCRM')
@@ -61,19 +68,6 @@ def resolve_data(action, info_dict):
         return cal_exchange(doctor, center, day, hours,
                             doctor_2, center_2, day_2, hours_2)
 
-
-def include(doctor, center, day, hours):
-    flag = Request.inclusion(doctor, center, day, hours)
-    if isinstance(flag, str):
-        return flag   
-    return 0
-
-
-def exclude(doctor, center, day, hours):
-    flag = Request.exclusion(doctor.id, center.id, day.id, hours)
-    if isinstance(flag, str):
-        return flag 
-    return 0
 
 
 def cal_exchange(doctor_1, center_1, day_1, hours_1, doctor_2, center_2, day_2, hours_2):

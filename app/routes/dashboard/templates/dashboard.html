@@ -5,8 +5,10 @@
         {% for center in centers %}
             <a href="/calendar/{{ center }}"><button class="common-button">{{ center }}</button></a>
         {% endfor %}
-        <a href="/schedule"><button class="common-button">Meus Horários</button></a>
+    </section>
 
+    <section class="flex-container">
+        <a href="/schedule"><button class="common-button">Meus Horários</button></a>
     </section>
 
     {% if pending_requests %}
