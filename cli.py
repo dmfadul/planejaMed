@@ -3,7 +3,7 @@ from app.models import User, Center, Month, Appointment, Day, Request
 from app import create_app, db
 from app.routes.dataview.resolve_data import convert_hours
 from datetime import datetime
-from app.hours_conversion import appointments_letters_key, gen_redudant_hour_list, convert_line_to_hour
+from app.hours_conversion import appointments_letters_key, gen_redudant_hour_list
 from app.hours_conversion import convert_letter_to_hours
 from app.routes.calendar.gen_data import gen_days_dict
 

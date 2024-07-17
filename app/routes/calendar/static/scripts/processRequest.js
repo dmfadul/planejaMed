@@ -27,7 +27,7 @@ function processSchRequest(item, action) {
     } else if (action === "donate") {
         handleOfferDonation(infoDict);
     } else if (action === "exchange") {
-        handleSchExchange(infoDict);
+        handleExchangeFromCurrentUser(infoDict);
     } else {
         console.log("Invalid action");
     }
@@ -67,9 +67,6 @@ function handleSchExclude(infoDict) {
         infoDict["hours"] = selectedValue;
         sendHoursToServer("exclude", infoDict);
     });
-}
-
-function handleSchExchange(infoDict) {
 }
 
 
@@ -162,7 +159,7 @@ function handleExchangeFromCurrentUser(infoDict) {
                     openModal("modal1", hours, title, label, function(selectedHour){
                         infoDict["hours2"] = selectedHour;
 
-                        sendHoursToServer("cal_exchange", infoDict)
+                        sendHoursToServer("exchange", infoDict)
                     });
                 });
             });
@@ -183,7 +180,7 @@ function handleExchangeFromOtherUser(infoDict) {
 
         let centers = Object.keys(doctorsDict[selectedDoc]);
         centers = centers.map(h => [h, h]);
-        let title = "Escolha o Centro que você quer entrar";
+        let title = "Escolha o Centro do qual você quer sair";
         let label = "Centros: ";
 
         openModal("modal1", centers, title, label, function(selectedCenter) {
@@ -191,20 +188,21 @@ function handleExchangeFromOtherUser(infoDict) {
 
             let days = Object.keys(doctorsDict[selectedDoc][selectedCenter])
             days = days.map(h => [h, h])
-            let title = "Escolha o dia que você quer entrar";
+            let title = "Escolha o dia que você do qual você quer sair";
             let label = "Dias: ";
 
             openModal("modal2", days, title, label, function(selectedDay) {
                 infoDict["day2"] = selectedDay;
 
                 let hours = doctorsDict[selectedDoc][selectedCenter][selectedDay]
-                let title = "Escolha as Horas que você quer entrar";
+                hours = hours[0].map(h => [h, h]);
+                let title = "Escolha as Horas das quais você quer sair";
                 let label = "Horas: ";
                 
                 openModal("modal1", hours, title, label, function(selectedHour){
                     infoDict["hours2"] = selectedHour;
 
-                    sendHoursToServer("cal_exchange", infoDict)
+                    sendHoursToServer("exchange_from_other_user", infoDict)
                 });
             });
         });

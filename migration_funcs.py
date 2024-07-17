@@ -1,7 +1,7 @@
 from app import create_app, db, bcrypt
 from app.models import User, Center, BaseAppointment, Appointment, Month, Day
 from datetime import datetime
-from app.hours_conversion import convert_letter_to_hours, convert_line_to_hour
+from app.hours_conversion import convert_letter_to_hours
 
 import app.global_vars as global_vars
 import sqlite3

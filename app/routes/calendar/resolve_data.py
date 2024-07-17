@@ -46,9 +46,13 @@ def resolve_data(action, info_dict):
     elif action == "donate":
         receiver_crm = info_dict.get('receiverCRM')
         receiver = User.query.filter_by(crm=receiver_crm).first() or current_user
-        return donate(doctor, center, day, hours, receiver)
+
+        flag = Request.donation(doctor.id, center.id, day.id, hours, receiver.id)
+        if isinstance(flag, str):
+            return flag 
+        return 0
     
-    elif action == "cal_exchange":
+    elif "exchange" in action:
         day2_number = int(info_dict.get('day2'))
         day_2 = month.get_day(day2_number)
         if not day:
@@ -63,37 +67,17 @@ def resolve_data(action, info_dict):
             return "Médico não encontrado"
     
         hours_2 = convert_hours(info_dict.get('hours2'))
-    
-        return cal_exchange(doctor, center, day, hours,
-                            doctor_2, center_2, day_2, hours_2)
 
-
-
-def cal_exchange(doctor_1, center_1, day_1, hours_1, doctor_2, center_2, day_2, hours_2):
-    flag = donate(doctor_1, center_1, day_1, hours_1, doctor_2)
-    if flag:
-        return flag
+        if action == "exchange_from_other_user":
+            doctor, doctor_2 = doctor_2, doctor
+            center, center_2 = center_2, center
+            day, day_2 = day_2, day
+            hours, hours_2 = hours_2, hours
     
-    flag = donate(doctor_2, center_2, day_2, hours_2, doctor_1)
-    if flag:
-        return flag
-    
-    return 0
- 
-
-def donate(donor, center, day, hours, receiver):
-    apps = []
-    for hour in hours:
-        app = Appointment.query.filter_by(day_id=day.id,
-                                          user_id=donor.id,
-                                          center_id=center.id,
-                                          hour=hour).first()
-        if app:
-            apps.append(app)
-        else:
-            return f"Horário {hour} não encontrado"
-    
-    for app in apps:
-        app.change_doctor(receiver.id)
+        flag = Request.exchange(doctor, center.id, day.id, hours,
+                                doctor_2, center_2.id, day_2.id, hours_2)
         
-    return 0
+        if isinstance(flag, str):
+            return flag
+                
+        return 0

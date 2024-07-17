@@ -21,6 +21,9 @@ class Month(db.Model):
         UniqueConstraint('number', 'year', name='uq_month_year'),
     )
 
+    # TODO: add init method
+    # TODO: check delete month func
+
     def __repr__(self):
         return f"{self.number}/{self.year}"  
 

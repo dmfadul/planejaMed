@@ -6,8 +6,6 @@ from .associations import request_appointment_association
 from app.models.appointment import Appointment
 
 
-
-
 class Request(db.Model):
     __tablename__ = 'requests'
 
@@ -71,7 +69,7 @@ class Request(db.Model):
                 db.session.rollback()
                 return f"Horário (ou parte dele) não foi encontrado"
 
-            if app.has_open_requests:
+            if any([(r.is_open and r.action=='exclude_appointments') for r in app.requests]):
                 db.session.rollback()
                 return f"Horário (ou parte dele) tem requisição pendente"
             
@@ -90,8 +88,6 @@ class Request(db.Model):
 
         db.session.add(new_request)
 
-        unconfirmed_apps = []
-        confirmed_apps = []
         for hour in hours:
             app = Appointment.query.filter_by(
                 day_id=day.id,
@@ -100,11 +96,7 @@ class Request(db.Model):
                 hour=hour
             ).first()
 
-            if app and not app.is_confirmed:
-                unconfirmed_apps.append(app)
-            elif app and app.is_confirmed:
-                confirmed_apps.append(app)
-            elif not app:
+            if not app:
                 app = Appointment.add_entry(
                     user_id=doctor.id,
                     center_id=center.id,
@@ -116,23 +108,29 @@ class Request(db.Model):
                     return app
                 
                 app.unconfirm()
+                new_request.appointments.append(app)
+                continue
+
+            if app.is_confirmed:
+                db.session.rollback()
+                return f"O Médico {doctor.full_name} está Ocupado no Horário Requisitado ou em Parte dele."
             
-            new_request.appointments.append(app)
+            if app.has_open_requests:
+                db.session.rollback()
+                return f"""O Médico {doctor.full_name} já tem
+                            Requisição Pendente para o Horário Requisitado ou para Parte dele."""
         
-        if confirmed_apps:
-            db.session.rollback()
-            return f"O Médico {doctor.full_name} está Ocupado no Horário Requisitado ou em Parte dele."
-         
-        if unconfirmed_apps:
-            db.session.rollback()
-            return f"""Conflito - Já há Requisição pendente para {doctor.full_name} em {center.abbreviation}
-                        no dia {day.date} para o horário pedido (ou parte dele)."""
+            if not app.is_confirmed:
+                db.session.rollback()
+                return f"""Conflito - Já há Requisição pendente para {doctor.full_name}
+                            em {center.abbreviation}no dia {day.date}
+                            para o horário pedido (ou parte dele)."""
         
         db.session.commit()
         return new_request
     
     @classmethod
-    def donate(cls, donor_id, center_id, day_id, hours, receiver_id):
+    def donation(cls, donor_id, center_id, day_id, hours, receiver_id):
         new_request = cls(
             requester_id=donor_id,
             receivers_code=str(receiver_id),
@@ -141,18 +139,80 @@ class Request(db.Model):
 
         db.session.add(new_request)
 
-        apps_not_found = []
         for hour in hours:
             app = Appointment.query.filter_by(
                 day_id=day_id,
                 user_id=donor_id,
                 center_id=center_id,
-                hour=hour
+                hour=hour,
+                is_confirmed=True
             ).first()
 
             if not app:
-                apps_not_found.append(hour)
-                continue
+                db.session.rollback()
+                return f"Horário (ou parte dele) não foi encontrado"
+
+            if app.has_open_requests:
+                db.session.rollback()
+                return f"Horário (ou parte dele) tem requisição pendente"
+            
+            new_request.appointments.append(app)
+        
+        db.session.commit()
+        return new_request
+    
+    @classmethod
+    def exchange(cls, doctor_1, center_1_id, day_1_id, hours_1,
+                 doctor_2, center_2_id, day_2_id, hours_2):
+        
+        new_request = cls(
+            requester_id=doctor_1.id,
+            receivers_code=str(doctor_2.id),
+            action="exchange",
+        )
+
+        db.session.add(new_request)
+
+        for hour in hours_1:
+            app = Appointment.query.filter_by(
+                day_id=day_1_id,
+                user_id=doctor_1.id,
+                center_id=center_1_id,
+                hour=hour,
+                is_confirmed=True
+            ).first()
+
+            if not app:
+                db.session.rollback()
+                return f"Horário de {doctor_1.full_name} (ou parte dele) não foi encontrado"
+
+            if app.has_open_requests:
+                db.session.rollback()
+                return f"Horário de {doctor_1.full_name} (ou parte dele) tem requisições pendentes"
+            
+            new_request.appointments.append(app)
+
+        for hour in hours_2:
+            app = Appointment.query.filter_by(
+                day_id=day_2_id,
+                user_id=doctor_2.id,
+                center_id=center_2_id,
+                hour=hour,
+                is_confirmed=True
+            ).first()
+
+            if not app:
+                db.session.rollback()
+                return f"Horário de {doctor_2.full_name} (ou parte dele) não foi encontrado"
+
+            if app.has_open_requests:
+                db.session.rollback()
+                return f"Horário de {doctor_2.full_name} (ou parte dele) tem requisições pendentes"
+            
+            new_request.appointments.append(app)
+        
+        db.session.commit()
+        return new_request
     
     def delete(self):
         self.appointments = []
@@ -222,6 +282,25 @@ class Request(db.Model):
 
             self.respond(responder_id=responder_id, response='authorized')
             return "Os horários foram excluídos com sucesso"
+        
+        if self.action == "donate":
+            for app in self.appointments:
+                app.change_doctor(int(self.receivers_code))
+
+            self.respond(responder_id=responder_id, response='authorized')
+            return "Os horários foram doados com sucesso"
+
+        if self.action == "exchange":
+            # the requester is doctor_1, the one who initiated the exchange
+            # the responder is doctor_2, the one who accepts the exchange
+            for app in [app for app in self.appointments if app.user_id == self.requester_id]:
+                app.change_doctor(int(self.receivers_code))
+
+            for app in [app for app in self.appointments if app.user_id == int(self.receivers_code)]: 
+                app.change_doctor(self.requester_id)
+            
+            self.respond(responder_id=responder_id, response='authorized')
+            return "Os horários foram trocados com sucesso"
 
         return "ação não reconhecida"
     
