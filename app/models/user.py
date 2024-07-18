@@ -192,7 +192,7 @@ class User(db.Model, UserMixin):
             date = datetime.strptime(date_str, "%d/%m/%y")
             return (center, date)
 
-        return ["-"] + sorted(schedule, key=sort_key)
+        return ["INCLUSÃO"] + sorted(schedule, key=sort_key)
     
     @property
     def redundant_schedule(self):

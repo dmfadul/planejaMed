@@ -6,8 +6,6 @@ from .associations import request_appointment_association
 from app.models.appointment import Appointment
 from app.hours_conversion import convert_hours_to_line
 
-# TODO: TRANSLATION - fill info
-
 # ADD MESSAGES
 # TODO: front-end - different buttons for messages
 

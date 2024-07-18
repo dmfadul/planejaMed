@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             output += `
             <li id="item-0">
-                -
+                INCLUSÃO
                 <div class="kebab-menu">
                     <button class="kebab-button">&#8942;</button>
                     <div class="kebab-content">
