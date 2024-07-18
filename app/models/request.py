@@ -9,7 +9,7 @@ from app.hours_conversion import convert_hours_to_line
 # TODO: TRANSLATION - fill info
 
 # ADD MESSAGES
-# TODO: front-end - fix requests order/create different buttons for messages
+# TODO: front-end - different buttons for messages
 
 # REPLACE DATABASE
 # TODO: make dashboard work without current month
@@ -89,7 +89,7 @@ class Request(db.Model):
                 db.session.rollback()
                 return f"Horário (ou parte dele) não foi encontrado"
 
-            if any([(r.is_open and r.action=='exclude_appointments') for r in app.requests]):
+            if app.has_open_requests:
                 db.session.rollback()
                 return f"Horário (ou parte dele) tem requisição pendente"
             
@@ -172,7 +172,7 @@ class Request(db.Model):
                                 no dia {day.date.strftime("%d/%m/%y")} (para {receiver.full_name})."""
 
         for hour in hours:
-            app = Appointment.query.filter_by(
+            app_donor = Appointment.query.filter_by(
                 day_id=day.id,
                 user_id=donor.id,
                 center_id=center.id,
@@ -180,15 +180,27 @@ class Request(db.Model):
                 is_confirmed=True
             ).first()
 
-            if not app:
+            if not app_donor:
                 db.session.rollback()
-                return f"Horário (ou parte dele) não foi encontrado"
+                return f"Horário de {donor.full_name} (ou parte dele) não foi encontrado"
 
-            if app.has_open_requests:
+            if app_donor.has_open_requests:
                 db.session.rollback()
-                return f"Horário (ou parte dele) tem requisição pendente"
+                return f"Horário de {donor.full_name} (ou parte dele) tem requisições pendente"
             
-            new_request.appointments.append(app)
+            app_receiver = Appointment.query.filter_by(
+                day_id=day.id,
+                user_id=receiver.id,
+                hour=hour,
+                is_confirmed=True
+            ).first()
+            
+            if app_receiver:
+                db.session.rollback()
+                return f"""Horário de {receiver.full_name} (ou parte dele) já está ocupado
+                        no centro {app_receiver.center.abbreviation}."""
+
+            new_request.appointments.append(app_donor)
         
         db.session.commit()
         return new_request
@@ -208,11 +220,15 @@ class Request(db.Model):
         if requester.id == doctor_1.id:
             new_request.info = f"""{requester.full_name} solicitou TROCA dos horários:
                                 {convert_hours_to_line(hours_1)} no centro {center_1.abbreviation}
-                                no dia {day_1.date.strftime("%d/%m/%y")} com {doctor_2.full_name}."""
+                                no dia {day_1.date.strftime("%d/%m/%y")} para
+                                {convert_hours_to_line(hours_2)} no centro {center_2.abbreviation}
+                                no dia {day_2.date.strftime("%d/%m/%y")} com {doctor_2.full_name}."""
         elif requester.id == doctor_2.id:
             new_request.info = f"""{requester.full_name} solicitou TROCA dos horários:
                                 {convert_hours_to_line(hours_2)} no centro {center_2.abbreviation}
-                                no dia {day_2.date.strftime("%d/%m/%y")} com {doctor_1.full_name}."""
+                                no dia {day_2.date.strftime("%d/%m/%y")} para
+                                {convert_hours_to_line(hours_1)} no centro {center_1.abbreviation}
+                                no dia {day_1.date.strftime("%d/%m/%y")} com {doctor_1.full_name}."""
         
         for hour in hours_1:
             app = Appointment.query.filter_by(
@@ -322,7 +338,7 @@ class Request(db.Model):
             return "Os horários foram incluídos com sucesso"
         
         if self.action == "exclude_appointments":
-            for app in self.appointments:
+            for app in self.appointments:   
                 app.delete_entry()
 
             self.respond(responder_id=responder_id, response='authorized')
@@ -338,11 +354,14 @@ class Request(db.Model):
         if self.action == "exchange":
             # the requester is doctor_1, the one who initiated the exchange
             # the responder is doctor_2, the one who accepts the exchange
-            for app in [app for app in self.appointments if app.user_id == self.requester_id]:
-                app.change_doctor(int(self.receivers_code))
-
-            for app in [app for app in self.appointments if app.user_id == int(self.receivers_code)]: 
-                app.change_doctor(self.requester_id)
+            for app in self.appointments:
+                if app.user_id == self.requester_id:
+                    app.change_doctor(int(self.receivers_code))
+                elif app.user_id == int(self.receivers_code): 
+                    app.change_doctor(self.requester_id)
+                else:
+                    db.session.rollback()
+                    return "Erro ao trocar horários"
             
             self.respond(responder_id=responder_id, response='authorized')
             return "Os horários foram trocados com sucesso"

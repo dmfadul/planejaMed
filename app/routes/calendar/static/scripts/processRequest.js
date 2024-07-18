@@ -153,6 +153,7 @@ function handleExchangeFromCurrentUser(infoDict) {
                     infoDict["day2"] = selectedDay;
 
                     let hours = doctorsDict[selectedDoc][selectedCenter][selectedDay]
+                    hours = hours[0].map(h => [h, h]);
                     let title = "Escolha as Horas que você quer entrar";
                     let label = "Horas: ";
 

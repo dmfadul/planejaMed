@@ -70,7 +70,6 @@ class Appointment(db.Model):
 
     @property
     def has_open_requests(self):
-        print(self.requests)
         return any(request.is_open for request in self.requests)
     
     @property

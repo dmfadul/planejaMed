@@ -20,10 +20,15 @@ from app.routes.calendar.gen_data import gen_days_dict
 # app = create_app()
 
 # with app.app_context():
-#     reqs = Request.query.all()
+#     req = Request.query.first()
 
-#     for req in reqs:
-#         req.delete()
+#     for app in [app for app in req.appointments if app.user_id == req.requester_id]:
+#         print(app.user_id, int(req.receivers_code))
+#         # app.change_doctor(int(req.receivers_code))
+
+#     for app in [app for app in req.appointments if app.user_id == int(req.receivers_code)]: 
+#         print(app.user_id, req.requester_id)
+#         # app.change_doctor(req.requester_id)
 
     # user = User.query.filter_by(crm=26704).first()
     # month = Month.get_current()
