@@ -238,7 +238,6 @@ function handleOfferDonation(infoDict) {
     
     openModal("modal1", availableHours, title, label, function(selectedHrs) {
         infoDict["hours"] = selectedHrs;
-        action = "cal_donate";
 
         let doctors = doctorsList.filter(d => d[0] !== parseInt(currUserData[0]));
         let title = "Escolha para quem Doar";
@@ -258,7 +257,7 @@ function handleRequestDonation(infoDict) {
     
     openModal("modal1", availableHours, title, label, function(selectedHrs) {
         infoDict["hours"] = selectedHrs;  
-        sendHoursToServer("cal_donate", infoDict);
+        sendHoursToServer("donate", infoDict);
     });
 }
 

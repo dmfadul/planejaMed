@@ -30,7 +30,8 @@ def resolve_data(action, info_dict):
     elif isinstance(selected_hours, list):
         hours = convert_hours(selected_hours)
 
-    # Check request's action
+
+    # Check request's action and call the respective function
     if action == "include":
         flag = Request.inclusion(doctor, center, day, hours)
         if isinstance(flag, str):
@@ -38,7 +39,7 @@ def resolve_data(action, info_dict):
         return 0
 
     elif action == "exclude":
-        flag = Request.exclusion(doctor.id, center.id, day.id, hours)
+        flag = Request.exclusion(doctor, center, day, hours)
         if isinstance(flag, str):
             return flag 
         return 0
@@ -46,8 +47,9 @@ def resolve_data(action, info_dict):
     elif action == "donate":
         receiver_crm = info_dict.get('receiverCRM')
         receiver = User.query.filter_by(crm=receiver_crm).first() or current_user
+        requester = current_user
 
-        flag = Request.donation(doctor.id, center.id, day.id, hours, receiver.id)
+        flag = Request.donation(doctor, center, day, hours, receiver, requester)
         if isinstance(flag, str):
             return flag 
         return 0
@@ -75,7 +77,7 @@ def resolve_data(action, info_dict):
             hours, hours_2 = hours_2, hours
     
         flag = Request.exchange(doctor, center.id, day.id, hours,
-                                doctor_2, center_2.id, day_2.id, hours_2)
+                                doctor_2, center_2.id, day_2.id, hours_2, current_user)
         
         if isinstance(flag, str):
             return flag

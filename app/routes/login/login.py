@@ -52,26 +52,26 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        flag = User.add_entry(form.first_name.data,
-                              form.middle_name.data,
-                              form.last_name.data,
-                              form.crm_number.data,
-                              form.rqe_number.data,
-                              form.cellphone.data,
-                              form.email.data,
-                              hashed_password)
+        new_user = User.add_entry(form.first_name.data,
+                                  form.middle_name.data,
+                                  form.last_name.data,
+                                  form.crm_number.data,
+                                  form.rqe_number.data,
+                                  form.cellphone.data,
+                                  form.email.data,
+                                  hashed_password)
 
-        if isinstance(flag, User):
-            request = Request.new_user(flag.id)
+        if isinstance(new_user, User):
+            request = Request.new_user(new_user.id)
             if isinstance(request, Request):
                 flash("Conta Criada Com Sucesso! Aguarde a Liberação do Administrador", "success")
                 return redirect(url_for('login.login'))
             else:
                 flash("Erro ao Criar Solicitação. Tente de Novo mais tarde ou entre em contato com o Admin", "danger")
-                flag.delete()
+                new_user.delete()
                 return redirect(url_for('login.register'))
         else:
-            flash(flag, "danger")
+            flash(new_user, "danger")
             return redirect(url_for('login.register'))
     else:
         print("form did not validate")

@@ -4,7 +4,19 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from .associations import request_appointment_association
 from app.models.appointment import Appointment
+from app.hours_conversion import convert_hours_to_line
 
+# TODO: TRANSLATION - fill info
+
+# ADD MESSAGES
+# TODO: front-end - fix requests order/create different buttons for messages
+
+# REPLACE DATABASE
+# TODO: make dashboard work without current month
+# TODO: create edit_user function in migrations
+# TODO: add __init__ to month
+
+# TODO: ADD LOGS
 
 class Request(db.Model):
     __tablename__ = 'requests'
@@ -21,6 +33,8 @@ class Request(db.Model):
     response_date = db.Column(db.Date, nullable=True)
     response = db.Column(db.Text, nullable=True)
 
+    info = db.Column(db.Text, nullable=True)
+
     requester = db.relationship('User', foreign_keys=[requester_id], back_populates='requests_sent', lazy=True)
     responder = db.relationship('User', foreign_keys=[responder_id], back_populates='requests_received', lazy=True)
     messages = relationship('Message', back_populates='request', lazy=True)
@@ -32,35 +46,41 @@ class Request(db.Model):
     )
     
     def __repr__(self):
-        return self.translate()
+        return self.info
     
     @classmethod
     def new_user(cls, doctor_to_include_id):
         new_request = cls(
             requester_id=doctor_to_include_id,
             receivers_code="*",
-            action="include_user",
+            action="include_user"
         )
 
         db.session.add(new_request)
+        new_request.info=f"""O Médico {new_request.requester.full_name} solicitou inclusão no sistema."""
+        
         db.session.commit()
+
         return new_request
     
     @classmethod
-    def exclusion(cls, doctor_id, center_id, day_id, hours):
+    def exclusion(cls, doctor, center, day, hours):
         new_request = cls(
-            requester_id=doctor_id,
+            requester_id=doctor.id,
             receivers_code="*",
             action="exclude_appointments",
+            info = f"""{doctor.full_name} solicitou EXCLUSÃO dos horários:
+                    {convert_hours_to_line(hours)} no centro {center.abbreviation}
+                    no dia {day.date}."""
         )
 
         db.session.add(new_request)
         
         for hour in hours:
             app = Appointment.query.filter_by(
-                day_id=day_id,
-                user_id=doctor_id,
-                center_id=center_id,
+                day_id=day.id,
+                user_id=doctor.id,
+                center_id=center.id,
                 hour=hour,
                 is_confirmed=True
             ).first()
@@ -74,7 +94,7 @@ class Request(db.Model):
                 return f"Horário (ou parte dele) tem requisição pendente"
             
             new_request.appointments.append(app)
-                           
+        
         db.session.commit()
         return new_request
 
@@ -84,6 +104,9 @@ class Request(db.Model):
             requester_id=doctor.id,
             receivers_code="*",
             action="include_appointments",
+            info=f"""{doctor.full_name} solicitou INCLUSÃO dos horários:
+                    {convert_hours_to_line(hours)} no centro {center.abbreviation}
+                    no dia {day.date}."""
         )
 
         db.session.add(new_request)
@@ -123,27 +146,36 @@ class Request(db.Model):
             if not app.is_confirmed:
                 db.session.rollback()
                 return f"""Conflito - Já há Requisição pendente para {doctor.full_name}
-                            em {center.abbreviation}no dia {day.date}
+                            em {center.abbreviation} no dia {day.date}
                             para o horário pedido (ou parte dele)."""
         
         db.session.commit()
         return new_request
     
     @classmethod
-    def donation(cls, donor_id, center_id, day_id, hours, receiver_id):
+    def donation(cls, donor, center, day, hours, receiver, requester):
         new_request = cls(
-            requester_id=donor_id,
-            receivers_code=str(receiver_id),
-            action="donate",
+            requester_id=donor.id,
+            receivers_code=str(receiver.id),
+            action="donate"
         )
 
         db.session.add(new_request)
 
+        if requester.id == receiver.id:
+            new_request.info=f"""{requester.full_name} solicitou DOAÇÃO dos horários:
+                                {convert_hours_to_line(hours)} no centro {center.abbreviation}
+                                no dia {day.date} de {donor.full_name}."""
+        elif requester.id == donor.id:
+            new_request.info=f"""{requester.full_name} solicitou DOAÇÃO dos horários:
+                                {convert_hours_to_line(hours)} no centro {center.abbreviation}
+                                no dia {day.date} (para {receiver.full_name})."""
+
         for hour in hours:
             app = Appointment.query.filter_by(
-                day_id=day_id,
-                user_id=donor_id,
-                center_id=center_id,
+                day_id=day.id,
+                user_id=donor.id,
+                center_id=center.id,
                 hour=hour,
                 is_confirmed=True
             ).first()
@@ -163,7 +195,7 @@ class Request(db.Model):
     
     @classmethod
     def exchange(cls, doctor_1, center_1_id, day_1_id, hours_1,
-                 doctor_2, center_2_id, day_2_id, hours_2):
+                 doctor_2, center_2_id, day_2_id, hours_2, requester):
         
         new_request = cls(
             requester_id=doctor_1.id,
@@ -173,6 +205,15 @@ class Request(db.Model):
 
         db.session.add(new_request)
 
+        if requester.id == doctor_1.id:
+            new_request.info = f"""{requester.full_name} solicitou TROCA dos horários:
+                                {convert_hours_to_line(hours_1)} no centro {center_1_id}
+                                no dia {day_1_id} com {doctor_2.full_name}."""
+        elif requester.id == doctor_2.id:
+            new_request.info = f"""{requester.full_name} solicitou TROCA dos horários:
+                                {convert_hours_to_line(hours_2)} no centro {center_2_id}
+                                no dia {day_2_id} com {doctor_1.full_name}."""
+        
         for hour in hours_1:
             app = Appointment.query.filter_by(
                 day_id=day_1_id,
@@ -215,7 +256,11 @@ class Request(db.Model):
         return new_request
     
     def delete(self):
-        self.appointments = []
+        for app in self.appointments:
+            if not app.is_confirmed:
+                app.delete_entry()
+            else:
+                app.requests.remove(self)
 
         db.session.delete(self)
         db.session.commit()
@@ -303,15 +348,4 @@ class Request(db.Model):
             return "Os horários foram trocados com sucesso"
 
         return "ação não reconhecida"
-    
-    def translate(self):
-        if self.action == "include_user":
-            return f"Inclusão de Usuário - {self.requester.full_name}"
         
-        apps_date = [app.day.date for app in self.appointments][0]
-        apps_center = [app.center.abbreviation for app in self.appointments][0]
-        apps_hours = [app.hour for app in self.appointments]
-        translation = f"{self.requester.full_name} - {self.action} - {apps_center} - {apps_date} - {apps_hours}"
-
-        return translation
-    

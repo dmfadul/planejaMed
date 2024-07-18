@@ -20,6 +20,11 @@ from app.routes.calendar.gen_data import gen_days_dict
 # app = create_app()
 
 # with app.app_context():
+#     reqs = Request.query.all()
+
+#     for req in reqs:
+#         req.delete()
+
     # user = User.query.filter_by(crm=26704).first()
     # month = Month.get_current()
     # day = month.get_day(15)
