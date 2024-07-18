@@ -76,8 +76,8 @@ def resolve_data(action, info_dict):
             day, day_2 = day_2, day
             hours, hours_2 = hours_2, hours
     
-        flag = Request.exchange(doctor, center.id, day.id, hours,
-                                doctor_2, center_2.id, day_2.id, hours_2, current_user)
+        flag = Request.exchange(doctor, center, day, hours,
+                                doctor_2, center_2, day_2, hours_2, current_user)
         
         if isinstance(flag, str):
             return flag

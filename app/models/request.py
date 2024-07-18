@@ -71,7 +71,7 @@ class Request(db.Model):
             action="exclude_appointments",
             info = f"""{doctor.full_name} solicitou EXCLUSÃO dos horários:
                     {convert_hours_to_line(hours)} no centro {center.abbreviation}
-                    no dia {day.date}."""
+                    no dia {day.date.strftime("%d/%m/%y")}."""
         )
 
         db.session.add(new_request)
@@ -106,7 +106,7 @@ class Request(db.Model):
             action="include_appointments",
             info=f"""{doctor.full_name} solicitou INCLUSÃO dos horários:
                     {convert_hours_to_line(hours)} no centro {center.abbreviation}
-                    no dia {day.date}."""
+                    no dia {day.date.strftime("%d/%m/%y")}."""
         )
 
         db.session.add(new_request)
@@ -165,11 +165,11 @@ class Request(db.Model):
         if requester.id == receiver.id:
             new_request.info=f"""{requester.full_name} solicitou DOAÇÃO dos horários:
                                 {convert_hours_to_line(hours)} no centro {center.abbreviation}
-                                no dia {day.date} de {donor.full_name}."""
+                                no dia {day.date.strftime("%d/%m/%y")} de {donor.full_name}."""
         elif requester.id == donor.id:
             new_request.info=f"""{requester.full_name} solicitou DOAÇÃO dos horários:
                                 {convert_hours_to_line(hours)} no centro {center.abbreviation}
-                                no dia {day.date} (para {receiver.full_name})."""
+                                no dia {day.date.strftime("%d/%m/%y")} (para {receiver.full_name})."""
 
         for hour in hours:
             app = Appointment.query.filter_by(
@@ -194,8 +194,8 @@ class Request(db.Model):
         return new_request
     
     @classmethod
-    def exchange(cls, doctor_1, center_1_id, day_1_id, hours_1,
-                 doctor_2, center_2_id, day_2_id, hours_2, requester):
+    def exchange(cls, doctor_1, center_1, day_1, hours_1,
+                 doctor_2, center_2, day_2, hours_2, requester):
         
         new_request = cls(
             requester_id=doctor_1.id,
@@ -207,18 +207,18 @@ class Request(db.Model):
 
         if requester.id == doctor_1.id:
             new_request.info = f"""{requester.full_name} solicitou TROCA dos horários:
-                                {convert_hours_to_line(hours_1)} no centro {center_1_id}
-                                no dia {day_1_id} com {doctor_2.full_name}."""
+                                {convert_hours_to_line(hours_1)} no centro {center_1.abbreviation}
+                                no dia {day_1.date.strftime("%d/%m/%y")} com {doctor_2.full_name}."""
         elif requester.id == doctor_2.id:
             new_request.info = f"""{requester.full_name} solicitou TROCA dos horários:
-                                {convert_hours_to_line(hours_2)} no centro {center_2_id}
-                                no dia {day_2_id} com {doctor_1.full_name}."""
+                                {convert_hours_to_line(hours_2)} no centro {center_2.abbreviation}
+                                no dia {day_2.date.strftime("%d/%m/%y")} com {doctor_1.full_name}."""
         
         for hour in hours_1:
             app = Appointment.query.filter_by(
-                day_id=day_1_id,
+                day_id=day_1.id,
                 user_id=doctor_1.id,
-                center_id=center_1_id,
+                center_id=center_1.id,
                 hour=hour,
                 is_confirmed=True
             ).first()
@@ -235,9 +235,9 @@ class Request(db.Model):
 
         for hour in hours_2:
             app = Appointment.query.filter_by(
-                day_id=day_2_id,
+                day_id=day_2.id,
                 user_id=doctor_2.id,
-                center_id=center_2_id,
+                center_id=center_2.id,
                 hour=hour,
                 is_confirmed=True
             ).first()
