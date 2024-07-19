@@ -49,3 +49,14 @@ class Message(db.Model):
             user_ids += [user.id for user in User.query.all() if user.id == int(self.receivers_code)]
     
         return user_ids
+    
+    def dismiss(self):
+        self.is_archived = True
+        db.session.commit()
+        return "A mensagem foi arquivada com sucesso."
+
+    def cancel(self):
+        req = self.request
+        print(req)
+
+        return "A requisição foi cancelado com sucesso."

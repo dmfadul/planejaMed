@@ -44,11 +44,22 @@ def requests():
 @dashboard_bp.route('/resolve-request', methods=['POST'])
 @login_required
 def resolve_request():
-    authorized = request.json['response'] == 'yes'
+    response = request.json['response']
     req_id = request.json['request']
-    req = Request.query.get(req_id)
-    
-    flag = req.resolve(current_user.id, authorized)
+
+    if response in ['yes', 'no']:
+        req = Request.query.get(req_id)
+        authorized = response == 'yes'
+        flag = req.resolve(current_user.id, authorized)
+    elif response == 'dismiss':
+        message = Message.query.get(req_id)
+        flag = message.dismiss()
+    elif response == 'cancel':
+        message = Message.query.get(req_id)
+        flag = message.cancel()
+    else:
+        flag = "error"
+
     flash(flag, 'success')
 
     return jsonify({"status": "success", 'message': 'Requests updated'})

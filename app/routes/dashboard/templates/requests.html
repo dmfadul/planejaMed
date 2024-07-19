@@ -11,8 +11,15 @@
           {% for request in requests %}
             <div class="request-item" id="request-{{ loop.index }}">
                 {{ request }}
-                <button onclick="resolveRequest('{{ request.id }}', 'yes')">Sim</button>
-                <button onclick="resolveRequest('{{ request.id }}', 'no')">Não</button>
+                
+                {% if request.action == 'info' %}
+                  <button onclick="resolveRequest('{{ request.id }}', 'dismiss')">Dispensar</button>
+                {% elif request.action == 'cancel' %}
+                  <button onclick="resolveRequest('{{ request.id }}', 'cancel')">Cancelar</button>
+                {% else %}
+                  <button onclick="resolveRequest('{{ request.id }}', 'yes')">Sim</button>
+                  <button onclick="resolveRequest('{{ request.id }}', 'no')">Não</button>
+                {% endif %}
             </div>
           {% endfor %}
       </div>
