@@ -34,19 +34,21 @@ class Message(db.Model):
         return new_message
     
     @classmethod
-    def new_cancel_message(cls, sender_id, request_id, receivers_code, content):
+    def new_cancel_message(cls, sender_id, request_id, receivers_code):
         new_message = cls(sender_id=sender_id,
                           request_id=request_id,
                           receivers_code=receivers_code,
                           action="cancel",
+                          content=""
                           )
         
         db.session.add(new_message)
+        db.session.commit()
 
-        if new_message.request.action == "include":
+        if new_message.request.action == "include_appointments":
             print("include")
+
             
-        # db.session.commit()
         return "new_message"
     
     @classmethod

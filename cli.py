@@ -1,5 +1,5 @@
 import migration_funcs
-from app.models import User, Center, Month, Appointment, Day, Request
+from app.models import User, Center, Month, Appointment, Day, Request, Message
 from app import create_app, db
 from app.routes.dataview.resolve_data import convert_hours
 from datetime import datetime
@@ -20,7 +20,9 @@ from app.routes.calendar.gen_data import gen_days_dict
 # app = create_app()
 
 # with app.app_context():
-#     req = Request.query.first()
+#     message = Message.query.get(4)
+
+#     print(message.request.action)
 
 #     for app in [app for app in req.appointments if app.user_id == req.requester_id]:
 #         print(app.user_id, int(req.receivers_code))
