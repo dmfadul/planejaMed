@@ -34,6 +34,22 @@ class Message(db.Model):
         return new_message
     
     @classmethod
+    def new_cancel_message(cls, sender_id, request_id, receivers_code, content):
+        new_message = cls(sender_id=sender_id,
+                          request_id=request_id,
+                          receivers_code=receivers_code,
+                          action="cancel",
+                          )
+        
+        db.session.add(new_message)
+
+        if new_message.request.action == "include":
+            print("include")
+            
+        # db.session.commit()
+        return "new_message"
+    
+    @classmethod
     def filter_by_user(cls, user_id):
         return [m for m in cls.query.filter_by(is_archived=False).all() if user_id in m.receivers]
     

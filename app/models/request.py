@@ -6,8 +6,6 @@ from .associations import request_appointment_association
 from app.models.appointment import Appointment
 from app.hours_conversion import convert_hours_to_line
 
-# ADD MESSAGES
-# TODO: front-end - different buttons for messages
 
 # REPLACE DATABASE
 # TODO: make dashboard work without current month

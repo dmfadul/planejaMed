@@ -1,4 +1,4 @@
-from app.models import Appointment, Request, User, Center, Day, Month
+from app.models import Appointment, Request, User, Center, Day, Month, Message
 from app.hours_conversion import convert_hours, convert_line_to_hour
 from flask_login import current_user
 
@@ -35,13 +35,23 @@ def resolve_data(action, info_dict):
     if action == "include":
         flag = Request.inclusion(doctor, center, day, hours)
         if isinstance(flag, str):
-            return flag   
+            return flag
+        
+        Message.new_cancel_message(sender_id=current_user.id,
+                                   request_id=flag.id,
+                                   receivers_code="*"
+                                   )
         return 0
 
     elif action == "exclude":
         flag = Request.exclusion(doctor, center, day, hours)
         if isinstance(flag, str):
-            return flag 
+            return flag
+        
+        Message.new_cancel_message(sender_id=current_user.id,
+                                   request_id=flag.id,
+                                   receivers_code="*"
+                                   )
         return 0
     
     elif action == "donate":
@@ -51,7 +61,14 @@ def resolve_data(action, info_dict):
 
         flag = Request.donation(doctor, center, day, hours, receiver, requester)
         if isinstance(flag, str):
-            return flag 
+            return flag
+        
+        receiver_code = receiver.id if receiver.id != current_user.id else doctor.id
+        Message.new_cancel_message(sender_id=current_user.id,
+                                   request_id=flag.id,
+                                   receivers_code=receiver_code
+                                   )
+
         return 0
     
     elif "exchange" in action:
@@ -81,5 +98,10 @@ def resolve_data(action, info_dict):
         
         if isinstance(flag, str):
             return flag
-                
+        
+        receiver_code = doctor_2.id if doctor_2.id != current_user.id else doctor.id
+        Message.new_cancel_message(sender_id=current_user.id,
+                                   request_id=flag.id,
+                                   receivers_code=receiver_code
+                                   )
         return 0
