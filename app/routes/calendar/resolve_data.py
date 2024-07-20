@@ -39,7 +39,7 @@ def resolve_data(action, info_dict):
         
         Message.new_cancel_message(sender_id=current_user.id,
                                    request_id=flag.id,
-                                   receivers_code="*"
+                                   receivers_code=current_user.id
                                    )
         return 0
 
@@ -50,7 +50,7 @@ def resolve_data(action, info_dict):
         
         Message.new_cancel_message(sender_id=current_user.id,
                                    request_id=flag.id,
-                                   receivers_code="*"
+                                   receivers_code=current_user.id
                                    )
         return 0
     
@@ -63,10 +63,9 @@ def resolve_data(action, info_dict):
         if isinstance(flag, str):
             return flag
         
-        receiver_code = receiver.id if receiver.id != current_user.id else doctor.id
         Message.new_cancel_message(sender_id=current_user.id,
                                    request_id=flag.id,
-                                   receivers_code=receiver_code
+                                   receivers_code=current_user.id
                                    )
 
         return 0
@@ -99,9 +98,8 @@ def resolve_data(action, info_dict):
         if isinstance(flag, str):
             return flag
         
-        receiver_code = doctor_2.id if doctor_2.id != current_user.id else doctor.id
         Message.new_cancel_message(sender_id=current_user.id,
                                    request_id=flag.id,
-                                   receivers_code=receiver_code
+                                   receivers_code=current_user.id
                                    )
         return 0

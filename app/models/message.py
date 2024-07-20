@@ -46,10 +46,28 @@ class Message(db.Model):
         db.session.commit()
 
         if new_message.request.action == "include_appointments":
-            print("include")
-
-            
+            new_message.content = """Você tem uma solicitação de inclusão de horários em aberto
+                                     Aperte Cancelar para cancelar a solicitação."""
+        elif new_message.request.action == "exclude_appointments":
+            new_message.content = """Você tem uma solicitação de exclusão de horários em aberto
+                                     Aperte Cancelar para cancelar a solicitação."""
+        elif new_message.request.action == "donate":
+            new_message.content = """Você tem uma solicitação de doação de horários em aberto
+                                     Aperte Cancelar para cancelar a solicitação."""
+        elif new_message.request.action == "exchange":
+            new_message.content = """Você tem uma solicitação de troca de horários em aberto
+                                     Aperte Cancelar para cancelar a solicitação."""
+        else:
+            print("error")
+        
+        db.session.commit()
         return "new_message"
+    
+    def delete(self):
+        self.request_id = None
+        db.session.delete(self)
+        db.session.commit()
+        return 0
     
     @classmethod
     def filter_by_user(cls, user_id):

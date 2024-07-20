@@ -20,9 +20,11 @@ from app.routes.calendar.gen_data import gen_days_dict
 # app = create_app()
 
 # with app.app_context():
-#     message = Message.query.get(4)
+#     messages = Message.query.all()
+#     print(messages)
 
-#     print(message.request.action)
+    # for message in messages:
+    #     message.delete()
 
 #     for app in [app for app in req.appointments if app.user_id == req.requester_id]:
 #         print(app.user_id, int(req.receivers_code))
