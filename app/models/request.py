@@ -7,13 +7,6 @@ from app.models.appointment import Appointment
 from app.hours_conversion import convert_hours_to_line
 
 
-# REPLACE DATABASE
-# TODO: make dashboard work without current month
-# TODO: create edit_user function in migrations
-# TODO: add __init__ to month
-
-# TODO: ADD LOGS
-
 class Request(db.Model):
     __tablename__ = 'requests'
 

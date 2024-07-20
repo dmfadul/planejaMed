@@ -48,14 +48,24 @@ def create_app(config_filename=None):
 
 create_app()
 
-# TODO: CLEAN UP MODALS.JS
+# TODO: remove cancel messages if request is resolved
+# TODO: remove other requests (and their cancel messages) if request is resolved
+
+# TODO: !!stop doctor from offering same hour to two people (test)
+# TODO: test if messages are appearing only to the right people (no admin)
+
+# REPLACE DATABASE
+# TODO: make dashboard work without current month
+# TODO: create edit_user function in migrations
+# TODO: add __init__ to month
+
+# TODO: ADD LOGS
 
 # TODO: FINISH ADMIN FUNCTIONS
 # TODO: list of months in db
 # TODO: add logic to user add a new center
 
-# TODO: ADD REQUESTS
-# TODO: !!stop doctor from offering same hour to two people
+# TODO: CLEAN UP MODALS.JS
 
 # TODO: add replies to answered requests
 # TODO: change admin table interaction
@@ -67,7 +77,3 @@ create_app()
 # TODO: use profile name to gen abbreviated names (recreate user table)/finish reports
 # TODO: fix aesthetics/simplify css and js
 # TODO: add visible password button
-
-
-
-
