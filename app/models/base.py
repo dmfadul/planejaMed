@@ -21,12 +21,15 @@ class BaseAppointment(db.Model):
     
     @classmethod
     def check_conflicts(cls, user_id, center_id, week_day, week_index, hour):
-        existing_apps = cls.query.all()
+        existing_apps = cls.query.filter_by(user_id=user_id,
+                                            week_day=week_day,
+                                            week_index=week_index,
+                                            hour=hour).all()
 
-        existing_apps = [app for app in existing_apps if app.user_id == user_id]
-        existing_apps = [app for app in existing_apps if app.week_day == week_day]
-        existing_apps = [app for app in existing_apps if app.week_index == week_index]
-        existing_apps = [app for app in existing_apps if app.hour == hour]
+        # existing_apps = [app for app in existing_apps if app.user_id == user_id]
+        # existing_apps = [app for app in existing_apps if app.week_day == week_day]
+        # existing_apps = [app for app in existing_apps if app.week_index == week_index]
+        # existing_apps = [app for app in existing_apps if app.hour == hour]
         existing_apps_other_centers = [app for app in existing_apps if app.center_id != center_id]
         existing_apps_same_center = [app for app in existing_apps if app.center_id == center_id]
 
