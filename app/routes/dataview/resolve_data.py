@@ -39,8 +39,9 @@ def resolve_base_appointments(data):
             
             return 0
 
-        elif action == "add":
+        elif action in ["add", "add-direct"]:
             hour_list = cell.get("hourValue") # Hour_list has the format ["-", "00:00", "00:00"]
+            print(hour_list)
             hours = convert_hours(hour_list)
             if isinstance(hours, str):
                 return hours
@@ -91,7 +92,7 @@ def resolve_month_appointments(data):
             
             return 0
 
-        elif action == "add":
+        elif action in ["add", "add-direct"]:
             hour_list = cell.get("hourValue") # Hour_list has the format ["-", "00:00", "00:00"]
             hours = convert_hours(hour_list)
             if isinstance(hours, str):

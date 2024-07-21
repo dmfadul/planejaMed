@@ -10,6 +10,26 @@ function executeEdit(action) {
     sendData();
 }
 
+document.addEventListener('keydown', function(event) {
+    event.preventDefault();
+
+    const validKeys = ['d', 'm', 't', 'n', 'c', 'v'];
+    const selectedCell = document.querySelector('.selected');
+    if (event.key === 'Delete') {
+        selectedCell.style.backgroundColor = 'red';
+        state.action = 'delete';
+        sendData();
+    }
+    if (validKeys.includes(event.key.toLowerCase())) {
+        selectedCell.style.backgroundColor = 'green';
+        state.action = 'add-direct';
+        state.selectedCells.forEach((cell) => {
+            cell.hourValue = [event.key, "00:00", "00:00"];
+        });
+        sendData();
+    }
+});
+
 function sendData() {
     confirmData()
         .then(() => {
@@ -76,7 +96,7 @@ window.addEventListener('resize', () => {
 
 function confirmData() {
     return new Promise((resolve, reject) => {
-        if (state.action === "delete") {
+        if (state.action === "delete" || state.action === "add-direct") {
             setTimeout(resolve, 500);
             return;
         }
