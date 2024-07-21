@@ -70,6 +70,8 @@ create_app()
 # TODO: list of months in db
 # TODO: add logic to user add a new center
 
+# TODO: fill reports
+
 # TODO: CLEAN UP MODALS.JS
 # TODO: change admin table interaction and clean up its js
 

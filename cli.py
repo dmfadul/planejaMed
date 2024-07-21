@@ -13,6 +13,7 @@ from app.routes.calendar.gen_data import gen_days_dict
 # migration_funcs.migrate_users()
 # migration_funcs.adjust_users()
 # migration_funcs.migrate_base("CCG--BASE")
+
 # migration_funcs.migrate_months()
 
 # migration_funcs.migrate_month("CCG", 12, 2023)

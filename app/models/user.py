@@ -76,7 +76,7 @@ class User(db.Model, UserMixin):
 
             db.session.add(new_user)
 
-        if existing_user.is_active:
+        elif existing_user.is_active:
             db.session.rollback()
             Message.new_message(sender_id=existing_user.id,
                                 receivers_code="*",
@@ -84,19 +84,20 @@ class User(db.Model, UserMixin):
                                 está tentando criar uma nova conta com CRM já cadastrado""")
             
             return "CRM já cadastrado"
-        if existing_user.is_waiting_for_approval:
+        elif existing_user.is_waiting_for_approval:
             db.session.rollback()
             return "Conta já existe. Aguarde a Liberação do Administrador"
-        if not existing_user.is_active:
+        elif not existing_user.is_active:
             db.session.rollback()
             Message.new_message(sender_id=existing_user.id,
                     receivers_code="*",
                     content=f"""{existing_user.full_name}, ex-usuário,
                     está tentando criar uma nova conta""")
             return "Conta já existe, mas usuário não está ativo. Entre em contato com o Admin"
-        if new_user.full_name in names:
+        elif new_user.full_name in names:
             db.session.rollback()
             return "Nome já cadastrado"
+        
         try:
             db.session.commit()
         except Exception as e:
