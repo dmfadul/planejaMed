@@ -1,6 +1,8 @@
 from app import db
 from sqlalchemy import UniqueConstraint
+from sqlalchemy.orm import relationship
 from datetime import datetime, timedelta
+from .associations import months_users_association
 import app.global_vars as global_vars
 
 
@@ -16,13 +18,15 @@ class Month(db.Model):
     is_current = db.Column(db.Boolean, default=False)
 
     days = db.relationship('Day', back_populates='month', lazy=True)
+    users = relationship(
+        'User',
+        secondary=months_users_association,
+        back_populates='months'
+        )
 
     __table_args__ = (
         UniqueConstraint('number', 'year', name='uq_month_year'),
     )
-
-    # TODO: add init method
-    # TODO: check delete month func
 
     def __repr__(self):
         return f"{self.number}/{self.year}"  
@@ -130,12 +134,7 @@ class Month(db.Model):
     @property
     def holidays(self):
         return [day.date.day for day in self.days if day.is_holiday]
-    
-    @property
-    def users(self):
-        users = list(set([appointment.user for day in self.days for appointment in day.appointments]))
-        return sorted(users, key=lambda x: x.full_name)
-    
+       
     @property
     def appointments(self):
         return [appointment for day in self.days for appointment in day.appointments]
@@ -203,7 +202,6 @@ class Month(db.Model):
                 continue
 
             for b_app in day_base_apps:
-                print(b_app.user.full_name, b_app.center.abbreviation, day.date, b_app.hour)
                 appointments.append(Appointment(user_id=b_app.user_id,
                                                 center_id=b_app.center_id,
                                                 day_id=day.id,
@@ -236,4 +234,10 @@ class Month(db.Model):
         self.is_current = True
         db.session.commit()
 
+        return 0
+    
+    def fix_users(self):
+        from app.models import User
+        self.users = User.query.filter_by(is_active=True).all()
+        db.session.commit()
         return 0

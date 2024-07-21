@@ -1,7 +1,9 @@
 from app import db, login_manager, bcrypt
 from flask_login import UserMixin
 from unidecode import unidecode
+from sqlalchemy.orm import relationship
 from datetime import datetime
+from .associations import months_users_association
 
 
 @login_manager.user_loader
@@ -42,6 +44,12 @@ class User(db.Model, UserMixin):
 
     messages_sent = db.relationship('Message', foreign_keys='Message.sender_id', back_populates='sender', lazy=True)
     logs = db.relationship('Log', back_populates='user', lazy=True)
+
+    months = relationship(
+        'Month',
+        secondary=months_users_association,
+        back_populates='users'
+        )
 
     def __repr__(self):
         return f'{self.first_name} {self.last_name}'

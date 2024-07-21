@@ -8,3 +8,11 @@ request_appointment_association = db.Table(
     db.Column('request_id', db.Integer, db.ForeignKey('requests.id')),
     db.Column('appointment_id', db.Integer, db.ForeignKey('appointments.id'))
 )
+
+
+months_users_association = db.Table(
+    'months_users',
+    db.Model.metadata,
+    db.Column('month_id', db.Integer, db.ForeignKey('months.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'))
+)
