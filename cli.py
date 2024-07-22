@@ -22,13 +22,8 @@ from app.routes.calendar.gen_data import gen_days_dict
 # app = create_app()
 
 # with app.app_context():
-    # Month.delete(number=8, year=2024)
-    # month = Month.create_new_month(8, 2024)
-    # month.populate()
-    # month.gen_appointments()
-    # month.set_current()
-    # month.fix_users()
+#     months = Month.query.all()
+#     for month in months:
+#         print(month.number, month.year)
 
-    # month = Month.query.filter_by(year=2024, number=8).first()
-    # # month.fix_users()
-    # print(month.users)
+#         month.fix_users()

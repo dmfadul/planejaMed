@@ -239,5 +239,7 @@ class Month(db.Model):
     def fix_users(self):
         from app.models import User
         self.users = User.query.filter_by(is_active=True).all()
+        self.users.extend(list(set([appointment.user for day in self.days for appointment in day.appointments])))
+        
         db.session.commit()
         return 0

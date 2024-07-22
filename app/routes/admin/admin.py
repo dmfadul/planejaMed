@@ -71,6 +71,11 @@ def create_month():
         return redirect(url_for('admin.admin'))
     flash(f"Os plantões de {next_month_number}/{next_month_year} foram gerados", 'success')
 
+    flag = new_month.fix_users()
+    if flag:
+        flash(f"Os usuários do mês {next_month_number}/{next_month_year} não foram corrigidos", 'danger')
+        return redirect(url_for('admin.admin'))
+
     return redirect(url_for('admin.admin'))
 
 
