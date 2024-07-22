@@ -50,9 +50,7 @@ create_app()
 
 
 # REPLACE DATABASE
-# TODO: make dashboard work without current month
 # TODO: create edit_user function in migrations
-# TODO: add __init__ to month
 
 # TODO: remove cancel messages if request is resolved
 # TODO: remove other requests (and their cancel messages) if request is resolved

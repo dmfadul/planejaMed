@@ -7,6 +7,9 @@ from app.hours_conversion import split_hours, convert_hours_to_line, gen_redudan
 def gen_days_dict(center_abbr):
     month = Month.get_current()
 
+    if month is None:
+        return {}
+
     days_dict = {}
     for day in month.days:
         if day.date.day not in days_dict:

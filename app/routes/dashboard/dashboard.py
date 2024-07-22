@@ -16,8 +16,14 @@ dashboard_bp = Blueprint(
 @login_required
 def dashboard():
     months = global_vars.MESES
-    current_year = Month.get_current().year
-    current_month = Month.get_current().name
+    month = Month.get_current()
+    if month is None:
+        current_year = 2024
+        current_month = "Janeiro"
+    else:
+        current_year = month.year
+        current_month = month.name
+    
     pending_requests = Request.filter_by_user(current_user.id) + Message.filter_by_user(current_user.id)
     centers = [center.abbreviation for center in Center.query.filter_by(is_active=True).all()]
 
