@@ -48,8 +48,7 @@ def create_app(config_filename=None):
 
 create_app()
 
-
-# REPLACE DATABASE
+# TODO: https
 # TODO: create edit_user function in migrations
 
 # TODO: remove cancel messages if request is resolved
@@ -70,6 +69,8 @@ create_app()
 # TODO: add logic to user add a new center
 
 # TODO: fill reports
+
+# TODO: REPLACE DATABASE
 
 # TODO: CLEAN UP MODALS.JS
 # TODO: change admin table interaction and clean up its js
