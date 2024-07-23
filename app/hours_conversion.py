@@ -190,8 +190,9 @@ def convert_letter_to_hours(letter):
 def convert_hours_to_line(hour_list):
     if not hour_list:
         return ""
-
-    return f"{hour_list[0]:02d}:00 - {hour_list[-1]+1:02d}:00"
+    starting_hour = hour_list[0]
+    ending_hour = hour_list[-1]+1 if hour_list[-1] != 23 else 0
+    return f"{starting_hour:02d}:00 - {ending_hour:02d}:00"
 
 
 def convert_line_to_hour(line):

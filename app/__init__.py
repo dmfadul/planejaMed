@@ -48,8 +48,11 @@ def create_app(config_filename=None):
 
 create_app()
 
-# TODO: https
+# TODO: CSS
 # TODO: create edit_user function in migrations
+# TODO: cancel message going to requester
+# TODO: add removal of cancel messages when request is resolved
+
 
 # TODO: remove cancel messages if request is resolved
 # TODO: remove other requests (and their cancel messages) if request is resolved
@@ -78,7 +81,8 @@ create_app()
 # TODO: add an actual settings file.
 # TODO: Replace popup by modal
 
-# TODO: FOR LATER
+# FOR LATER
+# TODO: https - do nginx course
 # TODO: add home button
 # TODO: use profile name to gen abbreviated names (recreate user table)/finish reports
 # TODO: fix aesthetics/simplify css and js
