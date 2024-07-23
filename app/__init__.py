@@ -50,9 +50,6 @@ create_app()
 
 # TODO: CSS
 # TODO: create edit_user function in migrations
-# TODO: cancel message going to requester
-# TODO: add removal of cancel messages when request is resolved
-
 
 # TODO: remove cancel messages if request is resolved
 # TODO: remove other requests (and their cancel messages) if request is resolved

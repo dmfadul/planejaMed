@@ -77,12 +77,10 @@ class Message(db.Model):
     def receivers(self):
         from app.models.user import User
 
-        user_ids = [user.id for user in User.query.all() if user.is_sudo]
-
         if self.receivers_code == "*":
-            user_ids += [user.id for user in User.query.all() if user.is_admin]
+            user_ids = [user.id for user in User.query.all() if user.is_admin]
         else:
-            user_ids += [user.id for user in User.query.all() if user.id == int(self.receivers_code)]
+            user_ids = [user.id for user in User.query.all() if user.id == int(self.receivers_code)]
     
         return user_ids
     
