@@ -308,6 +308,17 @@ class Request(db.Model):
         
         return [app.hour for app in self.appointments]
 
+    @ property
+    def doctors(self):
+        from app.models.user import User
+        if self.action not in ["donate", "exchange"]:
+            return None
+        
+        docs = list(set([app.user for app in self.appointments]))
+        if self.action == "donate":
+            docs.append(User.query.get(int(self.receivers_code)))
+        return docs
+    
     @property
     def noun(self):
         if self.action == "include_user":

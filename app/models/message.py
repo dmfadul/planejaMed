@@ -80,10 +80,19 @@ class Message(db.Model):
         hours = convert_hours_to_line(self.request.hours)
         center = self.request.center.abbreviation
 
-        message = f"""Você tem uma solicitação de {noun} para {date}
-        de {hours} no centro {center}. Aperte Cancelar para cancelar a solicitação."""
+        if self.request.action in ["include_appointments", "exclude_appointments"]:
+            message = f"""solicitação de {noun} para {date} de {hours} no centro {center}."""
+        
+        if self.request.action == "donate":
+            other_doctor = [d for d in self.request.doctors if d != self.sender][0].full_name
+            message = f"""solicitação de {noun} para {other_doctor}."""
 
-        return message
+        if self.request.action == "exchange":
+            other_doctor = [d for d in self.request.doctors if d != self.sender][0].full_name
+            message = f"""solicitação de {noun} com {other_doctor}."""
+
+        message += " Aperte Cancelar para cancelar a solicitação."
+        return "Você tem " + message
 
     def dismiss(self):
         self.is_archived = True
