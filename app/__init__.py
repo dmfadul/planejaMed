@@ -51,33 +51,37 @@ create_app()
 
 # TODO: add messages to resolved requests
 # TODO: finish messages content
-
 # TODO: add function to add/remove doctor mid-month
 # TODO: perform tests on andrey's bugs
-
 # TODO: ADD LOGS
+
+# TODO: REPLACE DATABASE
+
+# TODO: fill reports
+
+# TODO: CSS
 
 # TODO: FINISH ADMIN FUNCTIONS
 # TODO: list of months in db
 # TODO: add logic to user add a new center
 
-# TODO: fill reports
 
-# TODO: REPLACE DATABASE
 
-# TODO: CSS
+
+
+# FOR LATER
 # TODO: CLEAN UP MODALS.JS
 # TODO: change admin table interaction and clean up its js
 
 # TODO: add an actual settings file.
 # TODO: Replace popup by modal
 
-# FOR LATER
 # TODO: Allow multiple requests/remove other requests (and their cancel messages) if request is resolved
 # TODO: !!stop doctor from offering same hour to two people (test)
 
 # TODO: https - do nginx course
 # TODO: add home button
+
 # TODO: use profile name to gen abbreviated names (recreate user table)/finish reports
 # TODO: fix aesthetics/simplify css and js
 # TODO: add visible password button
