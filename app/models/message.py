@@ -21,7 +21,7 @@ class Message(db.Model):
     request = db.relationship('Request', back_populates='messages', lazy=True) 
 
     def __repr__(self):
-        return self.content
+        return self.payload
     
     @classmethod
     def new_message(cls, sender_id, receivers_code, content):
@@ -45,22 +45,6 @@ class Message(db.Model):
         db.session.add(new_message)
         db.session.commit()
 
-        if new_message.request.action == "include_appointments":
-            new_message.content = """Você tem uma solicitação de inclusão de horários em aberto.\n
-                                     Aperte Cancelar para cancelar a solicitação."""
-        elif new_message.request.action == "exclude_appointments":
-            new_message.content = """Você tem uma solicitação de exclusão de horários em aberto.\n
-                                     Aperte Cancelar para cancelar a solicitação."""
-        elif new_message.request.action == "donate":
-            new_message.content = """Você tem uma solicitação de doação de horários em aberto.\n
-                                     Aperte Cancelar para cancelar a solicitação."""
-        elif new_message.request.action == "exchange":
-            new_message.content = """Você tem uma solicitação de troca de horários em aberto.\n
-                                     Aperte Cancelar para cancelar a solicitação."""
-        else:
-            print("error")
-        
-        db.session.commit()
         return "new_message"
     
     def delete(self):
@@ -84,6 +68,23 @@ class Message(db.Model):
     
         return user_ids
     
+    @property
+    def payload(self):
+        from app.hours_conversion import convert_hours_to_line
+
+        if self.action == "info":
+            return self.content
+        
+        noun = self.request.noun
+        date = self.request.date.strftime("%d/%m/%Y")
+        hours = convert_hours_to_line(self.request.hours)
+        center = self.request.center.abbreviation
+
+        message = f"""Você tem uma solicitação de {noun} para {date}
+        de {hours} no centro {center}. Aperte Cancelar para cancelar a solicitação."""
+
+        return message
+
     def dismiss(self):
         self.is_archived = True
         db.session.commit()

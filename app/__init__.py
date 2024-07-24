@@ -50,7 +50,6 @@ create_app()
 
 
 # TODO: add messages to resolved requests
-# TODO: finish messages content
 # TODO: add function to add/remove doctor mid-month
 # TODO: perform tests on andrey's bugs
 # TODO: ADD LOGS

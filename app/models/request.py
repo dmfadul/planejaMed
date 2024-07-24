@@ -287,6 +287,44 @@ class Request(db.Model):
     
         return user_ids
     
+    @property
+    def center(self):
+        if self.action == "include_user":
+            return None
+        
+        return self.appointments[0].center
+    
+    @property
+    def date(self):
+        if self.action == "include_user":
+            return None
+        
+        return self.appointments[0].day.date
+    
+    @property
+    def hours(self):
+        if self.action == "include_user":
+            return None
+        
+        return [app.hour for app in self.appointments]
+
+    @property
+    def noun(self):
+        if self.action == "include_user":
+            return "Inclusão de Médico"
+        
+        if self.action == "include_appointments":
+            return "Inclusão"
+        
+        if self.action == "exclude_appointments":
+            return "Exclusão"
+        
+        if self.action == "donate":
+            return "Doação"
+        
+        if self.action == "exchange":
+            return "Troca"
+
     def add_appointment(self, appointment):
         self.appointments.append(appointment)
         db.session.commit()
