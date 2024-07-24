@@ -88,6 +88,11 @@ class Message(db.Model):
         self.is_archived = True
         db.session.commit()
         return "A mensagem foi arquivada com sucesso."
+    
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+        return "A mensagem foi deletada com sucesso."
 
     def cancel(self):
         self.request.delete()

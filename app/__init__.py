@@ -51,17 +51,15 @@ create_app()
 # TODO: CSS
 # TODO: create edit_user function in migrations
 
-# TODO: remove cancel messages if request is resolved
 # TODO: remove other requests (and their cancel messages) if request is resolved
 # TODO: add messages to resolved requests
+# TODO: finish messages content
 
 # TODO: !!stop doctor from offering same hour to two people (test)
 # TODO: add function to add doctor mid-month
 
-# TODO: test if messages are appearing only to the right people (no admin)
 # TODO: perform tests on andrey's bugs
 
-# TODO: finish messages content
 # TODO: ADD LOGS
 
 # TODO: FINISH ADMIN FUNCTIONS

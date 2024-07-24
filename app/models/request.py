@@ -292,6 +292,8 @@ class Request(db.Model):
         db.session.commit()
 
     def respond(self, responder_id, response):
+        for message in self.messages:
+            message.delete()
         self.responder_id = responder_id
         self.response = response
         self.response_date = datetime.now()
