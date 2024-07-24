@@ -56,7 +56,6 @@ create_app()
 # TODO: perform tests on andrey's bugs
 
 # TODO: ADD LOGS
-# TODO: CSS
 
 # TODO: FINISH ADMIN FUNCTIONS
 # TODO: list of months in db
@@ -66,6 +65,7 @@ create_app()
 
 # TODO: REPLACE DATABASE
 
+# TODO: CSS
 # TODO: CLEAN UP MODALS.JS
 # TODO: change admin table interaction and clean up its js
 
