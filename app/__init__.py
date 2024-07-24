@@ -48,19 +48,15 @@ def create_app(config_filename=None):
 
 create_app()
 
-# TODO: CSS
-# TODO: create edit_user function in migrations
 
-# TODO: remove other requests (and their cancel messages) if request is resolved
 # TODO: add messages to resolved requests
 # TODO: finish messages content
 
-# TODO: !!stop doctor from offering same hour to two people (test)
-# TODO: add function to add doctor mid-month
-
+# TODO: add function to add/remove doctor mid-month
 # TODO: perform tests on andrey's bugs
 
 # TODO: ADD LOGS
+# TODO: CSS
 
 # TODO: FINISH ADMIN FUNCTIONS
 # TODO: list of months in db
@@ -77,6 +73,9 @@ create_app()
 # TODO: Replace popup by modal
 
 # FOR LATER
+# TODO: Allow multiple requests/remove other requests (and their cancel messages) if request is resolved
+# TODO: !!stop doctor from offering same hour to two people (test)
+
 # TODO: https - do nginx course
 # TODO: add home button
 # TODO: use profile name to gen abbreviated names (recreate user table)/finish reports

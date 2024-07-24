@@ -175,7 +175,7 @@ class Request(db.Model):
 
             if app_donor.has_open_requests:
                 db.session.rollback()
-                return f"Horário de {donor.full_name} (ou parte dele) tem requisições pendente"
+                return f"Horário de {donor.full_name} (ou parte dele) tem requisições pendentes"
             
             app_receiver = Appointment.query.filter_by(
                 day_id=day.id,

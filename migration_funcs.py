@@ -114,6 +114,43 @@ def migrate_users():
             new_user.activate()
             new_user.make_visible()
 
+
+def edit_user(user_id):
+    user = load_from_db('Users', user_id)
+
+    user_dict = {}
+    user_dict["crm"] = user[5]
+    user_dict["phone"] = user[7]
+    user_dict["email"] = user[8]
+    user_dict["password"] = bcrypt.generate_password_hash(user[1]).decode('utf-8')
+
+    return user_dict
+
+
+def edit_users():
+    user_ids = get_all_ids("users")
+    app = create_app()
+
+    for user_id in user_ids:
+        if int(user_id) < 5000:
+            continue
+        old_user = migrate_user(user_id=user_id)
+        print('ou', old_user)
+
+        with app.app_context():
+            new_user = User.query.filter_by(crm=old_user.get("crm")).first()
+
+            if new_user is None:
+                print(f"{old_user.get("full_name")} not found")
+                continue
+
+            new_user.edit(phone=old_user.get("phone"),
+                          email=old_user.get("email"),
+            )
+            
+            new_user.set_password(old_user.get("password"))
+
+
 def adjust_users():
     app = create_app()
     with app.app_context():
