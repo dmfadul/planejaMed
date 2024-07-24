@@ -84,7 +84,11 @@ def resolve_data(action, info_dict):
         if not doctor:
             return "Médico não encontrado"
     
-        hours_2 = convert_hours(info_dict.get('hours2'))
+        selected_hours_2 = info_dict.get('hours2')
+        if isinstance(selected_hours_2, str):
+            hours_2 = convert_line_to_hour(selected_hours_2)
+        elif isinstance(selected_hours_2, list):
+            hours_2 = convert_hours(selected_hours_2)
 
         if action == "exchange_from_other_user":
             doctor, doctor_2 = doctor_2, doctor
