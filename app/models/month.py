@@ -63,6 +63,13 @@ class Month(db.Model):
     def get_current(cls):
         return cls.query.filter_by(is_current=True).first()
 
+    @classmethod
+    def get_next(cls):
+        current_month = cls.get_current()
+        next_month = cls.query.filter_by(number=current_month.next_month[0],
+                                         year=current_month.next_month[1]).first()
+        return next_month
+    
     @property
     def is_latest(self):
         return self == Month.query.order_by(Month.year.desc(), Month.number.desc()).first()
@@ -241,5 +248,10 @@ class Month(db.Model):
         self.users = User.query.filter_by(is_active=True).all()
         self.users.extend(list(set([appointment.user for day in self.days for appointment in day.appointments])))
         
+        db.session.commit()
+        return 0
+    
+    def add_user(self, user):
+        self.users.append(user)
         db.session.commit()
         return 0

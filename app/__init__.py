@@ -49,6 +49,8 @@ def create_app(config_filename=None):
 create_app()
 
 
+# TODO: fix users when creating new month
+# TODO: check if user is already in month before allowing users to manipulate hours
 # TODO: add function to add/remove doctor mid-month
 # TODO: add messages to resolved requests
 # TODO: fill reports
