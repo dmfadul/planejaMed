@@ -27,7 +27,9 @@ def admin():
     next_month_name = current_month.next_month_name
     centers = [center.abbreviation for center in Center.query.filter_by(is_active=True).all()]
     _, doctors_list = gen_doctors_dict()
- 
+    open_months = [current_month_name] if current_month.is_latest else [current_month_name, next_month_name]
+    open_doctors_list = [d for d in doctors_list if d[0] not in [d.crm for d in current_month.users]]
+    print(open_doctors_list)
     return render_template(
                            "admin.html",
                            title="Admin",
@@ -41,6 +43,8 @@ def admin():
                            next_month_year=current_month.next_month[1],
                            curr_is_latest=current_month.is_latest,
                            doctors_list=doctors_list,
+                           open_months=open_months,
+                           open_doctors_list=[],
                            )
 
 
@@ -131,6 +135,26 @@ def exclude_doctor():
     doctor.make_invisible()
 
     flash(f"Foi excluído o médico {doctor.full_name} - {doctor.crm}", 'success')
+    return redirect(url_for('admin.admin'))
+
+
+@admin_bp.route('/admin/include-doctor-month', methods=['POST'])
+@login_required
+def include_doctor_month():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    print(request.form)
+    return redirect(url_for('admin.admin'))
+
+
+@admin_bp.route('/admin/exclude-doctor-month', methods=['POST'])
+@login_required
+def exclude_doctor_month():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    print(request.form)
     return redirect(url_for('admin.admin'))
 
 

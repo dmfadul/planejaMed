@@ -44,13 +44,53 @@
     <section>
         <form method="post" action="{{ url_for('admin.exclude_doctor') }}">
 
-              <label for="exclude-doctor">Excluir Médico:</label>
+              <label for="exclude-doctor">Excluir Médico do Sistema:</label>
               <select id="exclude-doctor" name="crm">
 
                 {% for doctor in doctors_list %}
                     <option value="{{ doctor[0] }}">{{ doctor[1] }}</option>
                 {% endfor %}
 
+              </select>
+
+              <button type="submit">Excluir</button>
+        </form>
+    </section>
+
+    <section>
+        <form method="post" action="{{ url_for('admin.include_doctor_month') }}">
+
+              <label for="include-doctor-month">Incluir Médico no Mês:</label>
+              <select name="month">
+                {% for month in open_months %}
+                    <option value="{{ month }}">{{ month }}</option>
+                {% endfor %}
+              </select>
+              
+              <select id="included-doctor-month" name="crm">
+                {% for doctor in open_doctors_list %}
+                    <option value="{{ doctor[0] }}">{{ doctor[1] }}</option>
+                {% endfor %}
+              </select>
+
+              <button type="submit">Incluir</button>
+        </form>
+    </section>
+
+    <section>
+        <form method="post" action="{{ url_for('admin.exclude_doctor_month') }}">
+
+              <label for="exclude-doctor-month">Excluir Médico no Mês:</label>
+              <select name="month">
+                {% for month in open_months %}
+                    <option value="{{ month }}">{{ month }}</option>
+                {% endfor %}
+              </select>
+
+              <select id="excluded-doctor-month" name="crm">
+                {% for doctor in doctors_list %}
+                    <option value="{{ doctor[0] }}">{{ doctor[1] }}</option>
+                {% endfor %}
               </select>
 
               <button type="submit">Excluir</button>
