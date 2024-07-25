@@ -49,8 +49,6 @@ def create_app(config_filename=None):
 create_app()
 
 
-# TODO: auto-backup database
-
 # TODO: add function to add/remove doctor mid-month
 # TODO: add messages to resolved requests
 # TODO: fill reports
@@ -58,6 +56,7 @@ create_app()
 # TODO: ADD LOGS
 # TODO: CSS
 
+# TODO: auto-backup database
 # TODO: REPLACE DATABASE
 
 

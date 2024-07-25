@@ -25,16 +25,12 @@ def admin():
     current_year = current_month.year
     current_month_name = current_month.name
     next_month_name = current_month.next_month_name
-    centers = [center.abbreviation for center in Center.query.filter_by(is_active=True).all()]
     _, doctors_list = gen_doctors_dict()
     open_months = [current_month_name] if current_month.is_latest else [current_month_name, next_month_name]
     open_doctors_list = [d for d in doctors_list if d[0] not in [d.crm for d in current_month.users]]
     return render_template(
                            "admin.html",
                            title="Admin",
-                           user_is_sudo=current_user.is_sudo,
-                           user_is_root=current_user.is_root,
-                           centers=centers,
                            months=months,
                            current_month_name=current_month_name,
                            current_year=current_year,

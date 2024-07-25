@@ -99,18 +99,11 @@
 
     <section>
         <form method="post" action="">
-              <label for="create-month">Criar Novo Centro:</label>
-              <select id="create-month" name="month">
-                {% for month in months %}
-                    <option value="{{ month }}" {% if month == current_month_name %} selected {% endif %}>{{ month }}</option>
-                {% endfor %}
-              </select>
+              <label for="create-center">Criar Novo Centro:</label>
+              <input type="text" id="center_name" name="center_name" placeholder="Nome do Novo Centro" required>
 
-              <select id="create-year" name="year">
-                  {% for year in range(2020, 2031) %}
-                    <option value="{{ year }}" {% if year == current_year %} selected {% endif %}>{{ year }}</option>
-                  {% endfor %}
-              </select>
+              <input type="text" id="center_abbr" name="center_abbr" placeholder="Abreviação do Novo Centro" required>
+
               <button type="submit">Criar</button>
         </form>
     </section>
