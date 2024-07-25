@@ -30,6 +30,8 @@ def resolve_data(action, info_dict):
     elif isinstance(selected_hours, list):
         hours = convert_hours(selected_hours)
 
+    if isinstance(hours, str):
+        return hours
 
     # Check request's action and call the respective function
     if action == "include":
@@ -89,6 +91,9 @@ def resolve_data(action, info_dict):
             hours_2 = convert_line_to_hour(selected_hours_2)
         elif isinstance(selected_hours_2, list):
             hours_2 = convert_hours(selected_hours_2)
+
+        if isinstance(hours_2, str):
+            return hours_2
 
         if action == "exchange_from_other_user":
             doctor, doctor_2 = doctor_2, doctor
