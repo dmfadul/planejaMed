@@ -49,28 +49,25 @@ def create_app(config_filename=None):
 create_app()
 
 
-# TODO: add messages to resolved requests
+# TODO: remove alerts from calendar/my_hours
+# TODO: auto-backup database
+
 # TODO: add function to add/remove doctor mid-month
+# TODO: add messages to resolved requests
+# TODO: fill reports
 
 # TODO: ADD LOGS
+# TODO: CSS
 
 # TODO: REPLACE DATABASE
 
-# TODO: fill reports
-
-# TODO: CSS
-
-# TODO: FINISH ADMIN FUNCTIONS
-# TODO: list of months in db
-# TODO: add logic to user add a new center
-
-
-
-
 
 # FOR LATER
-# TODO: CLEAN UP MODALS.JS
-# TODO: change admin table interaction and clean up its js
+
+# TODO: https - do nginx course
+
+# TODO: list of months in db
+# TODO: add logic to user add a new center
 
 # TODO: add an actual settings file.
 # TODO: Replace popup by modal
@@ -78,9 +75,11 @@ create_app()
 # TODO: Allow multiple requests/remove other requests (and their cancel messages) if request is resolved
 # TODO: !!stop doctor from offering same hour to two people (test)
 
-# TODO: https - do nginx course
 # TODO: add home button
+# TODO: add visible password button
 
 # TODO: use profile name to gen abbreviated names (recreate user table)/finish reports
+
 # TODO: fix aesthetics/simplify css and js
-# TODO: add visible password button
+# TODO: CLEAN UP MODALS.JS
+# TODO: change admin table interaction and clean up its js
