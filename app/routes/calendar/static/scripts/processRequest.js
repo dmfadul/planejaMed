@@ -275,10 +275,10 @@ function sendHoursToServer(action, infoDict) {
     .then(response => response.json())
     .then(data => {
         if (data.status === "success") {
-            alert("Requisição Realizada com Sucesso");
+            // alert("Requisição Realizada com Sucesso");
             console.log('The request was successful and returned:', data.message);
         } else {
-            alert("Requisição Não Realizada:\nVerifique os dados e tente novamente");
+            // alert("Requisição Não Realizada:\nVerifique os dados e tente novamente");
             console.log('The request failed and returned:', data.message);
         }
     })

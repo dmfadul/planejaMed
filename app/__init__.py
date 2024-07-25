@@ -49,7 +49,6 @@ def create_app(config_filename=None):
 create_app()
 
 
-# TODO: remove alerts from calendar/my_hours
 # TODO: auto-backup database
 
 # TODO: add function to add/remove doctor mid-month
