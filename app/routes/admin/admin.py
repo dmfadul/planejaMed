@@ -29,7 +29,6 @@ def admin():
     _, doctors_list = gen_doctors_dict()
     open_months = [current_month_name] if current_month.is_latest else [current_month_name, next_month_name]
     open_doctors_list = [d for d in doctors_list if d[0] not in [d.crm for d in current_month.users]]
-    print(open_doctors_list)
     return render_template(
                            "admin.html",
                            title="Admin",
@@ -44,7 +43,7 @@ def admin():
                            curr_is_latest=current_month.is_latest,
                            doctors_list=doctors_list,
                            open_months=open_months,
-                           open_doctors_list=[],
+                           open_doctors_list=open_doctors_list,
                            )
 
 
