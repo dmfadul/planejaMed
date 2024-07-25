@@ -42,10 +42,12 @@ class Request(db.Model):
         new_request = cls(
             requester_id=doctor_to_include_id,
             receivers_code="*",
-            action="include_user"
+            action="include_user",
         )
 
         db.session.add(new_request)
+        db.session.commit()
+
         new_request.info=f"""O Médico {new_request.requester.full_name} solicitou inclusão no sistema."""
         
         db.session.commit()
