@@ -15,7 +15,7 @@ admin_bp = Blueprint(
                     )
 
 
-@admin_bp.route('/admin/')
+@admin_bp.route('/admin/', methods=['GET', 'POST'])
 def admin():
     if not current_user.is_admin:
         return "Unauthorized", 401
@@ -114,12 +114,12 @@ def delete_month():
     return redirect(url_for('admin.admin'))
 
 
-@admin_bp.route('/admin/exclude-doctor', methods=['POST'])
+@admin_bp.route('/admin/exclude-doctor', methods=['GET', 'POST'])
 @login_required
 def exclude_doctor():
     if not current_user.is_admin:
         return "Unauthorized", 401
-
+    
     doctor_crm = request.form.get('crm')
     doctor = User.query.filter_by(crm=doctor_crm).first()
     
