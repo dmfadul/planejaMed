@@ -24,6 +24,9 @@ def resolve_data(action, info_dict):
     if not doctor:
         return "Médico não encontrado"
     
+    if doctor not in month.users:
+        return f"{doctor.full_name} não está inscrito no mês atual"
+    
     selected_hours = info_dict.get('hours')
     if isinstance(selected_hours, str):
         hours = convert_line_to_hour(selected_hours)
@@ -85,6 +88,9 @@ def resolve_data(action, info_dict):
         doctor_2 = User.query.filter_by(crm=crm2).first()
         if not doctor:
             return "Médico não encontrado"
+        
+        if doctor_2 not in month.users:
+            return f"{doctor_2.full_name} não está inscrito no mês atual"
     
         selected_hours_2 = info_dict.get('hours2')
         if isinstance(selected_hours_2, str):
