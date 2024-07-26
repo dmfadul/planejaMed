@@ -49,6 +49,7 @@ def create_app(config_filename=None):
 create_app()
 
 
+# TODO: check what happens to request when app is deleted
 # TODO: add function to add/remove doctor mid-month
 # TODO: add messages to resolved requests
 # TODO: fill reports

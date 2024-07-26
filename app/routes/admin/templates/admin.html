@@ -80,7 +80,7 @@
     <section>
         <form method="post" action="{{ url_for('admin.exclude_doctor_month') }}">
 
-              <label for="exclude-doctor-month">Excluir Médico no Mês:</label>
+              <label for="exclude-doctor-month">Excluir Médico do Mês:</label>
               <select name="month">
                 {% for month in open_months %}
                     <option value="{{ month }}">{{ month }}</option>

@@ -255,3 +255,12 @@ class Month(db.Model):
         self.users.append(user)
         db.session.commit()
         return 0
+    
+    def remove_user(self, user):
+        for app in user.appointments:
+            if app not in self.appointments:
+                continue
+            print(app)
+        # self.users.remove(user)
+        # db.session.commit()
+        return 0

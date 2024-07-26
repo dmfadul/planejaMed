@@ -164,7 +164,22 @@ def exclude_doctor_month():
     if not current_user.is_admin:
         return "Unauthorized", 401
 
-    print(request.form)
+    crm = request.form.get('crm')
+    doctor = User.query.filter_by(crm=crm).first()
+    if not doctor:
+        return "Doctor not found", 404
+
+    month_name = request.form.get('month')
+    current_month = Month.get_current()
+
+    if month_name == current_month.name:
+        month = current_month
+    elif month_name == current_month.next_month_name:
+        month = Month.get_next()
+    else:
+        return "Month not found", 404
+
+    month.remove_user(doctor)
     return redirect(url_for('admin.admin'))
 
 
