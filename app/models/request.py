@@ -346,6 +346,7 @@ class Request(db.Model):
         db.session.commit()
 
     def respond(self, responder_id, response):
+        from app.models.message import Message
         for message in self.messages:
             message.delete()
             
@@ -355,6 +356,11 @@ class Request(db.Model):
         self.is_open = False
 
         db.session.commit()
+        Message.new_confirmation_message(
+            sender_id=responder_id,
+            request_id=self.id,
+            receivers_code=str(self.requester_id),
+            )
         return 0
     
     def resolve(self, responder_id, authorized):

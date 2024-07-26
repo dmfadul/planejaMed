@@ -49,7 +49,6 @@ def create_app(config_filename=None):
 create_app()
 
 
-# TODO: add messages to resolved requests
 # TODO: fill reports
 
 # TODO: ADD LOGS
@@ -63,20 +62,21 @@ create_app()
 
 # TODO: https - do nginx course
 
-# TODO: list of months in db
 # TODO: add logic to user add a new center
-
-# TODO: add an actual settings file.
-# TODO: Replace popup by modal
-
-# TODO: Allow multiple requests/remove other requests (and their cancel messages) if request is resolved
-# TODO: !!stop doctor from offering same hour to two people (test)
+# TODO: list of months in db (only show months with data in lists)
 
 # TODO: add home button
 # TODO: add visible password button
 
-# TODO: use profile name to gen abbreviated names (recreate user table)/finish reports
+# TODO: use profile name to gen abbreviated names (recreate user table)
 
+# TODO: add an actual settings file.
+# TODO: Replace popup by modal
+
+# POSSIBILITIES:
 # TODO: fix aesthetics/simplify css and js
 # TODO: CLEAN UP MODALS.JS
 # TODO: change admin table interaction and clean up its js
+
+# TODO: Allow multiple requests/remove other requests (and their cancel messages) if request is resolved
+# TODO: !!stop doctor from offering same hour to two people (test)

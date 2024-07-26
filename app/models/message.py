@@ -45,7 +45,21 @@ class Message(db.Model):
         db.session.add(new_message)
         db.session.commit()
 
-        return "new_message"
+        return new_message
+    
+    @classmethod
+    def new_confirmation_message(cls, sender_id, request_id, receivers_code):
+        new_message = cls(sender_id=sender_id,
+                          request_id=request_id,
+                          receivers_code=receivers_code,
+                          action="info",
+                          content=""
+                          )
+        
+        db.session.add(new_message)
+        db.session.commit()
+
+        return new_message
     
     def delete(self):
         self.request_id = None
@@ -70,10 +84,20 @@ class Message(db.Model):
     
     @property
     def payload(self):
-        from app.hours_conversion import convert_hours_to_line
-
-        if self.action == "info":
+        if not self.content == "":
             return self.content
+        
+        if self.action == "cancel":
+            message = "Você tem " + self.core + ". Aperte Cancelar para cancelar a solicitação."
+        elif self.action == "info":
+            answer = "autorizada" if self.request.response == 'authorized' else "negada"
+            message = "Sua " + self.core + f" foi {answer}."
+
+        return message
+
+    @property
+    def core(self):
+        from app.hours_conversion import convert_hours_to_line
         
         noun = self.request.noun
         date = self.request.date.strftime("%d/%m/%Y")
@@ -81,18 +105,17 @@ class Message(db.Model):
         center = self.request.center.abbreviation
 
         if self.request.action in ["include_appointments", "exclude_appointments"]:
-            message = f"""solicitação de {noun} para {date} de {hours} no centro {center}."""
+            core = f"""solicitação de {noun} para {date} de {hours} no centro {center}."""
         
         if self.request.action == "donate":
             other_doctor = [d for d in self.request.doctors if d != self.sender][0].full_name
-            message = f"""solicitação de {noun} para {other_doctor}."""
+            core = f"""solicitação de {noun} para {other_doctor}."""
 
         if self.request.action == "exchange":
             other_doctor = [d for d in self.request.doctors if d != self.sender][0].full_name
-            message = f"""solicitação de {noun} com {other_doctor}."""
+            core = f"""solicitação de {noun} com {other_doctor}"""
 
-        message += " Aperte Cancelar para cancelar a solicitação."
-        return "Você tem " + message
+        return core
 
     @property
     def is_open(self):
