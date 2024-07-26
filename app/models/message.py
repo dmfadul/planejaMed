@@ -94,6 +94,10 @@ class Message(db.Model):
         message += " Aperte Cancelar para cancelar a solicitação."
         return "Você tem " + message
 
+    @property
+    def is_open(self):
+        return not self.is_archived
+    
     def dismiss(self):
         self.is_archived = True
         db.session.commit()

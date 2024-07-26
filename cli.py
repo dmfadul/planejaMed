@@ -22,7 +22,6 @@ from app.routes.calendar.gen_data import gen_days_dict
 # app = create_app()
 
 # with app.app_context():
-#     messages = Message.query.all()
+#     reqs = Request.query.filter_by(is_open=True).all()
 
-#     for message in messages:
-#         message.delete()
+#     print(len(reqs))

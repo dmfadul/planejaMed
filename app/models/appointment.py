@@ -25,7 +25,6 @@ class Appointment(db.Model):
         back_populates='appointments'
     )
 
-
     is_confirmed = db.Column(db.Boolean, default=True)
     
     __table_args__ = (UniqueConstraint('user_id', 'day_id', 'hour', name='unique_appointment'),)
@@ -65,6 +64,9 @@ class Appointment(db.Model):
         return appointment
     
     def delete_entry(self):
+        for req in self.requests:
+            req.delete()
+            
         db.session.delete(self)
         db.session.commit()
 

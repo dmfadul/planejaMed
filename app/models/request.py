@@ -269,6 +269,9 @@ class Request(db.Model):
             else:
                 app.requests.remove(self)
 
+        for message in self.messages:
+            message.delete()
+
         db.session.delete(self)
         db.session.commit()
 
@@ -345,6 +348,7 @@ class Request(db.Model):
     def respond(self, responder_id, response):
         for message in self.messages:
             message.delete()
+            
         self.responder_id = responder_id
         self.response = response
         self.response_date = datetime.now()
