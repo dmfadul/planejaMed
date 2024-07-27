@@ -265,7 +265,7 @@ class Request(db.Model):
     def delete(self):
         for app in self.appointments:
             if not app.is_confirmed:
-                app.delete_entry()
+                app.delete_entry(del_requests=False)
             else:
                 app.requests.remove(self)
 

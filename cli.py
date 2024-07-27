@@ -22,6 +22,6 @@ from app.routes.calendar.gen_data import gen_days_dict
 # app = create_app()
 
 # with app.app_context():
-#     reqs = Request.query.filter_by(is_open=True).all()
+#     system_user = User.query.filter_by(crm=0).first()
 
-#     print(len(reqs))
+#     print(system_user)

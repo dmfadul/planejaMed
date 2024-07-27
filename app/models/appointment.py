@@ -63,9 +63,10 @@ class Appointment(db.Model):
         
         return appointment
     
-    def delete_entry(self):
-        for req in self.requests:
-            req.delete()
+    def delete_entry(self, del_requests=True):
+        if del_requests:
+            for req in self.requests:
+                req.delete()
             
         db.session.delete(self)
         db.session.commit()
