@@ -175,6 +175,7 @@ def adjust_users():
         new_user.activate()
         new_user.make_invisible()
 
+        User.create_system_user()
 
 def add_centers():
     centers = [
@@ -210,6 +211,10 @@ def migrate_base(base_id):
         with app.app_context():
             doctor = User.get_by_name(doctor_name)
             center = Center.query.filter_by(abbreviation=base[1]).first()
+
+            if isinstance(doctor, int):
+                print(f"{doctor_name} returned error {doctor}")
+                continue
 
         for j in range(len(data[i])):
             if j == 0:
@@ -267,6 +272,10 @@ def migrate_months():
         month_type = month_id[-1]
         year = int(month_id[-5:-1])
 
+        if month_num == 8:
+            continue
+        print(month_num, year)
+
         if month_type == '0':
             continue
         
@@ -275,7 +284,6 @@ def migrate_months():
     months = sorted(months, key=lambda x: (x[2], x[1]))
 
     for month in months:
-        # print(month)
         migrate_month(*month)
 
 

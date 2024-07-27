@@ -12,19 +12,13 @@ from app.routes.calendar.gen_data import gen_days_dict
 # migration_funcs.add_centers()
 # migration_funcs.migrate_users()
 # migration_funcs.adjust_users()
+
 # migration_funcs.migrate_base("CCG--BASE")
 
 # migration_funcs.migrate_months()
 
-# migration_funcs.migrate_month("CCG", 12, 2023)
-
-
 # app = create_app()
 
 # with app.app_context():
-#     aug = Month.query.filter_by(number=8, year=2024).first()
-#     print(len(aug.users))
-#     sept = Month.query.filter_by(number=9, year=2024).first()
-#     print(len(sept.users))
-#     oct = Month.query.filter_by(number=10, year=2024).first()
-#     print(len(oct.users))    
+#     current = Month.get_current()
+#     print(current)

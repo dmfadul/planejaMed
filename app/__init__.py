@@ -61,6 +61,7 @@ create_app()
 
 # FOR LATER
 
+# TODO: add a blitzkrig to save the original of each month
 # TODO: start using crm instead of id for users
 # TODO: fix lists for add/remove doctor to month
 # TODO: add flash messages to doctor add to month
