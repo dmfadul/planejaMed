@@ -179,7 +179,11 @@ def exclude_doctor_month():
     else:
         return "Month not found", 404
 
-    month.remove_user(doctor)
+    flag = month.remove_user(doctor)
+    if flag:
+        flash(f"O médico {doctor.full_name} - {doctor.crm} não foi excluído do mês {month.name}/{month.year}", 'danger')
+        return redirect(url_for('admin.admin'))
+    flash(f"O médico {doctor.full_name} - {doctor.crm} foi excluído do mês {month.name}/{month.year}", 'success')
     return redirect(url_for('admin.admin'))
 
 
