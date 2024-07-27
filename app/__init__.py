@@ -49,7 +49,6 @@ def create_app(config_filename=None):
 create_app()
 
 
-# TODO: REPLACE DATABASE
 # TODO: auto-backup database
 
 # TODO: ADD LOGS
@@ -58,14 +57,15 @@ create_app()
 
 # FOR LATER
 
-# TODO: fill reports
+# TODO: https - do nginx course
 # TODO: add a blitzkrig to save the original of each month
+# TODO: fill reports
 # TODO: add payment calculation
+
 # TODO: start using crm instead of id for users
 # TODO: fix lists for add/remove doctor to month
 # TODO: add flash messages to doctor add to month
 
-# TODO: https - do nginx course
 
 # TODO: add logic to user add a new center
 # TODO: list of months in db (only show months with data in lists)

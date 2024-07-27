@@ -99,6 +99,9 @@ class Message(db.Model):
     def core(self):
         from app.hours_conversion import convert_hours_to_line
         
+        if self.request.action == "include_user":
+            return "solicitação de inclusão de usuário"
+        
         noun = self.request.noun
         date = self.request.date.strftime("%d/%m/%Y")
         hours = convert_hours_to_line(self.request.hours)

@@ -17,12 +17,11 @@ from app.routes.calendar.gen_data import gen_days_dict
 
 # migration_funcs.migrate_months()
 
-# app = create_app()
+app = create_app()
 
-# with app.app_context():
-#     months = Month.query.all()
-    
-#     for month in months:
-#         month.fix_users()
+with app.app_context():
+    messages = Message.query.all()
 
+    for message in messages:
+        print(message)
 
