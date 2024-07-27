@@ -245,8 +245,10 @@ class Month(db.Model):
     
     def fix_users(self):
         from app.models import User
-        self.users = User.query.filter_by(is_active=True).all()
-        self.users.extend(list(set([appointment.user for day in self.days for appointment in day.appointments])))
+        active_users = User.query.filter_by(is_active=True).all()
+        effective_users = [appointment.user for day in self.days for appointment in day.appointments]
+
+        self.users = list(set(active_users + effective_users))
         
         db.session.commit()
         return 0
@@ -260,7 +262,11 @@ class Month(db.Model):
         for app in user.appointments:
             if app not in self.appointments:
                 continue
-            print(app)
-        # self.users.remove(user)
-        # db.session.commit()
+            app.delete_entry()
+            db.session.flush()
+
+        if user in self.users:
+            self.users.remove(user)
+
+        db.session.commit()
         return 0
