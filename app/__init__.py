@@ -57,6 +57,7 @@ create_app()
 
 # FOR LATER
 
+# TODO: reset password function
 # TODO: https - do nginx course
 # TODO: add a blitzkrig to save the original of each month
 # TODO: fill reports

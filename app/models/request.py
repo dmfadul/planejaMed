@@ -156,11 +156,11 @@ class Request(db.Model):
         if requester.id == receiver.id:
             new_request.info=f"""{requester.full_name} solicitou DOAÇÃO dos horários:
                                 {convert_hours_to_line(hours)} no centro {center.abbreviation}
-                                no dia {day.date.strftime("%d/%m/%y")} de {donor.full_name}."""
+                                no dia {day.date.strftime("%d/%m/%y")} (DE {donor.full_name})."""
         elif requester.id == donor.id:
             new_request.info=f"""{requester.full_name} solicitou DOAÇÃO dos horários:
                                 {convert_hours_to_line(hours)} no centro {center.abbreviation}
-                                no dia {day.date.strftime("%d/%m/%y")} (para {receiver.full_name})."""
+                                no dia {day.date.strftime("%d/%m/%y")} (PARA {receiver.full_name})."""
 
         for hour in hours:
             app_donor = Appointment.query.filter_by(
