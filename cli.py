@@ -20,5 +20,9 @@ from app.routes.calendar.gen_data import gen_days_dict
 # app = create_app()
 
 # with app.app_context():
-#     current = Month.get_current()
-#     print(current)
+#     months = Month.query.all()
+    
+#     for month in months:
+#         month.fix_users()
+
+
