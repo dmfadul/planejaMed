@@ -49,10 +49,9 @@ def create_app(config_filename=None):
 create_app()
 
 
-# TODO: auto-backup database
-
-# TODO: ADD LOGS
 # TODO: CSS
+# TODO: ADD LOGS
+# TODO: auto-backup database
 
 
 # FOR LATER
@@ -62,17 +61,17 @@ create_app()
 # TODO: add a blitzkrig to save the original of each month
 # TODO: fill reports
 # TODO: add payment calculation
+# TODO: add logic to user add a new center
+
 
 # TODO: start using crm instead of id for users
 # TODO: fix lists for add/remove doctor to month
 # TODO: add flash messages to doctor add to month
 
-
-# TODO: add logic to user add a new center
 # TODO: list of months in db (only show months with data in lists)
 
-# TODO: add home button
 # TODO: add visible password button
+# TODO: add home button
 
 # TODO: use profile name to gen abbreviated names (recreate user table)
 
@@ -85,4 +84,3 @@ create_app()
 # TODO: change admin table interaction and clean up its js
 
 # TODO: Allow multiple requests/remove other requests (and their cancel messages) if request is resolved
-# TODO: !!stop doctor from offering same hour to two people (test)

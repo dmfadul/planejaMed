@@ -12,9 +12,9 @@ class LoginForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
-    first_name = StringField('Primeiro Nome', validators=[DataRequired(), Length(2, 15)])
-    middle_name = StringField('Nome do Meio', validators=[Length(0, 15)])
-    last_name = StringField('Sobrenome', validators=[DataRequired(), Length(2, 15)])
+    first_name = StringField('Primeiro Nome', validators=[DataRequired(), Length(2, 30)])
+    middle_name = StringField('Nome do Meio', validators=[Length(0, 30)])
+    last_name = StringField('Sobrenome', validators=[DataRequired(), Length(2, 30)])
     cellphone = StringField('Celular', validators=[DataRequired(), Length(8, 16)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     crm_number = StringField('CRM', validators=[DataRequired(), Length(4, 8)])
@@ -27,7 +27,7 @@ class RegistrationForm(FlaskForm):
 
 
 class UpdateProfileForm(FlaskForm):
-    first_name = StringField('Primeiro Nome', validators=[DataRequired(), Length(2, 15)])
+    first_name = StringField('Primeiro Nome', validators=[DataRequired(), Length(2, 30)])
     middle_name = StringField('Nome do Meio', validators=[Length(0, 15)])
     last_name = StringField('Sobrenome', validators=[DataRequired(), Length(2, 15)])
     cellphone = StringField('Celular', validators=[DataRequired(), Length(8, 16)])
