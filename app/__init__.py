@@ -49,7 +49,6 @@ def create_app(config_filename=None):
 create_app()
 
 
-# TODO: Check if requests are being deleted at the correct time
 # TODO: ADD LOGS
 
 # TODO: auto-backup database
@@ -63,6 +62,7 @@ create_app()
 # FOR LATER
 
 # TODO: fix lists for add/remove doctor to month
+# TODO: add flash messages to doctor add to month
 
 # TODO: https - do nginx course
 

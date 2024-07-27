@@ -65,7 +65,7 @@ class Appointment(db.Model):
     
     def delete_entry(self, del_requests=True):
         if del_requests:
-            for req in self.requests:
+            for req in [r for r in self.requests if r.is_open]:
                 req.delete()
             
         db.session.delete(self)
