@@ -39,3 +39,6 @@ MESES = [
         "NOVEMBRO",
         "DEZEMBRO"
         ]
+
+
+SYSTEM_CRM = 0

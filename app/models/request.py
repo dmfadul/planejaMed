@@ -369,7 +369,7 @@ class Request(db.Model):
         if not authorized:
             for app in self.appointments:
                 if not app.is_confirmed:
-                    app.delete_entry()
+                    app.delete_entry(del_requests=False)
 
             self.respond(responder_id=responder_id, response="denied")
             return "A solicitação foi Negada"

@@ -3,6 +3,7 @@ from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime, timedelta
 from .associations import months_users_association
+from app.models.log import Log
 import app.global_vars as global_vars
 
 
@@ -152,6 +153,7 @@ class Month(db.Model):
 
     def populate(self):
         from app.models.day import Day
+        from app.global_vars import SYSTEM_CRM
 
         if self.is_populated:
             return -1
@@ -160,7 +162,11 @@ class Month(db.Model):
             day = Day.add_entry(month_id=self.id, date=date)
 
             if day == -1:
-                print(f"Data {date} já existe.")
+                Log.new_log(
+                    user_crm=SYSTEM_CRM,
+                    action=f"Erro ao adicionar data {date} - Data {date} já existe."
+                )
+        
         
             if date.weekday() in [5, 6]:
                 day.is_holiday = True

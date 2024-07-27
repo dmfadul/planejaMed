@@ -17,8 +17,10 @@ class Log(db.Model):
         return f'{self.user} - {self.action} - {self.creation_date}'
     
     @classmethod
-    def new_log(cls, user_id, action):
-        new_log = cls(user_id=user_id,
+    def new_log(cls, user_crm, action):
+        from app.models.user import User
+        user = User.query.filter_by(crm=user_crm).first()
+        new_log = cls(user_id=user.id,
                       action=action)
         db.session.add(new_log)
         db.session.commit()
