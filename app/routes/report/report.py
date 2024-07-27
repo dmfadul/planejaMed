@@ -77,7 +77,7 @@ def gen_report(center, month, year):
 @login_required
 def print_table(center_abbr, month_name, year):
     if month_name == 'null':
-        return "function not implemented"
+        return "print table not implemented to base"
     
     month_num = global_vars.MESES.index(month_name) + 1
     month = Month.query.filter_by(number=month_num).first()

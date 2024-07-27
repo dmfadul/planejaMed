@@ -49,19 +49,18 @@ def create_app(config_filename=None):
 create_app()
 
 
-# TODO: ADD LOGS
-
-# TODO: auto-backup database
 # TODO: REPLACE DATABASE
+# TODO: auto-backup database
 
-# TODO: fill reports
-
+# TODO: ADD LOGS
 # TODO: CSS
 
 
 # FOR LATER
 
+# TODO: fill reports
 # TODO: add a blitzkrig to save the original of each month
+# TODO: add payment calculation
 # TODO: start using crm instead of id for users
 # TODO: fix lists for add/remove doctor to month
 # TODO: add flash messages to doctor add to month
