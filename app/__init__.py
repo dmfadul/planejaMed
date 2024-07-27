@@ -49,13 +49,16 @@ def create_app(config_filename=None):
 create_app()
 
 
+# TODO: FIX DELETE BUG
+# TODO: Check if requests are being deleted at the correct time
+# TODO: ADD LOGS
+
+# TODO: auto-backup database
+# TODO: REPLACE DATABASE
+
 # TODO: fill reports
 
-# TODO: ADD LOGS
 # TODO: CSS
-
-# TODO: REPLACE DATABASE
-# TODO: auto-backup database
 
 
 # FOR LATER

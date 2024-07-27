@@ -113,6 +113,23 @@ class User(db.Model, UserMixin):
         return 0
 
     @classmethod
+    def create_system_user(cls):
+        system_user = cls(
+            first_name='System',
+            middle_name='',
+            last_name='User',
+            crm=0,
+            rqe=0,
+            phone='0',
+            email='none@system.com',
+            password='system'
+        )
+        db.session.add(system_user)
+        db.session.commit()
+
+        return system_user
+
+    @classmethod
     def get_by_name(cls, full_name):
         full_name_clean = unidecode(' '.join([part.strip().lower() for part in full_name.split()]))
         users = cls.query.all()
