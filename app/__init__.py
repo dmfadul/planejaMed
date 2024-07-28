@@ -49,6 +49,9 @@ def create_app(config_filename=None):
 create_app()
 
 
+# create master key
+# create block function
+# improve requests messages
 # TODO: CSS
 # TODO: ADD LOGS
 # TODO: auto-backup database

@@ -21,7 +21,13 @@ class Message(db.Model):
     request = db.relationship('Request', back_populates='messages', lazy=True) 
 
     def __repr__(self):
-        return self.payload
+        try:
+            message = self.payload
+        except Exception as e:
+            message = f"""Uma mensagem apresentou erro.
+            Por favor, informe ao administrador o código m-{self.id},
+            para que este erro seja corrijido."""
+        return message
     
     @classmethod
     def new_message(cls, sender_id, receivers_code, content):

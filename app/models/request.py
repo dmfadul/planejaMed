@@ -35,7 +35,13 @@ class Request(db.Model):
     )
     
     def __repr__(self):
-        return self.info
+        try:
+            message = self.info
+        except Exception as e:
+            message = f"""Uma requisição apresentou erro.
+            Por favor, informe ao administrador o código r-{self.id},
+            para que este erro seja corrijido."""
+        return message
     
     @classmethod
     def new_user(cls, doctor_to_include_id):
