@@ -62,9 +62,13 @@ def resolve_data(action, info_dict):
     elif action == "donate":
         receiver_crm = info_dict.get('receiverCRM')
         receiver = User.query.filter_by(crm=receiver_crm).first() or current_user
-        requester = current_user
 
-        flag = Request.donation(doctor, center, day, hours, receiver, requester)
+        flag = Request.donation(donor=doctor,
+                                center=center,
+                                day=day,
+                                hours=hours,
+                                receiver=receiver,
+                                requester=current_user)
         if isinstance(flag, str):
             return flag
         

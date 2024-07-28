@@ -20,8 +20,9 @@ from app.routes.calendar.gen_data import gen_days_dict
 app = create_app()
 
 with app.app_context():
-    messages = Message.query.all()
+    reqs = Request.query.all()
 
-    for message in messages:
-        print(message)
-
+    req = reqs[-1]
+    for receiver in req.receivers:
+        user = User.query.get(receiver)
+        print(user.full_name)

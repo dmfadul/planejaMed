@@ -145,9 +145,14 @@ class Request(db.Model):
     
     @classmethod
     def donation(cls, donor, center, day, hours, receiver, requester):
+        if requester.id == donor.id:
+            receiver_code = str(receiver.id)
+        else:
+            receiver_code = str(donor.id)
+
         new_request = cls(
-            requester_id=donor.id,
-            receivers_code=str(receiver.id),
+            requester_id=requester.id,
+            receivers_code=receiver_code,
             action="donate"
         )
 

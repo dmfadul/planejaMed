@@ -257,7 +257,7 @@ function handleRequestDonation(infoDict) {
     let label = "Horários: ";
     
     openModal("modal1", availableHours, title, label, function(selectedHrs) {
-        infoDict["hours"] = selectedHrs;  
+        infoDict["hours"] = selectedHrs;
         sendHoursToServer("donate", infoDict);
     });
 }
