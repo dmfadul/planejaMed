@@ -251,7 +251,7 @@ class Month(db.Model):
     
     def fix_users(self):
         from app.models import User
-        active_users = User.query.filter_by(is_active=True).all()
+        active_users = User.query.filter_by(is_active=True, is_visible=True).all()
         effective_users = [appointment.user for day in self.days for appointment in day.appointments]
 
         self.users = list(set(active_users + effective_users))
