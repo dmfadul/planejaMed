@@ -17,14 +17,13 @@ from app.routes.calendar.gen_data import gen_days_dict
 
 # migration_funcs.migrate_months()
 
-# app = create_app()
+app = create_app()
 
-# with app.app_context():
-#     message_23 = Message.query.filter_by(id=23).first()
-#     message_25 = Message.query.filter_by(id=25).first()
+with app.app_context():
+    message_23 = Message.query.filter_by(id=23).first()
+    message_25 = Message.query.filter_by(id=25).first()
 
-#     message_31 = Message.query.filter_by(id=31).first()
+    message_35 = Message.query.filter_by(id=35).first()
 
 
-#     print(message_23.request.doctors)
-#     print(message_31.request.doctors)
+    print(message_35.request.doctors)

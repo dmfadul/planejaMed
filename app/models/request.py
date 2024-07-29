@@ -314,6 +314,8 @@ class Request(db.Model):
     def date(self):
         if self.action == "include_user":
             return None
+        if self.appointments is None:
+            return None
         
         return self.appointments[0].day.date
     

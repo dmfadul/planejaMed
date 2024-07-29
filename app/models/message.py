@@ -94,7 +94,7 @@ class Message(db.Model):
             return self.content
         
         if self.action == "cancel":
-            message = "Você tem " + self.core + ". Aperte Cancelar para cancelar a solicitação."
+            message = "Você tem " + self.core + " Aperte Cancelar para cancelar a solicitação."
         elif self.action == "info":
             answer = "autorizada" if self.request.response == 'authorized' else "negada"
             message = "Sua " + self.core + f" foi {answer}."
@@ -107,6 +107,9 @@ class Message(db.Model):
         
         if self.request.action == "include_user":
             return "solicitação de inclusão de usuário"
+        
+        if self.request.action == "include_appointments" and self.request.response == "denied":
+            return "solicitação de inclusão"
         
         noun = self.request.noun
         date = self.request.date.strftime("%d/%m/%Y")
