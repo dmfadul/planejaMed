@@ -49,7 +49,6 @@ def create_app(config_filename=None):
 create_app()
 
 
-# create master key
 # create block function
 # improve requests messages
 # improve variables names on messages and requests
