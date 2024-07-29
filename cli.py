@@ -17,10 +17,10 @@ from app.routes.calendar.gen_data import gen_days_dict
 
 # migration_funcs.migrate_months()
 
-app = create_app()
+# app = create_app()
 
-with app.app_context():
-    reqs = Request.query.all()
+# with app.app_context():
+#     reqs = Request.query.all()
 
-    for req in reqs:
-        print(req.id)
+#     for req in reqs:
+#         print(req.id)

@@ -106,7 +106,7 @@ def sum_by_doctor():
 
     month = Month.query.filter_by(number=global_vars.MESES.index(month_name)+1, year=year).first()
     centers = [center.abbreviation for center in Center.query.filter_by(is_active=True).all()]
-    doctors = sorted(User.query.all(), key=lambda x: x.full_name)
+    doctors = sorted(User.query.filter_by(is_active=True, is_visible=True).all(), key=lambda x: x.full_name)
 
     header_1 = ["", month] + [x for tup in list(zip(centers, centers)) for x in tup]
     header_2 = ['Nº', 'Anestesiologista'] + ['Rotina', 'Plantões'] * 3

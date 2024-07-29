@@ -54,6 +54,7 @@ create_app()
 # create block function
 # improve requests messages
 # improve variables names on messages and requests
+# add check for users id on requests
 # TODO: CSS
 # TODO: ADD LOGS
 # TODO: auto-backup database
