@@ -20,10 +20,7 @@ from app.routes.calendar.gen_data import gen_days_dict
 app = create_app()
 
 with app.app_context():
-    message_23 = Message.query.filter_by(id=23).first()
-    message_25 = Message.query.filter_by(id=25).first()
+    reqs = Request.query.all()
 
-    message_35 = Message.query.filter_by(id=35).first()
-
-
-    print(message_35.request.doctors)
+    for req in reqs:
+        print(req.id)

@@ -111,6 +111,12 @@ class Message(db.Model):
         if self.request.action == "include_appointments" and self.request.response == "denied":
             return "solicitação de inclusão"
         
+        if self.request.action == "exclude_appointments" and self.request.response is not None:
+            return "solicitação de inclusão"
+        
+        if self.request.action == "donate" and self.request.response is not None:
+            return "solicitação de doação"
+        
         noun = self.request.noun
         date = self.request.date.strftime("%d/%m/%Y")
         hours = convert_hours_to_line(self.request.hours)

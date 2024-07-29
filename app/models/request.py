@@ -404,7 +404,7 @@ class Request(db.Model):
         
         if self.action == "exclude_appointments":
             for app in self.appointments:   
-                app.delete_entry()
+                app.delete_entry(del_requests=False)
 
             self.respond(responder_id=responder_id, response='authorized')
             return "Os horários foram excluídos com sucesso"
