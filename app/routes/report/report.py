@@ -1,5 +1,5 @@
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
-from app.routes.dataview.gen_data import gen_month_table 
+from app.routes.dataview.gen_data import gen_month_table, gen_base_table
 from reportlab.lib.pagesizes import landscape, A4
 from flask_login import login_required
 from flask import Blueprint, send_file, current_app
@@ -77,18 +77,25 @@ def gen_report(center, month, year):
 @login_required
 def print_table(center_abbr, month_name, year):
     if month_name == 'null':
-        return "print table not implemented to base"
-    
-    month_num = global_vars.MESES.index(month_name) + 1
-    month = Month.query.filter_by(number=month_num).first()
-    if month is None:
-        raise Exception(f"{month_name} not found")
-    
-    center = Center.query.filter_by(abbreviation=center_abbr).first()
-    if center is None:
-        raise Exception(f"{center_abbr} not found")
-      
-    data_table = gen_month_table(center_abbr, month_name, year, names_only=True)
+        center = Center.query.filter_by(abbreviation=center_abbr).first()
+        if center is None:
+            raise Exception(f"{center_abbr} not found")
+        
+        month = Month.get_current()
+
+        data_table = gen_base_table(center_abbr=center_abbr, names_only=True, abbr_names=True)
+    else:    
+        month_num = global_vars.MESES.index(month_name) + 1
+        month = Month.query.filter_by(number=month_num).first()
+        if month is None:
+            raise Exception(f"{month_name} not found")
+        
+        center = Center.query.filter_by(abbreviation=center_abbr).first()
+        if center is None:
+            raise Exception(f"{center_abbr} not found")
+        
+        data_table = gen_month_table(center_abbr, month_name, year, names_only=True)
+
     for i in range(len(data_table[0])):
         if i == 0:
             continue

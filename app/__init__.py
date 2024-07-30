@@ -64,7 +64,7 @@ create_app()
 
 
 # TODO: auto-backup database
-# add print to bases
+# change (example) mt4 to d4
 # check if inactive users are being removed from existing months
 # TODO: add a blitzkrig to save the original of each month
 
@@ -94,7 +94,7 @@ create_app()
 
 # TODO: use profile name to gen abbreviated names (recreate user table)
 
-# TODO: add an actual settings file.
+# TODO: move setting to settings file.
 # TODO: Replace popup by modal
 
 # POSSIBILITIES:

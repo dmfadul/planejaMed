@@ -152,8 +152,24 @@ class User(db.Model, UserMixin):
     
     @property
     def abbreviated_name(self):
-        name = f'{self.first_name} {self.last_name}'
-        return ' '.join(name.split())
+        non_abbr_words = {'de', 'da', 'do', 'dos', 'das', 'e'}
+
+        first_name_parts = self.first_name.split()
+        middle_name_parts = self.middle_name.split()
+        last_name_parts = self.last_name.split()
+
+        abbr_name = first_name_parts[0] 
+
+        for part in middle_name_parts:
+            if part not in non_abbr_words:
+                abbr_name += f" {part[0]}."
+
+        for part in last_name_parts:
+            if part not in non_abbr_words:
+                abbr_name += f" {part}"
+                break
+
+        return abbr_name
     
     @property
     def app_dict(self):
