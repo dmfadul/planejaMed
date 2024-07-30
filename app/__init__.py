@@ -63,19 +63,21 @@ def create_app(config_filename=None):
 create_app()
 
 
+# TODO: auto-backup database
+# add print to bases
+# check if inactive users are being removed from existing months
+# TODO: add a blitzkrig to save the original of each month
+
 # improve requests messages
 # improve variables names on messages and requests
 # add check for users id on requests
+
 # TODO: CSS
 # TODO: ADD LOGS
-# TODO: auto-backup database
-# check if inactive users are being removed from existing months
 
 # FOR LATER
 
-# TODO: reset password function
 # TODO: https - do nginx course
-# TODO: add a blitzkrig to save the original of each month
 # TODO: fill reports
 # TODO: add payment calculation
 # TODO: add logic to user add a new center
@@ -96,6 +98,7 @@ create_app()
 # TODO: Replace popup by modal
 
 # POSSIBILITIES:
+# TODO: reset password function
 # TODO: fix aesthetics/simplify css and js
 # TODO: CLEAN UP MODALS.JS
 # TODO: change admin table interaction and clean up its js
