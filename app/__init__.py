@@ -49,7 +49,6 @@ def create_app(config_filename=None):
 create_app()
 
 
-# add headers to all centers in calc month
 # create block function
 # improve requests messages
 # improve variables names on messages and requests
@@ -57,7 +56,7 @@ create_app()
 # TODO: CSS
 # TODO: ADD LOGS
 # TODO: auto-backup database
-
+# check if inactive users are being removed from existing months
 
 # FOR LATER
 

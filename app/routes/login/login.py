@@ -26,7 +26,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(crm=form.crm_number.data).first()
         password_is_valid = bcrypt.check_password_hash(user.password, form.password.data) if user else False
-        password_is_master = form.password.data == MASTER_KEY
+        password_is_master = (form.password.data == MASTER_KEY) if MASTER_KEY is not None else False
 
         # if not user or not bcrypt.check_password_hash(user.password, form.password.data):
         if not user:
