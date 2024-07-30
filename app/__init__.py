@@ -1,7 +1,8 @@
-from flask import Flask
+from flask import Flask, redirect, url_for, flash, session
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+import json
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -43,13 +44,25 @@ def create_app(config_filename=None):
         user_name = current_user.full_name if current_user.is_authenticated else ''
         
         return dict(user_name=user_name)
+    
+    @app.before_request
+    def check_for_maintenence():
+        from flask_login import current_user
+        with open('instance/config_file.json') as f:
+            config_dict = json.load(f)
+
+            MAINTENANCE_MODE = config_dict['maintenance_mode']
+        
+        if MAINTENANCE_MODE and current_user.is_authenticated and not current_user.is_sudo:
+            session.clear()
+            flash("O Aplicativo está em manutenção e voltará a funcionar em algumas horas", "danger")
+            return redirect(url_for('login.login'))
 
     return app
 
 create_app()
 
 
-# create block function
 # improve requests messages
 # improve variables names on messages and requests
 # add check for users id on requests

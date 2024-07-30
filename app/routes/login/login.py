@@ -1,9 +1,10 @@
-from flask import Blueprint, redirect, url_for, render_template, flash, request
+from flask import Blueprint, redirect, url_for, render_template, flash, request, session
 from flask_login import current_user, login_user, logout_user, login_required
 from app.forms import LoginForm, RegistrationForm, UpdateProfileForm
 from app.models import User, Request
 from instance.config import MASTER_KEY
 from app import db, bcrypt
+import json
 
 login_bp = Blueprint('login',
                      __name__,
@@ -19,6 +20,11 @@ def index():
 
 @login_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    with open('instance/config_file.json') as f:
+        config_dict = json.load(f)
+
+    MAINTENANCE_MODE = config_dict['maintenance_mode']
+
     if current_user.is_authenticated:
         return redirect(url_for('dashboard.dashboard'))
 
@@ -40,6 +46,11 @@ def login():
             return redirect(url_for('login.login'))
         if not user.is_active:
             flash("Usuário Não Está Ativo. Entre em Contato com Admin", "danger")
+            return redirect(url_for('login.login'))
+        
+        if MAINTENANCE_MODE and not user.is_sudo:
+            session.clear()
+            flash("O Aplicativo está em manutenção e voltará a funcionar em algumas horas", "danger")
             return redirect(url_for('login.login'))
 
         login_user(user, remember=form.remember.data)
