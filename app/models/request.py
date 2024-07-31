@@ -210,9 +210,7 @@ class Request(db.Model):
     @classmethod
     def exchange(cls, doctor_1, center_1, day_1, hours_1,
                  doctor_2, center_2, day_2, hours_2, requester):
-        
-        return "A função troca está temporariamente desativada"
-        
+                
         if len(hours_1) != len(hours_2):
             return "Conflito - Horários de tamanhos diferentes"
         
@@ -237,6 +235,22 @@ class Request(db.Model):
                                 {convert_hours_to_line(hours_1)} no centro {center_1.abbreviation}
                                 no dia {day_1.date.strftime("%d/%m/%y")} com {doctor_1.full_name}."""
         
+        for i in range(len(hours_1)):
+            app_1 = Appointment.query.filter_by(
+                day_id=day_1.id,
+                user_id=doctor_1.id,
+                hour=hours_1[i],
+                is_confirmed=True
+            ).first()
+
+            app_2 = Appointment.query.filter_by(
+                day_id=day_2.id,
+                user_id=doctor_2.id,
+                hour=hours_2[i],
+                is_confirmed=True
+            ).first()
+
+            
         for hour in hours_1:
             app = Appointment.query.filter_by(
                 day_id=day_1.id,

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, jsonify, flash, redirect, url_for
+from flask import Blueprint, request, session, render_template, jsonify, flash, redirect, url_for
 from flask_login import login_required, current_user
 from app.models import Center, Month, User, BaseAppointment
 from .resolve_data import resolve_data
@@ -17,13 +17,24 @@ dataview_bp = Blueprint(
 @dataview_bp.route("/baseview/", methods=["GET", "POST"])
 @login_required
 def baseview():
-    center_abbr = request.form.get("center")
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+    
+    if request.method == "POST":
+        center_abbr = request.form.get("center")
+        session["center_abbr"] = center_abbr
+    else:
+        center_abbr = session.get("center_abbr")
+
+    if not center_abbr:
+        return "Centro não encontrado", 404
+    
     data = gen_base_table(center_abbr)
 
     return render_template("baseview.html",
                            data=data,
                            center=center_abbr,
-                           is_admin=True)
+                           is_admin=current_user.is_admin)
 
 
 @dataview_bp.route("/monthview/", methods=["GET", "POST"])
