@@ -6,6 +6,7 @@ from datetime import datetime
 from app.hours_conversion import appointments_letters_key, gen_redudant_hour_list
 from app.hours_conversion import convert_letter_to_hours
 from app.routes.calendar.gen_data import gen_days_dict
+from app.config import Config
 
 
 # migration_funcs.drop_all_tables()
@@ -24,3 +25,7 @@ from app.routes.calendar.gen_data import gen_days_dict
 
 #     for req in reqs:
 #         print(req.id)
+
+# config = Config()
+
+# print(config.get('maintenance_mode'))

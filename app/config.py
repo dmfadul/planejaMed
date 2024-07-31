@@ -1,7 +1,7 @@
 import json
 
 class Config:
-    def __init__(self, config_file='config.json'):
+    def __init__(self, config_file='instance/config_file.json'):
         self.config_file = config_file
         self.load(config_file)
 

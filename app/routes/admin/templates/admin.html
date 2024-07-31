@@ -111,14 +111,16 @@
         </form>
     </section>
 
-    {% if curr_is_latest %}
-    <section style="text-align: center;">
-        <button onclick="handleCreateButtonClick();" class="common-button">Criar {{ next_month_name }} {{ next_month_year }}</button>
-    </section>
-    {% else %}
+    {% if user_is_root %}
+        {% if maintenance_is_on %}
         <section style="text-align: center;">
-            <button onclick="handleNextButtonClick();" class="common-button">Destrancar {{ next_month_name }} {{ next_month_year }}</button>
+            <button onclick="toggleMaintenance();" class="common-button">OPEN SYSTEM</button>
         </section>
+        {% else %}
+            <section style="text-align: center;">
+                <button onclick="toggleMaintenance();" class="common-button">BLOCK SYSTEM</button>
+            </section>
+        {% endif %}
     {% endif %}
 
     <script type="text/javascript" src="{{ url_for('admin.static', filename='scripts/buttonListeners.js') }}"></script>

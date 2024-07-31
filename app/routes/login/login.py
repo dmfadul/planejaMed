@@ -1,10 +1,10 @@
 from flask import Blueprint, redirect, url_for, render_template, flash, request, session
 from flask_login import current_user, login_user, logout_user, login_required
 from app.forms import LoginForm, RegistrationForm, UpdateProfileForm
-from app.models import User, Request
 from instance.config import MASTER_KEY
+from app.models import User, Request
+from app.config import Config
 from app import db, bcrypt
-import json
 
 login_bp = Blueprint('login',
                      __name__,
@@ -20,10 +20,8 @@ def index():
 
 @login_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    with open('instance/config_file.json') as f:
-        config_dict = json.load(f)
-
-    MAINTENANCE_MODE = config_dict['maintenance_mode']
+    config = Config()
+    MAINTENANCE_MODE = config.get('maintenance_mode')
 
     if current_user.is_authenticated:
         return redirect(url_for('dashboard.dashboard'))

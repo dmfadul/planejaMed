@@ -4,7 +4,7 @@ from flask_login import current_user, login_required
 import app.global_vars as global_vars
 from app.models import Center, Month, User
 from app.routes.calendar.gen_data import gen_doctors_dict
-
+from app.config import Config
 
 admin_bp = Blueprint(
                     'admin',
@@ -19,7 +19,8 @@ admin_bp = Blueprint(
 def admin():
     if not current_user.is_admin:
         return "Unauthorized", 401
-    
+    config = Config()
+    maintenance_is_on = config.get('maintenance_mode')
     months = global_vars.MESES
     current_month = Month.get_current()
     current_year = current_month.year
@@ -28,6 +29,7 @@ def admin():
     _, doctors_list = gen_doctors_dict()
     open_months = [current_month_name] if current_month.is_latest else [current_month_name, next_month_name]
     open_doctors_list = [d for d in doctors_list if d[0] not in [d.crm for d in current_month.users]]
+
     return render_template(
                            "admin.html",
                            title="Admin",
@@ -41,6 +43,7 @@ def admin():
                            open_months=open_months,
                            open_doctors_list=open_doctors_list,
                            user_is_root=current_user.is_root,
+                           maintenance_is_on=maintenance_is_on
                            )
 
 
@@ -199,5 +202,19 @@ def create_center():
 
     # flag = Center.create(abbreviation, name)
     flash(f"Foi criado o centro {abbreviation} - {name}")
+
+    return redirect(url_for('admin.admin'))
+
+
+@admin_bp.route('/admin/toggle-maintenance', methods=['POST', 'GET'])
+@login_required
+def toggle_maintenance():
+    if not current_user.is_root:
+        return "Unauthorized", 401
+
+    print("teste")
+    # config = Config()
+    # maintenance_is_on = config.get('maintenance_mode')
+    # config.set('maintenance_mode', not maintenance_is_on)
 
     return redirect(url_for('admin.admin'))

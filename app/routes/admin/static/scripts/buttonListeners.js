@@ -24,3 +24,16 @@ function handleNextButtonClick() {
         window.location.href = '/admin/next-month';
     }
 }
+
+function toggleMaintenance() {
+    // Show confirmation dialog
+    const actionConfirmed = confirm("Tem a certeza que deseja mudar o estado de manutenção?");
+
+    if (actionConfirmed) {
+        // Show the waiting message
+        document.getElementById('waitingMessage').style.display = 'block';
+
+        // Redirect to the URL (simulate form submission or AJAX request)
+        window.location.href = '/admin/toggle-maintenance';
+    }
+}

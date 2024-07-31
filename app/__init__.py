@@ -2,7 +2,6 @@ from flask import Flask, redirect, url_for, flash, session
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-import json
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -48,10 +47,10 @@ def create_app(config_filename=None):
     @app.before_request
     def check_for_maintenence():
         from flask_login import current_user
-        with open('instance/config_file.json') as f:
-            config_dict = json.load(f)
+        from app.config import Config
 
-            MAINTENANCE_MODE = config_dict['maintenance_mode']
+        config = Config()
+        MAINTENANCE_MODE = config.get('maintenance_mode')
         
         if MAINTENANCE_MODE and current_user.is_authenticated and not current_user.is_root:
             session.clear()
@@ -63,6 +62,7 @@ def create_app(config_filename=None):
 create_app()
 
 
+# finish block system backend
 # stop inactive users from being removed from existing months
 # change (example) mt4 to d4
 # TODO: add a blitzkrig to save the original of each month
