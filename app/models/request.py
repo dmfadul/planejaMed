@@ -211,6 +211,11 @@ class Request(db.Model):
     def exchange(cls, doctor_1, center_1, day_1, hours_1,
                  doctor_2, center_2, day_2, hours_2, requester):
         
+        return "A função troca está temporariamente desativada"
+        
+        if len(hours_1) != len(hours_2):
+            return "Conflito - Horários de tamanhos diferentes"
+        
         new_request = cls(
             requester_id=doctor_1.id,
             receivers_code=str(doctor_2.id),
@@ -249,13 +254,24 @@ class Request(db.Model):
                 db.session.rollback()
                 return f"Horário de {doctor_1.full_name} (ou parte dele) tem requisições pendentes"
             
+            check_app = Appointment.query.filter_by(
+                day_id=day_1.id,
+                user_id=doctor_2.id,
+                hour=hour,
+                is_confirmed=True
+            ).first()
+
+            if check_app:
+                db.session.rollback()             
+                return f"""Conflito - {doctor_2.full_name} já tem esse horário
+                        (ou parte dele) no centro {check_app.center.abbreviation}"""
+            
             new_request.appointments.append(app)
 
         for hour in hours_2:
             app = Appointment.query.filter_by(
                 day_id=day_2.id,
-                user_id=doctor_2.id,
-                center_id=center_2.id,
+                user_id=doctor_1.id,
                 hour=hour,
                 is_confirmed=True
             ).first()
@@ -267,6 +283,18 @@ class Request(db.Model):
             if app.has_open_requests:
                 db.session.rollback()
                 return f"Horário de {doctor_2.full_name} (ou parte dele) tem requisições pendentes"
+            
+            check_app = Appointment.query.filter_by(
+                day_id=day_2.id,
+                user_id=doctor_1.id,
+                hour=hour,
+                is_confirmed=True
+            ).first()
+
+            if check_app:
+                db.session.rollback()
+                return f"""Conflito - {doctor_1.full_name} já tem esse horário
+                        (ou parte dele) no centro {check_app.center.abbreviation}"""
             
             new_request.appointments.append(app)
         
