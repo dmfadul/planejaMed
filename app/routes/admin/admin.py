@@ -40,6 +40,7 @@ def admin():
                            doctors_list=doctors_list,
                            open_months=open_months,
                            open_doctors_list=open_doctors_list,
+                           user_is_root=current_user.is_root,
                            )
 
 

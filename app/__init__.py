@@ -53,7 +53,7 @@ def create_app(config_filename=None):
 
             MAINTENANCE_MODE = config_dict['maintenance_mode']
         
-        if MAINTENANCE_MODE and current_user.is_authenticated and not current_user.is_sudo:
+        if MAINTENANCE_MODE and current_user.is_authenticated and not current_user.is_root:
             session.clear()
             flash("O Aplicativo está em manutenção e voltará a funcionar em algumas horas", "danger")
             return redirect(url_for('login.login'))
@@ -63,9 +63,8 @@ def create_app(config_filename=None):
 create_app()
 
 
-# TODO: auto-backup database
+# stop inactive users from being removed from existing months
 # change (example) mt4 to d4
-# check if inactive users are being removed from existing months
 # TODO: add a blitzkrig to save the original of each month
 
 # improve requests messages

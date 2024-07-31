@@ -48,7 +48,7 @@ def login():
             flash("Usuário Não Está Ativo. Entre em Contato com Admin", "danger")
             return redirect(url_for('login.login'))
         
-        if MAINTENANCE_MODE and not user.is_sudo:
+        if MAINTENANCE_MODE and not user.is_root:
             session.clear()
             flash("O Aplicativo está em manutenção e voltará a funcionar em algumas horas", "danger")
             return redirect(url_for('login.login'))
