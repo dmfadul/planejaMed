@@ -434,8 +434,12 @@ class Request(db.Model):
             return "Os horários foram excluídos com sucesso"
         
         if self.action == "donate":
+            
             for app in self.appointments:
-                app.change_doctor(int(self.receivers_code))
+                if app.user_id == self.requester_id:
+                    app.change_doctor(int(self.receivers_code))
+                else:
+                    app.change_doctor(self.requester_id)
 
             self.respond(responder_id=responder_id, response='authorized')
             return "Os horários foram doados com sucesso"
