@@ -51,7 +51,7 @@ def monthview():
         center_abbr = session.get("center_abbr")
         year = session.get("year")
         month_name = session.get("month_name")
-        
+
     if month_name is None or year is None or center_abbr is None:
         month = Month.get_current()
         center_abbr = "CCG"
@@ -71,7 +71,6 @@ def monthview():
                            month=month.name,
                            year=month.year,
                            is_admin=current_user.is_admin)
-
 
 
 @dataview_bp.route("/update-appointments", methods=["POST"])

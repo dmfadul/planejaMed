@@ -236,81 +236,63 @@ class Request(db.Model):
                                 no dia {day_1.date.strftime("%d/%m/%y")} com {doctor_1.full_name}."""
         
         for i in range(len(hours_1)):
-            app_1 = Appointment.query.filter_by(
+            out_app_doc_1 = Appointment.query.filter_by(
                 day_id=day_1.id,
                 user_id=doctor_1.id,
+                center_id=center_1.id,
                 hour=hours_1[i],
                 is_confirmed=True
             ).first()
 
-            app_2 = Appointment.query.filter_by(
+            if not out_app_doc_1:
+                db.session.rollback()
+                return f"Horário de {doctor_1.full_name} (ou parte dele) não foi encontrado"
+
+            if out_app_doc_1.has_open_requests:
+                db.session.rollback()
+                return f"Horário de {doctor_1.full_name} (ou parte dele) tem requisições pendentes"
+
+            out_app_doc_2 = Appointment.query.filter_by(
                 day_id=day_2.id,
                 user_id=doctor_2.id,
                 hour=hours_2[i],
                 is_confirmed=True
             ).first()
 
-            
-        for hour in hours_1:
-            app = Appointment.query.filter_by(
-                day_id=day_1.id,
-                user_id=doctor_1.id,
-                center_id=center_1.id,
-                hour=hour,
-                is_confirmed=True
-            ).first()
-
-            if not app:
-                db.session.rollback()
-                return f"Horário de {doctor_1.full_name} (ou parte dele) não foi encontrado"
-
-            if app.has_open_requests:
-                db.session.rollback()
-                return f"Horário de {doctor_1.full_name} (ou parte dele) tem requisições pendentes"
-            
-            check_app = Appointment.query.filter_by(
-                day_id=day_1.id,
-                user_id=doctor_2.id,
-                hour=hour,
-                is_confirmed=True
-            ).first()
-
-            if check_app:
-                db.session.rollback()             
-                return f"""Conflito - {doctor_2.full_name} já tem esse horário
-                        (ou parte dele) no centro {check_app.center.abbreviation}"""
-            
-            new_request.appointments.append(app)
-
-        for hour in hours_2:
-            app = Appointment.query.filter_by(
-                day_id=day_2.id,
-                user_id=doctor_1.id,
-                hour=hour,
-                is_confirmed=True
-            ).first()
-
-            if not app:
+            if not out_app_doc_2:
                 db.session.rollback()
                 return f"Horário de {doctor_2.full_name} (ou parte dele) não foi encontrado"
 
-            if app.has_open_requests:
+            if out_app_doc_2.has_open_requests:
                 db.session.rollback()
                 return f"Horário de {doctor_2.full_name} (ou parte dele) tem requisições pendentes"
             
-            check_app = Appointment.query.filter_by(
+            in_app_doc_1 = Appointment.query.filter_by(
                 day_id=day_2.id,
                 user_id=doctor_1.id,
-                hour=hour,
+                hour=hours_2[i],
                 is_confirmed=True
             ).first()
 
-            if check_app:
-                db.session.rollback()
+            if in_app_doc_1 and not in_app_doc_1 == out_app_doc_1:
+                db.session.rollback()             
                 return f"""Conflito - {doctor_1.full_name} já tem esse horário
-                        (ou parte dele) no centro {check_app.center.abbreviation}"""
+                        (ou parte dele) no centro {in_app_doc_1.center.abbreviation}"""
             
-            new_request.appointments.append(app)
+            in_app_doc_2 = Appointment.query.filter_by(
+                day_id=day_1.id,
+                user_id=doctor_2.id,
+                hour=hours_1[i],
+                is_confirmed=True
+            ).first()
+
+            if in_app_doc_2 and not in_app_doc_2 == out_app_doc_2:
+                db.session.rollback()
+                return f"""Conflito - {doctor_2.full_name} já tem esse horário
+                        (ou parte dele) no centro {in_app_doc_2.center.abbreviation}"""
+
+            new_request.appointments.append(out_app_doc_1)         
+            new_request.appointments.append(out_app_doc_2)
         
         db.session.commit()
         return new_request
