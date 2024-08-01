@@ -62,12 +62,8 @@ def create_app(config_filename=None):
 create_app()
 
 
-# add info if form fails at profile
-
-# finish block system backend
 # stop inactive users from being removed from existing months
 
-# change (example) mt4 to d4
 # TODO: add a blitzkrig to save the original of each month
 
 # improve requests messages
@@ -79,13 +75,12 @@ create_app()
 
 # FOR LATER
 
+# TODO: change (example) mt4 to d4
 # TODO: https - do nginx course
 # TODO: fill reports
 # TODO: add payment calculation
 # TODO: add logic to user add a new center
 
-
-# TODO: start using crm instead of id for users
 # TODO: fix lists for add/remove doctor to month
 # TODO: add flash messages to doctor add to month
 
@@ -100,6 +95,7 @@ create_app()
 # TODO: Replace popup by modal
 
 # POSSIBILITIES:
+# TODO: start using crm instead of id for users
 # TODO: reset password function
 # TODO: fix aesthetics/simplify css and js
 # TODO: CLEAN UP MODALS.JS

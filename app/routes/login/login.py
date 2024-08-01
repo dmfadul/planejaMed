@@ -133,5 +133,9 @@ def profile():
         form.crm_number.data = current_user.crm
         form.rqe_number.data = current_user.rqe
     else:
-        flash('Erro ao Atualizar Informações', 'danger')
+        errors = ""
+        for _, error in form.errors.items():
+            errors += f"{error[0]}"
+        
+        flash(f'Erro ao Atualizar Informações: {errors}', 'danger')
     return render_template('profile.html', title='Profile', form=form)
