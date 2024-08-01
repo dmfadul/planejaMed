@@ -62,7 +62,6 @@ def create_app(config_filename=None):
 create_app()
 
 
-# fix base bug
 # fix exchange bug
 # add info if form fails at profile
 

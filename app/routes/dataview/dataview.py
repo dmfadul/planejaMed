@@ -40,10 +40,18 @@ def baseview():
 @dataview_bp.route("/monthview/", methods=["GET", "POST"])
 @login_required
 def monthview():
-    center_abbr = request.form.get("center")
-    year = request.form.get("year")
-    month_name = request.form.get("month")
-
+    if request.method == "POST":
+        center_abbr = request.form.get("center")
+        year = request.form.get("year")
+        month_name = request.form.get("month")
+        session["center_abbr"] = center_abbr
+        session["year"] = year
+        session["month_name"] = month_name
+    else:
+        center_abbr = session.get("center_abbr")
+        year = session.get("year")
+        month_name = session.get("month_name")
+        
     if month_name is None or year is None or center_abbr is None:
         month = Month.get_current()
         center_abbr = "CCG"
