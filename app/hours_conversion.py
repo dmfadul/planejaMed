@@ -201,6 +201,10 @@ def convert_line_to_hour(line):
         return []
    
     start_hour, end_hour = [int(h.split(":")[0]) for h in line.split(": ")[1].split(" - ")]
+
+    if start_hour == end_hour-1:
+        return [start_hour]
+
     hour_range = gen_hour_range((start_hour, end_hour-1))
 
     return hour_range
