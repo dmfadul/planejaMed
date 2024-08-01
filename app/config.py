@@ -20,6 +20,7 @@ class Config:
 
     def set(self, key, value):
         keys = key.split('.')
+        print(keys[:-1], self.config)
         config_section = self.config
         for k in keys[:-1]:
             if k not in config_section:
@@ -27,6 +28,5 @@ class Config:
             config_section = config_section[k]
         config_section[keys[-1]] = value
 
-    def save(self):
         with open(self.config_file, 'w') as file:
             json.dump(self.config, file, indent=4)

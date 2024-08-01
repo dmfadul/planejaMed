@@ -212,9 +212,8 @@ def toggle_maintenance():
     if not current_user.is_root:
         return "Unauthorized", 401
 
-    print("teste")
-    # config = Config()
-    # maintenance_is_on = config.get('maintenance_mode')
-    # config.set('maintenance_mode', not maintenance_is_on)
+    config = Config()
+    maintenance_is_on = config.get('maintenance_mode')
+    config.set('maintenance_mode', not maintenance_is_on)
 
     return redirect(url_for('admin.admin'))
