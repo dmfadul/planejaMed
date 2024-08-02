@@ -13,8 +13,9 @@ class Request(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     requester_id = db.Column(db.Integer, ForeignKey('users.id'), nullable=False)
-    responder_id = db.Column(db.Integer, ForeignKey('users.id'))
     receivers_code = db.Column(db.Text, nullable=False)
+    # requestee_code = db.Column(db.Text, nullable=False)
+    responder_id = db.Column(db.Integer, ForeignKey('users.id'))
     action = db.Column(db.Text, nullable=False)
 
     creation_date = db.Column(db.Date, nullable=False, default=datetime.now())
@@ -48,6 +49,7 @@ class Request(db.Model):
         new_request = cls(
             requester_id=doctor_to_include_id,
             receivers_code="*",
+            # requestee_code="*",
             action="include_user",
         )
 
@@ -65,6 +67,7 @@ class Request(db.Model):
         new_request = cls(
             requester_id=doctor.id,
             receivers_code="*",
+            # requestee_code="*",
             action="exclude_appointments",
             info = f"""{doctor.full_name} solicitou EXCLUSÃO dos horários:
                     {convert_hours_to_line(hours)} no centro {center.abbreviation}
@@ -100,6 +103,7 @@ class Request(db.Model):
         new_request = cls(
             requester_id=doctor.id,
             receivers_code="*",
+            # requestee_code="*",
             action="include_appointments",
             info=f"""{doctor.full_name} solicitou INCLUSÃO dos horários:
                     {convert_hours_to_line(hours)} no centro {center.abbreviation}
@@ -150,28 +154,33 @@ class Request(db.Model):
         return new_request
     
     @classmethod
-    def donation(cls, donor, center, day, hours, receiver, requester):
+    def donation(cls, donor, donee, center, day, hours, requester):
         if requester.id == donor.id:
-            receiver_code = str(receiver.id)
+            # hours go from current_user to other_users
+            receiver_code = str(donee.id)
+            # requestee_code = str(donee.id)
         else:
+            # hours go from other_users to current_user
             receiver_code = str(donor.id)
+            # requestee_code = str(donor.id)
 
         new_request = cls(
             requester_id=requester.id,
             receivers_code=receiver_code,
+            # requestee_code=requestee_code,
             action="donate"
         )
 
         db.session.add(new_request)
 
-        if requester.id == receiver.id:
+        if requester.id == donee.id:
             new_request.info=f"""{requester.full_name} solicitou DOAÇÃO dos horários:
                                 {convert_hours_to_line(hours)} no centro {center.abbreviation}
                                 no dia {day.date.strftime("%d/%m/%y")} (DE {donor.full_name})."""
         elif requester.id == donor.id:
             new_request.info=f"""{requester.full_name} solicitou DOAÇÃO dos horários:
                                 {convert_hours_to_line(hours)} no centro {center.abbreviation}
-                                no dia {day.date.strftime("%d/%m/%y")} (PARA {receiver.full_name})."""
+                                no dia {day.date.strftime("%d/%m/%y")} (PARA {donee.full_name})."""
 
         for hour in hours:
             app_donor = Appointment.query.filter_by(
@@ -190,17 +199,17 @@ class Request(db.Model):
                 db.session.rollback()
                 return f"Horário de {donor.full_name} (ou parte dele) tem requisições pendentes"
             
-            app_receiver = Appointment.query.filter_by(
+            app_donee = Appointment.query.filter_by(
                 day_id=day.id,
-                user_id=receiver.id,
+                user_id=donee.id,
                 hour=hour,
                 is_confirmed=True
             ).first()
             
-            if app_receiver:
+            if app_donee:
                 db.session.rollback()
-                return f"""Horário de {receiver.full_name} (ou parte dele) já está ocupado
-                        no centro {app_receiver.center.abbreviation}."""
+                return f"""Horário de {donee.full_name} (ou parte dele) já está ocupado
+                        no centro {app_donee.center.abbreviation}."""
 
             new_request.appointments.append(app_donor)
         
@@ -217,6 +226,7 @@ class Request(db.Model):
         new_request = cls(
             requester_id=doctor_1.id,
             receivers_code=str(doctor_2.id),
+            # requestee_code=str(doctor_2.id),
             action="exchange",
         )
 
@@ -321,12 +331,16 @@ class Request(db.Model):
         user_ids = [user.id for user in User.query.all() if user.is_sudo]
 
         if self.receivers_code == "*":
+        # if self.requestee_code == "*":
             user_ids += [user.id for user in User.query.all() if user.is_admin]
         else:
             user_ids += [user.id for user in User.query.all() if user.id == int(self.receivers_code)]
+            # user_ids += [user.id for user in User.query.all() if user.id == int(self.requestee_code)]
+
     
         return user_ids
     
+    # remove
     @property
     def center(self):
         if self.action == "include_user":
@@ -334,6 +348,7 @@ class Request(db.Model):
         
         return self.appointments[0].center
     
+    # remove
     @property
     def date(self):
         if self.action == "include_user":
@@ -343,6 +358,7 @@ class Request(db.Model):
         
         return self.appointments[0].day.date
     
+    # remove
     @property
     def hours(self):
         if self.action == "include_user":
@@ -350,6 +366,7 @@ class Request(db.Model):
         
         return [app.hour for app in self.appointments]
 
+    # remove
     @ property
     def doctors(self):
         from app.models.user import User
@@ -359,8 +376,10 @@ class Request(db.Model):
         docs = list(set([app.user for app in self.appointments]))
         if self.action == "donate":
             docs.append(User.query.get(int(self.receivers_code)))
+            # docs.append(User.query.get(int(self.requestee_code)))
         return docs
     
+    # remove
     @property
     def noun(self):
         if self.action == "include_user":
@@ -397,6 +416,7 @@ class Request(db.Model):
             sender_id=responder_id,
             request_id=self.id,
             receivers_code=str(self.requester_id),
+            # requestee_code=str(self.requester_id),
             )
         return 0
     
@@ -438,6 +458,7 @@ class Request(db.Model):
             for app in self.appointments:
                 if app.user_id == self.requester_id:
                     app.change_doctor(int(self.receivers_code))
+                    # app.change_doctor(int(self.requestee_code))
                 else:
                     app.change_doctor(self.requester_id)
 
@@ -450,7 +471,9 @@ class Request(db.Model):
             for app in self.appointments:
                 if app.user_id == self.requester_id:
                     app.change_doctor(int(self.receivers_code))
+                    # app.change_doctor(int(self.requestee_code))
                 elif app.user_id == int(self.receivers_code): 
+                # elif app.user_id == int(self.requestee_code): 
                     app.change_doctor(self.requester_id)
                 else:
                     db.session.rollback()
