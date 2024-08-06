@@ -340,6 +340,30 @@ class Request(db.Model):
     
         return user_ids
     
+    @property
+    def message(self):
+        try:
+            unedit_message = self.info
+            if self.action == "include_user":
+                unedit_message.replace('*', "Inclusão de Médico")
+        
+            if self.action == "include_appointments":
+                message = unedit_message.replace('*',"Inclusão")
+
+            if self.action == "exclude_appointments":
+                message = unedit_message.replace('*', "Exclusão")
+
+            if self.action == "donate":
+                message = unedit_message.replace('*', "Doação")
+
+            if self.action == "exchange":
+                message = unedit_message.replace('*', "Troca")
+        except Exception as e:
+            message = f"""Uma requisição apresentou erro.
+            Por favor, informe ao administrador o código r-{self.id},
+            para que este erro seja corrijido."""
+        return message
+    
     # remove
     @property
     def center(self):
