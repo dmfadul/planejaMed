@@ -6,7 +6,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 header {
@@ -66,7 +66,7 @@ header {
   background-color: #0056b3; /* Darker shade on hover */
 }
 
-main {
+/* main {
   display: block;
   width: 90%;
   max-width: 665px;
@@ -74,6 +74,17 @@ main {
   padding: 20px;
   background-color: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+} */
+
+main {
+  display: block;
+  width: auto;
+  min-width: 90%;
+  max-width: 665px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  min-width: fit-content; /* Ensure it grows with content */
 }
 
 main > * {
@@ -121,6 +132,10 @@ input[type=password] {
     font-size: 28px;
     padding-left: 22px;
   }
+  .backdrop {
+    height: auto; /* Adjust the height for smaller screens if needed */
+    top: 50px; /* Example of adding some space from the top */
+  }
   .flex-container{
     display: flex;
     flex-wrap: wrap;
@@ -150,6 +165,10 @@ input[type=password] {
     justify-content: center;
     align-items: center;
   }
+  .backdrop {
+    height: auto; /* Adjust the height for smaller screens if needed */
+    top: 50px; /* Example of adding some space from the top */
+  }
   .flex-container{
     display: flex;
     flex-wrap: wrap;
@@ -166,6 +185,10 @@ input[type=password] {
   .header-content {
     font-size: 28px;
     padding-left: 22px;
+  }
+  .backdrop {
+    height: auto; /* Adjust the height for smaller screens if needed */
+    top: 50px; /* Example of adding some space from the top */
   }
   .flex-container{
     display: flex;
@@ -186,6 +209,10 @@ input[type=password] {
     justify-content: center;
     align-items: center;
   }
+  .backdrop {
+    height: auto; /* Adjust the height for smaller screens if needed */
+    top: 50px; /* Example of adding some space from the top */
+  }
   .flex-container{
     display: flex;
     flex-wrap: wrap;
@@ -204,6 +231,10 @@ input[type=password] {
     display: inline-flex;
     justify-content: center;
     align-items: center;
+  }
+  .backdrop {
+    height: auto; /* Adjust the height for smaller screens if needed */
+    top: 50px; /* Example of adding some space from the top */
   }
   .flex-container{
     display: flex;
