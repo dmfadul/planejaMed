@@ -78,13 +78,13 @@ header {
 
 main {
   display: block;
-  width: auto;
   min-width: 90%;
   max-width: 665px;
   padding: 20px;
   background-color: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   min-width: fit-content; /* Ensure it grows with content */
+  margin: 0 auto; /* Center the element horizontally */
 }
 
 main > * {
