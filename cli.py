@@ -21,10 +21,10 @@ from app.config import Config
 # app = create_app()
 
 # with app.app_context():
-#     reqs = Request.query.all()
+#     messages = Message.query.filter_by(is_archived=False).all()
 
-#     for req in reqs:
-#         print(req.id)
+#     for message in messages:
+#         print(message.id)
 
 # config = Config()
 
