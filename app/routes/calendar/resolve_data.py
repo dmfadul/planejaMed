@@ -38,7 +38,7 @@ def resolve_data(action, info_dict):
 
     # Check request's action and call the respective function
     if action == "include":
-        flag = Request.inclusion(doctor, center, day, hours)
+        flag = Request.inclusion(doctor, center, day, hours, current_user)
         if isinstance(flag, str):
             return flag
         
@@ -49,7 +49,7 @@ def resolve_data(action, info_dict):
         return 0
 
     elif action == "exclude":
-        flag = Request.exclusion(doctor, center, day, hours)
+        flag = Request.exclusion(doctor, center, day, hours, current_user)
         if isinstance(flag, str):
             return flag
         

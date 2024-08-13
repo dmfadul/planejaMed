@@ -97,12 +97,12 @@ class Message(db.Model):
         try:
             if self.action == "cancel":
                 message = re.sub(r'\*.*?\*', 'Você tem uma SOLICITAÇÃO PENDENTE de ', self.content)
-                message = message.replace('-', 'dos horários: ')
-                message = message + " Aperte Cancelar para cancelar a solicitação."
+                message = re.sub(r'\+[^+]*\+', '', message)
+                message = message + ". Aperte Cancelar para cancelar a solicitação."
             elif self.action == "info":
                 answer = "autorizada" if self.request.response == 'authorized' else "negada"
                 message = re.sub(r'\*.*?\*', 'Sua SOLICITAÇÃO DE ', self.content)
-                message = message.replace('-', 'dos horários: ') + f" foi {answer}."
+                message = re.sub(r'\+[^+]*\+', '', message) + f" foi {answer}."
             else:
                 return self.content
         except Exception as e:

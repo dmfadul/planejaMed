@@ -57,15 +57,13 @@ class Request(db.Model):
         return new_request
     
     @classmethod
-    def exclusion(cls, doctor, center, day, hours):
+    def exclusion(cls, doctor, center, day, hours, requester):
         new_request = cls(
-            requester_id=doctor.id,
+            requester_id=requester.id,
             receivers_code="*",
             # requestee_code="*",
             action="exclude_appointments",
-            info = f"""*{doctor.full_name}* EXCLUSÃO -
-                    {convert_hours_to_line(hours)} no centro {center.abbreviation}
-                    no dia {day.date.strftime("%d/%m/%y")}"""
+            info = ""
         )
 
         db.session.add(new_request)
@@ -90,18 +88,25 @@ class Request(db.Model):
             new_request.appointments.append(app)
         
         db.session.commit()
+
+        if requester.id == doctor.id:
+            new_request.info = f"""*{doctor.full_name}* +solicitou+ EXCLUSÃO dos horários:
+                               {convert_hours_to_line(hours)} no centro {center.abbreviation}
+                               no dia {day.date.strftime("%d/%m/%y")}"""
+        else:
+            new_request.info = f"""*{requester.full_name}* +solicitou+ EXCLUSÃO para {doctor.full_name}
+                               nos horários:{convert_hours_to_line(hours)} no centro {center.abbreviation}
+                               no dia {day.date.strftime("%d/%m/%y")}"""
         return new_request
 
     @classmethod
-    def inclusion(cls, doctor, center, day, hours):
+    def inclusion(cls, doctor, center, day, hours, requester):
         new_request = cls(
-            requester_id=doctor.id,
+            requester_id=requester.id,
             receivers_code="*",
             # requestee_code="*",
             action="include_appointments",
-            info=f"""*{doctor.full_name}* INCLUSÃO -
-                    {convert_hours_to_line(hours)} no centro {center.abbreviation}
-                    no dia {day.date.strftime("%d/%m/%y")}"""
+            info=""
         )
 
         db.session.add(new_request)
@@ -145,6 +150,15 @@ class Request(db.Model):
                             para o horário pedido (ou parte dele)."""
         
         db.session.commit()
+
+        if requester.id == doctor.id:
+            new_request.info = f"""*{doctor.full_name}* +solicitou+ INCLUSÃO dos horários:
+                               {convert_hours_to_line(hours)} no centro {center.abbreviation}
+                               no dia {day.date.strftime("%d/%m/%y")}"""
+        else:
+            new_request.info = f"""*{requester.full_name}* +solicitou+ INCLUSÃO para {doctor.full_name}
+                               nos horários:{convert_hours_to_line(hours)} no centro {center.abbreviation}
+                               no dia {day.date.strftime("%d/%m/%y")}"""
         return new_request
     
     @classmethod
@@ -168,11 +182,11 @@ class Request(db.Model):
         db.session.add(new_request)
 
         if requester.id == donee.id:
-            new_request.info=f"""*{requester.full_name}* DOAÇÃO -
+            new_request.info=f"""*{requester.full_name}* +solicitou+ DOAÇÃO dos horários:
                                 {convert_hours_to_line(hours)} no centro {center.abbreviation}
                                 no dia {day.date.strftime("%d/%m/%y")} (DE {donor.full_name})"""
         elif requester.id == donor.id:
-            new_request.info=f"""*{requester.full_name}* DOAÇÃO -
+            new_request.info=f"""*{requester.full_name}* +solicitou+ DOAÇÃO dos horários:
                                 {convert_hours_to_line(hours)} no centro {center.abbreviation}
                                 no dia {day.date.strftime("%d/%m/%y")} (PARA {donee.full_name})"""
 
@@ -227,13 +241,13 @@ class Request(db.Model):
         db.session.add(new_request)
 
         if requester.id == doctor_1.id:
-            new_request.info = f"""*{requester.full_name}* TROCA -
+            new_request.info = f"""*{requester.full_name}* +solicitou+ TROCA dos horários:
                                 {convert_hours_to_line(hours_1)} no centro {center_1.abbreviation}
                                 no dia {day_1.date.strftime("%d/%m/%y")} para
                                 {convert_hours_to_line(hours_2)} no centro {center_2.abbreviation}
                                 no dia {day_2.date.strftime("%d/%m/%y")} com {doctor_2.full_name}"""
         elif requester.id == doctor_2.id:
-            new_request.info = f"""*{requester.full_name}* TROCA -
+            new_request.info = f"""*{requester.full_name}* +solicitou+ TROCA dos horários:
                                 {convert_hours_to_line(hours_2)} no centro {center_2.abbreviation}
                                 no dia {day_2.date.strftime("%d/%m/%y")} para
                                 {convert_hours_to_line(hours_1)} no centro {center_1.abbreviation}
@@ -338,28 +352,9 @@ class Request(db.Model):
     def message(self):
         try:
             unedit_message = self.info
-            if self.action == "include_user":
-                message = unedit_message.replace('*', "")
-        
-            if self.action == "include_appointments":
-                message = unedit_message.replace('INCLUSÃO',"solicitou INCLUSÃO dos horários:")
-                message = message.replace('*',"")
-                message = message.replace('-',"")
+            message = unedit_message.replace('*', "")
+            message = message.replace('+', "")
 
-            if self.action == "exclude_appointments":
-                message = unedit_message.replace('EXCLUSÃO', "solicitou EXCLUSÃO dos horários:")
-                message = message.replace('*', "")
-                message = message.replace('-', "")
-
-            if self.action == "donate":
-                message = unedit_message.replace('DOAÇÃO', "solicitou DOAÇÃO dos horários:")
-                message = message.replace('*', "")
-                message = message.replace('-', "")
-
-            if self.action == "exchange":
-                message = unedit_message.replace('TROCA', "solicitou TROCA dos horários:")
-                message = message.replace('*', "")
-                message = message.replace('-', "")
         except Exception as e:
             message = f"""Uma requisição apresentou erro.
             Por favor, informe ao administrador o código r-{self.id},
