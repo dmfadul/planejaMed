@@ -61,13 +61,12 @@ def create_app(config_filename=None):
 
 create_app()
 
+# TODO: add a blitzkrig to save the original of each month
+# fix x bug
 
+# make calendar faster
 # stop inactive users from being removed from existing months
 
-# TODO: add a blitzkrig to save the original of each month
-
-# improve requests messages
-# improve variables names on messages and requests
 # add check for users id on requests
 
 # TODO: CSS
@@ -95,6 +94,8 @@ create_app()
 # TODO: Replace popup by modal
 
 # POSSIBILITIES:
+# TODO: improve variables names on messages and requests
+
 # TODO: start using crm instead of id for users
 # TODO: reset password function
 # TODO: fix aesthetics/simplify css and js
