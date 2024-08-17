@@ -7,7 +7,14 @@ from app.hours_conversion import appointments_letters_key, gen_redudant_hour_lis
 from app.hours_conversion import convert_letter_to_hours
 from app.routes.calendar.gen_data import gen_days_dict
 from app.config import Config
+import app.hours_conversion as hc
 
+
+t = [7, 8, 9, 16, 17]
+# r = hc.gen_hour_range((7, 7))
+# print(hc.prepare_appointments(t))
+# print(hc.gen_redudant_hour_list(t, include_line=True))
+print(hc.gen_redudant_hour_list(t))
 
 # migration_funcs.drop_all_tables()
 # migration_funcs.add_centers()
@@ -21,11 +28,15 @@ from app.config import Config
 # app = create_app()
 
 # with app.app_context():
-#     messages = Message.query.filter_by(is_archived=False).all()
-
-#     for message in messages:
-#         print(message.id)
+#     date = datetime(2024, 8, 16)
+#     day = Day.query.filter_by(date=date).first()
+#     user = User.query.filter_by(crm=43645).first()
+    
+#     appointments = Appointment.query.filter_by(user_id=user.id, day_id=day.id).all()
+#     for app in appointments:
+#         print(app.center.abbreviation, app.hour)
 
 # config = Config()
 
 # print(config.get('maintenance_mode'))
+

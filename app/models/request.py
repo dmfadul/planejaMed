@@ -119,21 +119,9 @@ class Request(db.Model):
                 hour=hour
             ).first()
 
-            if not app:
-                app = Appointment.add_entry(
-                    user_id=doctor.id,
-                    center_id=center.id,
-                    day_id=day.id,
-                    hour=hour,
-                )
-
-                if isinstance(app, str):
-                    return app
-                
-                app.unconfirm()
-                new_request.appointments.append(app)
+            if app is None:
                 continue
-
+            
             if app.is_confirmed:
                 db.session.rollback()
                 return f"O Médico {doctor.full_name} está Ocupado no Horário Requisitado ou em Parte dele."
@@ -149,6 +137,21 @@ class Request(db.Model):
                             em {center.abbreviation} no dia {day.date}
                             para o horário pedido (ou parte dele)."""
         
+        for hour in hours:
+            app = Appointment.add_entry(
+                user_id=doctor.id,
+                center_id=center.id,
+                day_id=day.id,
+                hour=hour,
+            )
+
+            if isinstance(app, str):
+                return app
+            
+            app.unconfirm()
+            new_request.appointments.append(app)
+            continue
+
         db.session.commit()
 
         if requester.id == doctor.id:
