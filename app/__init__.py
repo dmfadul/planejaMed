@@ -62,7 +62,6 @@ def create_app(config_filename=None):
 create_app()
 
 # TODO: add a blitzkrig to save the original of each month
-# fix x bug
 
 # make calendar faster
 # stop inactive users from being removed from existing months

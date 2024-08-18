@@ -150,67 +150,17 @@ def gen_redudant_hour_list(apps, include_line=False):
     
     for letter, h_list in hours_dict.items():
         for i_dict in h_list:
+            str_time = f"{i_dict['str']:02d}:00"
+            end_time = f"{i_dict['end']+1:02d}:00" if i_dict['end'] != 23 else "00:00"
             if letter in major_hours and i_dict['total'] == 12:
-                output.append(f"{letter}: {i_dict['str']:02d}:00 - {i_dict['end']+1:02d}:00")
+                output.append(f"{letter}: {str_time} - {end_time}")
             elif letter not in major_hours and i_dict['total'] == 6:
-                output.append(f"{letter}: {i_dict['str']:02d}:00 - {i_dict['end']+1:02d}:00")
+                output.append(f"{letter}: {str_time} - {end_time}")
             else:
-                output.append(f"{letter}{i_dict['total']}: {i_dict['str']:02d}:00 - {i_dict['end']+1:02d}:00")
+                output.append(f"{letter}{i_dict['total']}: {str_time} - {end_time}")
             
     return sorted(output, key=appointments_letters_key)
-
-
-def gen_redudant_hour_list_(appointments, include_line=False):
-    """Generates a list of hours that includes both the longer periods (d, n)
-       and their subperiods (m, t, c, v). If include_line is True, the list will
-       include a string representing the period of time"""
-    if appointments == []:
-        return []
     
-    hours_map = global_vars.HOURS_MAP
-    letters, remainder = prepare_appointments(appointments)
-
-    for letter in letters:
-        if len(letter) > 1:
-            letters.extend(list(letter))
-    if 'd' in letters:
-        letters += ['m', 't']
-    if 'n' in letters:
-        letters += ['c', 'v']
-
-    letters = sorted(letters, key=appointments_letters_key)
-    lines = [f"{l}: {hours_map[l][0]:02d}:00 - {hours_map[l][1]+1:02d}:00" for l in letters]
-
-    if not remainder:
-        if not include_line:
-            return letters
-        return lines
-    
-    if max(remainder) - min(remainder) != len(remainder) - 1:
-        if not include_line:
-            return letters + [f'x{len(remainder)}']
-        return lines + [f"x{len(remainder)}: {remainder[0]:02d}:00 - {remainder[-1]+1:02d}:00"]
-    
-    for letter, hour in list(hours_map.items())[2:]:
-        hour_list = gen_hour_range(hour)
-
-        if set(appointments).issubset(set(hour_list)):
-            lt = f"{letter}{len([app for app in appointments if app in hour_list])}"
-            letters.append(lt)
-            lines.append(f"{lt}: {appointments[0]:02d}:00 - {appointments[-1]+1:02d}:00")
-
-        elif remainder and set(remainder).issubset(set(hour_list)):
-            lt = f"{letter}{len([app for app in remainder if app in hour_list])}"
-            letters.append(lt)
-            lines.append(f"{lt}: {remainder[0]:02d}:00 - {remainder[-1]+1:02d}:00")
-
-    letters = sorted(letters, key=appointments_letters_key)
-
-    if not include_line:
-        return letters
-
-    return sorted(lines, key=appointments_letters_key)
-        
 
 def convert_to_letter(appointments):
     """converts a list of appointments to a string of letters
