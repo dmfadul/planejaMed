@@ -19,6 +19,8 @@ HOURS_MAP = {
             #  'tn': (AFTERNOON_START, VAMPIRE_END),
              }
 
+MAJOR_HOURS = ['d', 'n', 'dc', 'dn']
+
 HOURS_KEY = list(range(MORNING_START, 24)) + list(range(VAMPIRE_END + 1))
 
 NIGHT_HOURS = list(range(CINDERELLA_START, 24)) + list(range(VAMPIRE_END + 1))

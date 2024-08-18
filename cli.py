@@ -1,4 +1,4 @@
-import migration_funcs
+# import migration_funcs
 from app.models import User, Center, Month, Appointment, Day, Request, Message
 from app import create_app, db
 from app.routes.dataview.resolve_data import convert_hours
@@ -10,11 +10,16 @@ from app.config import Config
 import app.hours_conversion as hc
 
 
-t = [7, 8, 9, 16, 17]
+t = [7, 8, 9,10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
 # r = hc.gen_hour_range((7, 7))
 # print(hc.prepare_appointments(t))
 # print(hc.gen_redudant_hour_list(t, include_line=True))
+
 print(hc.gen_redudant_hour_list(t))
+print(hc.gen_redudant_hour_list(t, include_line=True))
+print(hc.gen_redudant_hour_list_(t))
+print(hc.gen_redudant_hour_list_(t, include_line=True))
+
 
 # migration_funcs.drop_all_tables()
 # migration_funcs.add_centers()

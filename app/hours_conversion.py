@@ -78,7 +78,89 @@ def gen_hour_range(hours):
         return [h for h in range(hours[0], 24)] + [h for h in range(hours[1]+1)]
 
 
-def gen_redudant_hour_list(appointments, include_line=False):
+def gen_redudant_hour_list(apps, include_line=False):
+    """Generates a list of hours that includes both the longer periods (d, n)
+       and their subperiods (m, t, c, v). If include_line is True, the list will
+       include a string representing the period of time"""
+    
+    if not apps:
+        return []
+    
+    major_hours = global_vars.MAJOR_HOURS
+    hours_map = {k: gen_hour_range(v) for k, v in global_vars.HOURS_MAP.items() if k not in major_hours}
+
+    hours_dict = {letter: [] for letter in hours_map.keys()}
+
+    for letter, hour_list in hours_map.items():
+        inner_dict = None
+        for i, app in enumerate(apps):
+            if app not in hour_list:
+                continue
+
+            if inner_dict is None:
+                inner_dict = {'str': app, 'end': app, 'total': 1}
+            elif app == inner_dict['end'] + 1 or (app == 0 and inner_dict['end'] == 23):
+                inner_dict['end'] = app
+                inner_dict['total'] += 1
+            else:
+                hours_dict[letter].append(inner_dict)
+                inner_dict = {'str': app, 'end': app, 'total': 1}
+        
+        if inner_dict:
+            hours_dict[letter].append(inner_dict)
+
+    hours_dict = {k:v for k, v in hours_dict.items() if v}
+
+    if hours_dict.get('m') and hours_dict.get('t'):
+        if (len(hours_dict['m']) == 1 and len(hours_dict['t'])) == 1:
+            if hours_dict['m'][0]['end'] + 1 == hours_dict['t'][0]['str']:
+                inner_dict = {'str': hours_dict['m'][0]['str'],
+                              'end': hours_dict['t'][0]['end'],
+                              'total': hours_dict['m'][0]['total'] + hours_dict['t'][0]['total']}
+                hours_dict['d'] = [inner_dict]
+
+    if hours_dict.get('c') and hours_dict.get('v'):
+        if (len(hours_dict['c']) == 1 and len(hours_dict['v'])) == 1:
+            if hours_dict['c'][0]['end'] + 1 == hours_dict['v'][0]['str']:
+                inner_dict = {'str': hours_dict['c'][0]['str'],
+                              'end': hours_dict['v'][0]['end'],
+                              'total': hours_dict['c'][0]['total'] + hours_dict['v'][0]['total']}
+                hours_dict['n'] = [inner_dict]
+                
+    if hours_dict.get('d') and hours_dict.get('n'):
+        if (len(hours_dict['d']) == 1 and len(hours_dict['n'])) == 1:
+            if hours_dict['d'][0]['end'] + 1 == hours_dict['n'][0]['str']:
+                inner_dict = {'str': hours_dict['d'][0]['str'],
+                              'end': hours_dict['n'][0]['end'],
+                              'total': hours_dict['d'][0]['total'] + hours_dict['n'][0]['total']}
+                hours_dict['dn'] = [inner_dict]
+
+    output = []
+    if not include_line:
+        for letter, h_list in hours_dict.items():
+            for i_dict in h_list:
+                if letter in major_hours and i_dict['total'] == 12:
+                    output.append(letter)
+                elif letter not in major_hours and i_dict['total'] == 6:
+                    output.append(letter)
+                else:
+                    output.append(f"{letter}{i_dict['total']}")
+        return sorted(output, key=appointments_letters_key)
+
+    
+    for letter, h_list in hours_dict.items():
+        for i_dict in h_list:
+            if letter in major_hours and i_dict['total'] == 12:
+                output.append(f"{letter}: {i_dict['str']:02d}:00 - {i_dict['end']+1:02d}:00")
+            elif letter not in major_hours and i_dict['total'] == 6:
+                output.append(f"{letter}: {i_dict['str']:02d}:00 - {i_dict['end']+1:02d}:00")
+            else:
+                output.append(f"{letter}{i_dict['total']}: {i_dict['str']:02d}:00 - {i_dict['end']+1:02d}:00")
+            
+    return sorted(output, key=appointments_letters_key)
+
+
+def gen_redudant_hour_list_(appointments, include_line=False):
     """Generates a list of hours that includes both the longer periods (d, n)
        and their subperiods (m, t, c, v). If include_line is True, the list will
        include a string representing the period of time"""
