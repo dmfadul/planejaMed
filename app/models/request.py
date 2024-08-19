@@ -123,7 +123,8 @@ class Request(db.Model):
             
             if app.is_confirmed:
                 db.session.rollback()
-                return f"O Médico {doctor.full_name} está Ocupado no Horário Requisitado ou em Parte dele."
+                return f"""Conflito - {doctor.full_name} já tem esse horário
+                        (ou parte dele) no centro {app.center.abbreviation}"""
             
             if app.has_open_requests:
                 db.session.rollback()
