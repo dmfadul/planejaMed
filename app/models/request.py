@@ -115,7 +115,6 @@ class Request(db.Model):
             app = Appointment.query.filter_by(
                 day_id=day.id,
                 user_id=doctor.id,
-                center_id=center.id,
                 hour=hour
             ).first()
 

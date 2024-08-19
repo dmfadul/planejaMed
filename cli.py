@@ -10,36 +10,36 @@ from app.config import Config
 import app.hours_conversion as hc
 
 
-test_lists = [
-    [0, 1, 2, 3, 4, 5],               # Full "m" period
-    [6, 7, 8, 9, 10, 11],             # Full "t" period
-    [12, 13, 14, 15, 16, 17],         # Full "c" period
-    [18, 19, 20, 21, 22, 23],         # Full "v" period
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],   # "m" and partial "t"
-    [12, 13, 14, 15, 16, 17, 18],     # "c" and partial "v"
-    [0, 23],                          # Edge case: Start and end of the day
-    [11, 12, 13],                     # Transition between "t" and "c"
-    [10, 11, 12, 13, 14],             # "t" and partial "c"
-    [6, 7, 8],                        # Partial "t"
-    [18, 19, 20],                     # Partial "v"
-    [0, 1, 22, 23],                   # Edge hours from "m" and "v"
-    [6, 8, 10, 12, 14],               # Non-contiguous hours across "t" and "c"
-    [0, 12, 23],                      # Start, middle, and end of the day
-    [2, 3, 4, 18, 19, 20],            # "m" and partial "v"
-    [0, 1, 2, 21, 22, 23],            # "m" and partial "v" with gap
-    [5, 6, 7, 8, 9, 10, 11, 12, 13],  # Overlapping "m", "t", and "c"
-    [10, 11, 12, 13, 14, 15, 16],     # "t" and partial "c" into "v"
-    [3, 4, 5, 6, 7, 8, 9, 10],        # Late "m" and early "t"
-    [20, 21, 23, 0, 1],           # Night and early morning transition
-]
+# test_lists = [
+#     [0, 1, 2, 3, 4, 5],               # Full "m" period
+#     [6, 7, 8, 9, 10, 11],             # Full "t" period
+#     [12, 13, 14, 15, 16, 17],         # Full "c" period
+#     [18, 19, 20, 21, 22, 23],         # Full "v" period
+#     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],   # "m" and partial "t"
+#     [12, 13, 14, 15, 16, 17, 18],     # "c" and partial "v"
+#     [0, 23],                          # Edge case: Start and end of the day
+#     [11, 12, 13],                     # Transition between "t" and "c"
+#     [10, 11, 12, 13, 14],             # "t" and partial "c"
+#     [6, 7, 8],                        # Partial "t"
+#     [18, 19, 20],                     # Partial "v"
+#     [0, 1, 22, 23],                   # Edge hours from "m" and "v"
+#     [6, 8, 10, 12, 14],               # Non-contiguous hours across "t" and "c"
+#     [0, 12, 23],                      # Start, middle, and end of the day
+#     [2, 3, 4, 18, 19, 20],            # "m" and partial "v"
+#     [0, 1, 2, 21, 22, 23],            # "m" and partial "v" with gap
+#     [5, 6, 7, 8, 9, 10, 11, 12, 13],  # Overlapping "m", "t", and "c"
+#     [10, 11, 12, 13, 14, 15, 16],     # "t" and partial "c" into "v"
+#     [3, 4, 5, 6, 7, 8, 9, 10],        # Late "m" and early "t"
+#     [20, 21, 23, 0, 1],           # Night and early morning transition
+# ]
 
-for l in test_lists:
-    print(l)
-    print(hc.gen_redudant_hour_list(l))
-    print(hc.gen_redudant_hour_list(l, include_line=True))
-    print(hc.gen_redudant_hour_list_(l))
-    print(hc.gen_redudant_hour_list_(l, include_line=True))
-    print("\n")
+# for l in test_lists:
+#     print(l)
+#     print(hc.gen_redudant_hour_list(l))
+#     print(hc.gen_redudant_hour_list(l, include_line=True))
+#     print(hc.gen_redudant_hour_list_(l))
+#     print(hc.gen_redudant_hour_list_(l, include_line=True))
+#     print("\n")
 
 # migration_funcs.drop_all_tables()
 # migration_funcs.add_centers()
