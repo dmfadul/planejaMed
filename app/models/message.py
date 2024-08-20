@@ -64,7 +64,7 @@ class Message(db.Model):
         db.session.commit()
         
         if new_message.request.action == "include_user":
-            new_message.content = "Sua solicitação de entrada no aplicativo foi autorizada."
+            new_message.content = "Sua solicitação de entrada no aplicativo"
         else:
             new_message.content = new_message.request.info
         db.session.commit()
