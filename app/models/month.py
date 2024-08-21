@@ -1,10 +1,12 @@
+import os
+import json
 from app import db
+from app.models.log import Log
+import app.global_vars as global_vars
 from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime, timedelta
 from .associations import months_users_association
-from app.models.log import Log
-import app.global_vars as global_vars
 
 
 class Month(db.Model):
@@ -276,3 +278,23 @@ class Month(db.Model):
 
         db.session.commit()
         return 0
+    
+    def save_original(self):
+        original_dict = {
+            'number': self.number,
+            'year': self.year,
+            'leader': self.leader,
+            'holidays': [day.date.day for day in self.days if day.is_holiday],
+            'data': {}
+        }
+        for doctor in sorted(self.users, key=lambda x: x.full_name):
+            if not doctor.is_active or not doctor.is_visible:
+                continue
+            
+            original_dict['data'][doctor.crm] = doctor.center_dict
+
+        with open(f"instance/originals/original_{self.number}_{self.year}.json", 'w') as f:
+            json.dump(original_dict, f, indent=2)
+
+        return 0
+    

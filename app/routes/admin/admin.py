@@ -78,6 +78,12 @@ def create_month():
     if flag:
         flash(f"Os usuários do mês {next_month_number}/{next_month_year} não foram corrigidos", 'danger')
         return redirect(url_for('admin.admin'))
+    
+    flag = new_month.save_original()
+    if flag:
+        flash(f"O original do mês {next_month_number}/{next_month_year} não foi salvo", 'danger')
+        return redirect(url_for('admin.admin'))
+    flash(f"O original do mês {next_month_number}/{next_month_year} foi salvo", 'success')
 
     return redirect(url_for('admin.admin'))
 
