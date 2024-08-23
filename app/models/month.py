@@ -284,9 +284,12 @@ class Month(db.Model):
             'number': self.number,
             'year': self.year,
             'leader': self.leader,
+            'week_days': [global_vars.DIAS_SEMANA[d.weekday()][:3] for d in self.dates_row],
+            'month_days': [d.day for d in self.dates_row],
             'holidays': [day.date.day for day in self.days if day.is_holiday],
             'data': {}
         }
+
         for doctor in sorted(self.users, key=lambda x: x.full_name):
             if not doctor.is_active or not doctor.is_visible:
                 continue

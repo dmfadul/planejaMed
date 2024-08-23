@@ -61,8 +61,10 @@ def create_app(config_filename=None):
 
 create_app()
 
-# TODO: add a blitzkrig to save the original of each month
-# stop inactive users from being removed from existing months
+# TODO: add a autosave (to original) for added holidays
+# TODO: change users date of entry
+# TODO: create vacation testing function 
+# test if inactive users are being removed from existing months
 
 # make calendar faster
 # add check for users id on requests
