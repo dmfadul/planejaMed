@@ -56,17 +56,19 @@ def resolve_request():
     if response in ['yes', 'no']:
         req = Request.query.get(req_id)
         authorized = response == 'yes'
-        flag = req.resolve(current_user.id, authorized)
+        flag, status = req.resolve(current_user.id, authorized)
     elif response == 'dismiss':
         message = Message.query.get(req_id)
         flag = message.dismiss()
+        status = 'success'
     elif response == 'cancel':
         message = Message.query.get(req_id)
         flag = message.cancel()
+        status = 'success'
     else:
-        flag = "error"
+        flag, status = "error", 'danger'
 
-    flash(flag, 'success')
+    flash(flag, status)
 
     return jsonify({"status": "success", 'message': 'Requests updated'})
     

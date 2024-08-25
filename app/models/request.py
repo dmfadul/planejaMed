@@ -396,7 +396,7 @@ class Request(db.Model):
                     app.delete_entry(del_requests=False)
 
             self.respond(responder_id=responder_id, response="denied")
-            return "A solicitação foi Negada"
+            return "A solicitação foi Negada", 'success'
         
         if self.action == 'include_user':
             new_user = User.query.get(self.requester_id)
@@ -404,24 +404,42 @@ class Request(db.Model):
             new_user.make_visible()
 
             self.respond(responder_id=responder_id, response='authorized')
-            return f"O usuário {new_user.full_name} foi incluído com sucesso"
+            return f"O usuário {new_user.full_name} foi incluído com sucesso", 'success'
 
         if self.action == "include_appointments":
             for app in self.appointments:
                 app.confirm()
 
             self.respond(responder_id=responder_id, response='authorized')
-            return "Os horários foram incluídos com sucesso"
+            return "Os horários foram incluídos com sucesso", 'success'
         
         if self.action == "exclude_appointments":
             for app in self.appointments:   
                 app.delete_entry(del_requests=False)
 
             self.respond(responder_id=responder_id, response='authorized')
-            return "Os horários foram excluídos com sucesso"
+            return "Os horários foram excluídos com sucesso", 'success'
         
         if self.action == "donate":
             
+            for app in self.appointments:
+                if app.user_id == self.requester_id:
+                    doctor_that_receives = int(self.receivers_code)
+                else:
+                    doctor_that_receives = self.requester_id
+
+                test_app = Appointment.query.filter_by(
+                    user_id=doctor_that_receives,
+                    day_id=app.day_id,
+                    hour=app.hour,
+                    is_confirmed=True
+                ).first()
+
+                if test_app:
+                    self.delete()
+                    return f"""Conflito - {User.query.get(doctor_that_receives).full_name} já tem esse horário
+                            (ou parte dele) no centro {test_app.center.abbreviation}""", 'danger'
+
             for app in self.appointments:
                 if app.user_id == self.requester_id:
                     app.change_doctor(int(self.receivers_code))
@@ -430,7 +448,7 @@ class Request(db.Model):
                     app.change_doctor(self.requester_id)
 
             self.respond(responder_id=responder_id, response='authorized')
-            return "Os horários foram doados com sucesso"
+            return "Os horários foram doados com sucesso", 'success'
 
         if self.action == "exchange":
             # the requester is doctor_1, the one who initiated the exchange
@@ -444,10 +462,10 @@ class Request(db.Model):
                     app.change_doctor(self.requester_id)
                 else:
                     db.session.rollback()
-                    return "Erro ao trocar horários"
+                    return "Erro ao trocar horários", 'danger'
             
             self.respond(responder_id=responder_id, response='authorized')
-            return "Os horários foram trocados com sucesso"
+            return "Os horários foram trocados com sucesso", 'success'
 
-        return "ação não reconhecida"
+        return "ação não reconhecida", 'danger'
         
