@@ -40,7 +40,7 @@ def create_app(config_filename=None):
     @app.context_processor
     def inject_user():
         from flask_login import current_user
-        user_name = current_user.full_name if current_user.is_authenticated else ''
+        user_name = current_user.abbreviated_name if current_user.is_authenticated else ''
         
         return dict(user_name=user_name)
     
@@ -61,6 +61,7 @@ def create_app(config_filename=None):
 
 create_app()
 
+# TODO: apply the bug fix from donation to exchange
 # TODO: add a autosave (to original) for added holidays
 # TODO: change users date of entry
 # TODO: create vacation testing function 
