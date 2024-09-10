@@ -2,17 +2,31 @@
 from app.models import User, Center, Month, Appointment, Day, Request, Message
 from app import create_app, db
 from app.routes.dataview.resolve_data import convert_hours
-from datetime import datetime
 from app.hours_conversion import appointments_letters_key, gen_redudant_hour_list
 from app.hours_conversion import convert_letter_to_hours
 from app.routes.calendar.gen_data import gen_days_dict
 from app.config import Config
 import app.hours_conversion as hc
+from datetime import datetime
+import json
 
+app = create_app()
+with app.app_context():
 
-# app = create_app()
+    with open("/home/david/Downloads/dicionario.json", "r") as f:
+        data = json.load(f)
 
-# with app.app_context():
+    for key in data.keys():
+
+        user = User.query.filter_by(crm=key).first()
+        date = datetime.strptime(data[key], "%Y-%m-%d")
+
+        if user is None:
+            print(key)
+        # print(user, date)
+        # user.date_joined = date
+        # db.session.commit()
+
     # doctor = User.query.filter_by(crm=42217).first()
     # print(doctor, doctor.id)
     # requests = Request.query.filter_by(id=78).all()

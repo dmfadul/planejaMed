@@ -5,6 +5,8 @@ import app.global_vars as global_vars
 from app.models import Center, Month, User
 from app.routes.calendar.gen_data import gen_doctors_dict
 from app.config import Config
+import json
+import os
 
 admin_bp = Blueprint(
                     'admin',
@@ -208,6 +210,18 @@ def create_center():
 
     # flag = Center.create(abbreviation, name)
     flash(f"Foi criado o centro {abbreviation} - {name}")
+
+    return redirect(url_for('admin.admin'))
+
+
+@admin_bp.route('/admin/calculate-vacations', methods=['POST', 'GET'])
+@login_required
+def calculate_vacations():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    print(request.form)
+
 
     return redirect(url_for('admin.admin'))
 
