@@ -5,6 +5,7 @@ import app.global_vars as global_vars
 from app.models import Center, Month, User
 from app.routes.calendar.gen_data import gen_doctors_dict
 from app.config import Config
+from datetime import datetime
 import json
 import os
 
@@ -220,8 +221,43 @@ def calculate_vacations():
     if not current_user.is_admin:
         return "Unauthorized", 401
 
-    print(request.form)
+    crm = request.form.get('crm')
+    start_date_str = request.form.get('start_date')
+    end_date_str = request.form.get('end_date')
+    
+    doctor = User.query.filter_by(crm=crm).first()
+    if not doctor:
+        return "Doctor not found", 404
+    
+    start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+    end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
 
+    months = []
+
+    curr_year, curr_month = start_date.year, start_date.month
+
+    while (curr_year, curr_month) <= (end_date.year, end_date.month):
+        months.append((curr_year, curr_month))
+
+        curr_month += 1
+        if curr_month > 12:
+            curr_month = 1
+            curr_year += 1
+
+    if global_vars.STR_DAY <= start_date.day <= 31:
+        months.pop(0)
+
+    if global_vars.STR_DAY <= end_date.day <= 31:
+        extra_month = start_date.month + 1
+        if extra_month == 13:
+            extra_month = 1
+            extra_year = start_date.year + 1
+        else:
+            extra_year = start_date.year
+        months.append((extra_year, extra_month))   
+
+    for month in months:
+        print('m', month)
 
     return redirect(url_for('admin.admin'))
 
