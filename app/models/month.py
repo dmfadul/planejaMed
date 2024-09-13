@@ -301,3 +301,15 @@ class Month(db.Model):
 
         return 0
     
+    def get_original_dict(self):
+        file_name = f"original_{self.number}_{self.year}.json"
+        print(self.number, self.year)
+       
+        if file_name not in os.listdir('instance/originals'):
+            return f"O mês {self.number}/{self.year} não tem original registrado\n"
+            
+        with open(f"instance/originals/{file_name}", 'r') as f:
+            original_dict = json.load(f)
+        
+        return original_dict
+        

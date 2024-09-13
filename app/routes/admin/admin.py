@@ -238,16 +238,12 @@ def calculate_vacations():
     months = utils.get_months(start_date, end_date)
 
     output = ""
-    for month in months:
-        file_name = f"original_{month[1]}_{month[0]}.json"
-       
-        if file_name not in os.listdir('instance/originals'):
-            output += f"O mês {month[1]}/{month[0]} não tem original registrado\n"
-            continue
+    for year_month in months:
+        month = Month.query.filter_by(number=year_month[1], year=year_month[0]).first()
+        if not month:
+            return "Month not found", 404
 
-        with open(f"instance/originals/{file_name}", 'r') as f:
-            original_dict = json.load(f)
-        
+        original_dict = month.get_original_dict()
         doctors_dict = original_dict.get('data').get(str(doctor.crm))
 
         if not doctors_dict:
