@@ -218,6 +218,9 @@ def create_center():
 @admin_bp.route('/admin/calculate-vacations', methods=['POST', 'GET'])
 @login_required
 def calculate_vacations():
+    import app.routes.admin.utils as utils
+    from app.hours_conversion import convert_hours_to_line
+
     if not current_user.is_admin:
         return "Unauthorized", 401
 
@@ -232,34 +235,31 @@ def calculate_vacations():
     start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
     end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
 
-    months = []
+    months = utils.get_months(start_date, end_date)
 
-    curr_year, curr_month = start_date.year, start_date.month
-
-    while (curr_year, curr_month) <= (end_date.year, end_date.month):
-        months.append((curr_year, curr_month))
-
-        curr_month += 1
-        if curr_month > 12:
-            curr_month = 1
-            curr_year += 1
-
-    if global_vars.STR_DAY <= start_date.day <= 31:
-        months.pop(0)
-
-    if global_vars.STR_DAY <= end_date.day <= 31:
-        extra_month = start_date.month + 1
-        if extra_month == 13:
-            extra_month = 1
-            extra_year = start_date.year + 1
-        else:
-            extra_year = start_date.year
-        months.append((extra_year, extra_month))   
-
+    output = ""
     for month in months:
-        print('m', month)
+        file_name = f"original_{month[1]}_{month[0]}.json"
+       
+        if file_name not in os.listdir('instance/originals'):
+            output += f"O mês {month[1]}/{month[0]} não tem original registrado\n"
+            continue
 
-    return redirect(url_for('admin.admin'))
+        with open(f"instance/originals/{file_name}", 'r') as f:
+            original_dict = json.load(f)
+        
+        doctors_dict = original_dict.get('data').get(str(doctor.crm))
+
+        if not doctors_dict:
+            output += f"O médico {doctor.full_name} não tem horas no original do mês {month[1]}/{month[0]}\n"
+            continue
+
+        for center, value in doctors_dict.items():
+            for day, hours in value.items():
+                output += f"Centro {center} - Dia {day} - {convert_hours_to_line(hours)}\n"
+
+    return output.replace('\n', '<br>')
+    # return redirect(url_for('admin.admin'))
 
 
 @admin_bp.route('/admin/toggle-maintenance', methods=['POST', 'GET'])
