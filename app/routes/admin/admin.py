@@ -244,6 +244,10 @@ def calculate_vacations():
             return "Month not found", 404
 
         original_dict = month.get_original_dict()
+        if isinstance(original_dict, str):
+            output += original_dict
+            continue
+
         doctors_dict = original_dict.get('data').get(str(doctor.crm))
 
         if not doctors_dict:
