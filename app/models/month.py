@@ -303,7 +303,6 @@ class Month(db.Model):
     
     def get_original_dict(self):
         file_name = f"original_{self.number}_{self.year}.json"
-        print(self.number, self.year)
        
         if file_name not in os.listdir('instance/originals'):
             return f"O mês {self.number}/{self.year} não tem original registrado\n"

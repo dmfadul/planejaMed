@@ -33,6 +33,8 @@ class User(db.Model, UserMixin):
 
     is_visible = db.Column(db.Boolean, default=False)
     is_active = db.Column(db.Boolean, default=False)
+
+    pre_approved_vacation = db.Column(db.Boolean, default=False)
     
     password = db.Column(db.Text, nullable=False)
 
