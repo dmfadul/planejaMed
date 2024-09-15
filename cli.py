@@ -10,22 +10,24 @@ import app.hours_conversion as hc
 from datetime import datetime
 import json
 
-app = create_app()
-with app.app_context():
+# app = create_app()
+# with app.app_context():
 
-    with open("/home/david/Downloads/dicionario.json", "r") as f:
-        data = json.load(f)
+#     with open("/home/david/Downloads/dicionario.json", "r") as f:
+#         data = json.load(f)
 
-    for key in data.keys():
+#     for key in data.keys():
 
-        user = User.query.filter_by(crm=key).first()
-        date = datetime.strptime(data[key], "%Y-%m-%d")
+#         user = User.query.filter_by(crm=key).first()
+#         date = datetime.strptime(data[key], "%Y-%m-%d")
 
-        if user is None:
-            print(key)
-        # print(user, date)
-        # user.date_joined = date
-        # db.session.commit()
+#         if user is None:
+#             print(key)
+#             continue
+
+#         print(user, date)
+#         user.date_joined = date
+#         db.session.commit()
 
     # doctor = User.query.filter_by(crm=42217).first()
     # print(doctor, doctor.id)
