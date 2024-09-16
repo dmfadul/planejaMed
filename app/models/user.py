@@ -205,30 +205,7 @@ class User(db.Model, UserMixin):
             app_dict[center_abbr][app_date].append(app.hour)
 
         return app_dict
-    
-    @property
-    def center_dict(self):
-        from app.models import Month
-
-        current_month = Month.get_current()
-        appointments = [app for app in self.appointments if app.day.month_id == current_month.id]
-        appointments = [app for app in appointments if app.is_confirmed]
-
-        app_dict = {}
-        for app in appointments:
-            center_abbr = app.center.abbreviation
-            app_day = app.day.date.day
-            
-            if center_abbr not in app_dict:
-                app_dict[center_abbr] = {}
-            
-            if app_day not in app_dict[center_abbr]:
-                app_dict[center_abbr][app_day] = []
-            
-            app_dict[center_abbr][app_day].append(app.hour)
-
-        return app_dict
-    
+       
     @property
     def schedule(self):
         from app.hours_conversion import split_hours, convert_hours_to_line     
@@ -395,3 +372,25 @@ class User(db.Model, UserMixin):
 
         return 0
     
+    def gen_center_dict(self, month_id=None):
+        from app.models import Month
+
+        month_to_use = Month.get_current() if month_id is None else Month.query.filter_by(id=month_id).first()
+
+        appointments = [app for app in self.appointments if app.day.month_id == month_to_use.id]
+        appointments = [app for app in appointments if app.is_confirmed]
+
+        app_dict = {}
+        for app in appointments:
+            center_abbr = app.center.abbreviation
+            app_day = app.day.date.day
+            
+            if center_abbr not in app_dict:
+                app_dict[center_abbr] = {}
+            
+            if app_day not in app_dict[center_abbr]:
+                app_dict[center_abbr][app_day] = []
+            
+            app_dict[center_abbr][app_day].append(app.hour)
+
+        return app_dict

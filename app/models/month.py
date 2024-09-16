@@ -294,7 +294,7 @@ class Month(db.Model):
             if not doctor.is_active or not doctor.is_visible:
                 continue
             
-            original_dict['data'][doctor.crm] = doctor.center_dict
+            original_dict['data'][doctor.crm] = doctor.gen_center_dict(month_id=self.id)
 
         with open(f"instance/originals/original_{self.number}_{self.year}.json", 'w') as f:
             json.dump(original_dict, f, indent=2)

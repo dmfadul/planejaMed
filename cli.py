@@ -12,7 +12,6 @@ import json
 
 # app = create_app()
 # with app.app_context():
-
 #     with open("/home/david/Downloads/dicionario.json", "r") as f:
 #         data = json.load(f)
 
