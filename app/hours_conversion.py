@@ -222,6 +222,8 @@ def convert_letter_to_hours(letter):
 def convert_hours_to_line(hour_list):
     if not hour_list:
         return ""
+    hour_list = sorted(hour_list, key=appointments_key)
+    
     starting_hour = hour_list[0]
     ending_hour = hour_list[-1]+1 if hour_list[-1] != 23 else 0
     return f"{starting_hour:02d}:00 - {ending_hour:02d}:00"
@@ -268,3 +270,16 @@ def convert_hours(hour_list):
         return "Horários Inválidos - A hora de Fim Passa para o Dia Seguinte"
 
     return hours
+
+
+def sum_hours(hour_list, weekday):
+    """sums the hours in a dict of routine and plaintemps"""
+    if weekday.lower() in ['sabado', 'domingo']:
+        return {"routine": 0, "plaintemps": sum([1 for h in hour_list])}
+    
+    night_hours = gen_hour_range(global_vars.HOURS_MAP.get('n'))
+
+    routine_hours = sum([1 for h in hour_list if h not in night_hours])
+    plaintemp_hours = sum([1 for h in hour_list if h in night_hours])
+
+    return {"routine": routine_hours, "plaintemps": plaintemp_hours}

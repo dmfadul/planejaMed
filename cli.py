@@ -10,8 +10,14 @@ import app.hours_conversion as hc
 from datetime import datetime
 import json
 
-# app = create_app()
-# with app.app_context():
+app = create_app()
+with app.app_context():
+    doctor = User.query.filter_by(crm=26704).first()
+    month = Month.get_current()
+
+    print(doctor.gen_center_dict(month_id=month.id))
+
+
 #     with open("/home/david/Downloads/dicionario.json", "r") as f:
 #         data = json.load(f)
 

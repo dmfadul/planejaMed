@@ -219,7 +219,7 @@ def create_center():
 @login_required
 def calculate_vacations():
     import app.routes.admin.utils as utils
-    from app.hours_conversion import convert_hours_to_line
+    from app.hours_conversion import convert_hours_to_line, sum_hours
 
     if not current_user.is_admin:
         return "Unauthorized", 401
@@ -253,10 +253,33 @@ def calculate_vacations():
         if not doctors_dict:
             output += f"O médico {doctor.full_name} não tem horas no original do mês {month[1]}/{month[0]}\n"
             continue
-
+        
+        print(doctors_dict)
+        output_lst = []
         for center, value in doctors_dict.items():
-            for day, hours in value.items():
-                output += f"Centro {center} - Dia {day} - {convert_hours_to_line(hours)}\n"
+            for day_str, hours in value.items():
+                day = month.get_day(day_str)
+                if not start_date.date() <= day.date <= end_date.date():
+                    continue
+
+                weekday = global_vars.DIAS_SEMANA[day.date.weekday()]
+                output_lst.append((day, weekday, hours, center))
+
+        output_lst = sorted(output_lst, key=lambda x: x[0].date)
+
+        total_p, total_r = 0, 0
+        for d, wday, hrs, c in output_lst:
+            hours_dict = sum_hours(hrs, wday)
+            total_p += hours_dict['plaintemps']
+            total_r += hours_dict['routine']
+
+            date_str = d.date.strftime('%d/%m')
+            hours = convert_hours_to_line(hrs)
+
+            output += f"Dia {date_str} - {wday} - {hours} - {c}\n"
+
+        output += "\n"
+        output += f"Total de plantões: {total_p} horas - Total de rotinas: {total_r} horas \n"
 
     return output.replace('\n', '<br>')
     # return redirect(url_for('admin.admin'))
