@@ -63,7 +63,6 @@ create_app()
 
 # TODO: apply the bug fix from donation to exchange
 # TODO: add a autosave (to original) for added holidays
-# TODO: change users date of entry
 # TODO: create vacation testing function 
 # test if inactive users are being removed from existing months
 
