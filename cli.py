@@ -10,41 +10,46 @@ import app.hours_conversion as hc
 from datetime import datetime
 import json
 
+
+vacs_crm = [
+    26704,
+    34085,
+    28107,
+    10880,
+    15812,
+    11967,
+    24250,
+    31051,
+    23301,
+    35636,
+    28327,
+    7804,
+    33198,
+    5078
+]
+
 app = create_app()
 with app.app_context():
-    doctor = User.query.filter_by(crm=26704).first()
-    month = Month.get_current()
+    with open("/home/david/Downloads/dicionario.json", "r") as f:
+        data = json.load(f)
 
-    print(doctor.gen_center_dict(month_id=month.id))
+    for key in data.keys():
+        user = User.query.filter_by(crm=key).first()
+        date = datetime.strptime(data[key], "%Y-%m-%d")
 
+        if user is None:
+            print(key)
+            continue
 
-#     with open("/home/david/Downloads/dicionario.json", "r") as f:
-#         data = json.load(f)
+        print(user, date)
+        user.date_joined = date
+        db.session.commit()
 
-#     for key in data.keys():
+        if key in vacs_crm:
+            pre_approved_vacation = True
+            db.session.commit()
 
-#         user = User.query.filter_by(crm=key).first()
-#         date = datetime.strptime(data[key], "%Y-%m-%d")
-
-#         if user is None:
-#             print(key)
-#             continue
-
-#         print(user, date)
-#         user.date_joined = date
-#         db.session.commit()
-
-    # doctor = User.query.filter_by(crm=42217).first()
-    # print(doctor, doctor.id)
-    # requests = Request.query.filter_by(id=78).all()
-
-    # for req in requests:
-    #     print(req, req.id)
-    #     print(req.creation_date)
-    #     print(req.response)
-    #     print(req.response_date)
-    #     print(req.responder_id)
-    
+  
 
 # migration_funcs.drop_all_tables()
 # migration_funcs.add_centers()

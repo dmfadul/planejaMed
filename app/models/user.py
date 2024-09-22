@@ -46,6 +46,7 @@ class User(db.Model, UserMixin):
 
     messages_sent = db.relationship('Message', foreign_keys='Message.sender_id', back_populates='sender', lazy=True)
     logs = db.relationship('Log', back_populates='user', lazy=True)
+    vacations = db.relationship('Vacation', back_populates='user', lazy=True)
 
     months = relationship(
         'Month',
