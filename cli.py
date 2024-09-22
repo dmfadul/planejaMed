@@ -28,26 +28,18 @@ vacs_crm = [
     5078
 ]
 
-app = create_app()
-with app.app_context():
-    with open("/home/david/Downloads/dicionario.json", "r") as f:
-        data = json.load(f)
-
-    for key in data.keys():
-        user = User.query.filter_by(crm=key).first()
-        date = datetime.strptime(data[key], "%Y-%m-%d")
-
-        if user is None:
-            print(key)
-            continue
-
-        print(user, date)
-        user.date_joined = date
-        db.session.commit()
-
-        if key in vacs_crm:
-            pre_approved_vacation = True
-            db.session.commit()
+# app = create_app()
+# with app.app_context():
+#     users = User.query.all()
+#     for user in users:
+#         if user.crm in vacs_crm:
+#             print(f"Pre-approving {user}")
+#             user.pre_approved_vacation = True
+#             db.session.commit()
+#         else:
+#             print(f"Skipping {user}")
+#             user.pre_approved_vacation = False
+#             db.session.commit()
 
   
 
