@@ -85,6 +85,25 @@ class BaseAppointment(db.Model):
                 app_dict[(app.week_day, app.week_index)][0] += 1
                 
         return app_dict
+
+    @classmethod
+    def get_users_total(cls, user_id, split_the_fifth=False):
+        apps = cls.query.filter_by(user_id=user_id).all()
+
+        output = {"routine": 0, "plaintemps": 0}
+        for app in apps:
+            if app.week_day in [5, 6] or app.is_night:
+                if split_the_fifth and app.week_index == 5:
+                    output["plaintemps"] += 0.5
+                else:
+                    output["plaintemps"] += 1
+            else:
+                if split_the_fifth and app.week_index == 5:
+                    output["routine"] += 0.5
+                else:
+                    output["routine"] += 1                
+
+        return output
     
     @property
     def is_night(self):

@@ -1,4 +1,5 @@
 from app import db
+from app.models import User, BaseAppointment
 
 
 class Vacation(db.Model):
@@ -12,3 +13,10 @@ class Vacation(db.Model):
 
     user = db.relationship('User', back_populates='vacations', lazy=True)
     
+    
+    @classmethod
+    def check(cls, user_id):
+        routine_plaintemps = BaseAppointment.get_users_total(user_id, split_the_fifth=True)
+
+        print(routine_plaintemps)
+
