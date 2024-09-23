@@ -92,16 +92,14 @@ class BaseAppointment(db.Model):
 
         output = {"routine": 0, "plaintemps": 0}
         for app in apps:
+            count = 1
+            if split_the_fifth and app.week_index == 5:
+                count /= 2
+
             if app.week_day in [5, 6] or app.is_night:
-                if split_the_fifth and app.week_index == 5:
-                    output["plaintemps"] += 0.5
-                else:
-                    output["plaintemps"] += 1
+                output["plaintemps"] += count
             else:
-                if split_the_fifth and app.week_index == 5:
-                    output["routine"] += 0.5
-                else:
-                    output["routine"] += 1                
+                output["routine"] += count         
 
         return output
     
