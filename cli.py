@@ -14,7 +14,16 @@ import json
 app = create_app()
 with app.app_context():
     user = User.query.filter_by(crm=26704).first()
-    Vacation.check(user.id)
+    s_date = datetime(2024, 7, 1)
+    e_date = datetime(2024, 7, 30)
+
+    vacation = Vacation(user_id=user.id,
+                        start_date=s_date,
+                        end_date=e_date)
+    
+    # print(Vacation.check(user.id))
+    vacation.calculate_payment()
+
 #     users = User.query.all()
 #     for user in users:
 #         if user.crm in vacs_crm:

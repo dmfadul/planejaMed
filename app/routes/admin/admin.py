@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import current_user, login_required
 
 import app.global_vars as global_vars
-from app.models import Center, Month, User
+from app.models import Center, Month, User, Vacation
 from app.routes.calendar.gen_data import gen_doctors_dict
 from app.config import Config
 from datetime import datetime
@@ -235,54 +235,15 @@ def calculate_vacations():
     start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
     end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
 
-    months = utils.get_months(start_date, end_date)
-
-    output = ""
-    for year_month in months:
-        month = Month.query.filter_by(number=year_month[1], year=year_month[0]).first()
-        if not month:
-            return "Month not found", 404
-
-        original_dict = month.get_original_dict()
-        if isinstance(original_dict, str):
-            output += original_dict
-            continue
-
-        doctors_dict = original_dict.get('data').get(str(doctor.crm))
-
-        if not doctors_dict:
-            output += f"O médico {doctor.full_name} não tem horas no original do mês {month[1]}/{month[0]}\n"
-            continue
-        
-        print(doctors_dict)
-        output_lst = []
-        for center, value in doctors_dict.items():
-            for day_str, hours in value.items():
-                day = month.get_day(day_str)
-                if not start_date.date() <= day.date <= end_date.date():
-                    continue
-
-                weekday = global_vars.DIAS_SEMANA[day.date.weekday()]
-                output_lst.append((day, weekday, hours, center))
-
-        output_lst = sorted(output_lst, key=lambda x: x[0].date)
-
-        total_p, total_r = 0, 0
-        for d, wday, hrs, c in output_lst:
-            hours_dict = sum_hours(hrs, wday)
-            total_p += hours_dict['plaintemps']
-            total_r += hours_dict['routine']
-
-            date_str = d.date.strftime('%d/%m')
-            hours = convert_hours_to_line(hrs)
-
-            output += f"Dia {date_str} - {wday} - {hours} - {c}\n"
-
-        output += "\n"
-        output += f"Total de plantões: {total_p} horas - Total de rotinas: {total_r} horas \n"
+    vacation = Vacation.add_entry(
+                                user_id=doctor.id,
+                                start_date=start_date,
+                                end_date=end_date
+                                )
+    
+    output = vacation.calculate_payment()
 
     return output.replace('\n', '<br>')
-    # return redirect(url_for('admin.admin'))
 
 
 @admin_bp.route('/admin/toggle-maintenance', methods=['POST', 'GET'])

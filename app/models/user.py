@@ -247,6 +247,15 @@ class User(db.Model, UserMixin):
 
         return False
 
+    def get_vacation_rules(self):
+        from app.global_vars import VACATION_NEW_RULES, VACATION_OLD_RULES, VACATION_NEW_RULE_START
+
+        if self.date_joined < VACATION_NEW_RULE_START.date():
+            return VACATION_OLD_RULES
+
+        return VACATION_NEW_RULES
+
+
     def hours(self, month_id):
         appointments = [app for app in self.appointments if app.day.month_id == month_id]
 
