@@ -218,9 +218,6 @@ def create_center():
 @admin_bp.route('/admin/calculate-vacations', methods=['POST', 'GET'])
 @login_required
 def calculate_vacations():
-    import app.routes.admin.utils as utils
-    from app.hours_conversion import convert_hours_to_line, sum_hours
-
     if not current_user.is_admin:
         return "Unauthorized", 401
 
