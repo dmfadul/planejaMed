@@ -38,6 +38,10 @@ class Vacation(db.Model):
 
     @classmethod
     def check(cls, user_id):
+        base_check = cls.check_base(user_id)
+
+    @classmethod
+    def check_base(cls, user_id):
         user = User.query.filter_by(id=user_id).first()
         if not user:
             return f"Usuário com id {user_id} não encontrado"
@@ -46,9 +50,9 @@ class Vacation(db.Model):
         rules_dict = user.get_vacation_rules()
 
         if base_dict['routine'] < rules_dict['routine'] or base_dict['plaintemps'] < rules_dict['plaintemps']:
-            return f"Usuário {user.abbreviated_name} não tem horas suficientes para férias"
+            return True
 
-        return "Usuário está apto para férias"
+        return False
 
     def calculate_payment(self):
         from app.hours_conversion import convert_hours_to_line, sum_hours
