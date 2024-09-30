@@ -5,7 +5,8 @@ document.getElementById("print-table").addEventListener("click", function() {
     var year = yearValue;
 
     // Redirect to the new page with the data
-    window.location.href = `/print-table/${center}/${month}/${year}`;
+    // window.location.href = `/print-table/${center}/${month}/${year}`;
+    window.open(`/print-table/${center}/${month}/${year}`, '_blank');
 });
 
 document.getElementById("sum-hours-button").addEventListener("click", function() {
