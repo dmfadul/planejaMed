@@ -3,7 +3,7 @@ import app.global_vars as global_vars
 from app.models import Center, User, Month
 
 
-def gen_base_table(center_abbr, names_only=False, abbr_names=False):
+def gen_base_table(center_abbr, names_only=False, include_crm=False, abbr_names=False):
     center_id = Center.query.filter_by(abbreviation=center_abbr).first().id
 
     weekdays = [day[:3] for day in global_vars.DIAS_SEMANA] * 5
@@ -16,6 +16,8 @@ def gen_base_table(center_abbr, names_only=False, abbr_names=False):
         name = user.abbreviated_name if abbr_names else user.full_name
         if names_only:
             row = [name] + user.base_row(center_id)
+        elif include_crm:
+            row = [name, user.crm] + user.base_row(center_id)
         else:
             row = [(name, user.crm)] + user.base_row(center_id)
         table.append(row)
@@ -23,7 +25,7 @@ def gen_base_table(center_abbr, names_only=False, abbr_names=False):
     return table
 
 
-def gen_month_table(center_abbr, month, year, names_only=False, abbr_names=False):
+def gen_month_table(center_abbr, month, year, names_only=False, include_crm=False, abbr_names=False):
     month_num = global_vars.MESES.index(month)+1
     
     center = Center.query.filter_by(abbreviation=center_abbr).first()
@@ -40,6 +42,8 @@ def gen_month_table(center_abbr, month, year, names_only=False, abbr_names=False
         name = user.abbreviated_name if abbr_names else user.full_name
         if names_only:
             row = [name]
+        elif include_crm:
+            row = [f"{name} - {user.crm}"]
         else:
             row = [(name, user.crm)]
         # row = [(user.abbreviated_name, user.crm)]

@@ -94,7 +94,7 @@ def print_table(center_abbr, month_name, year):
         if center is None:
             raise Exception(f"{center_abbr} not found")
         
-        data_table = gen_month_table(center_abbr, month_name, year, names_only=True)
+        data_table = gen_month_table(center_abbr, month_name, year, include_crm=True)
 
     for i in range(len(data_table[0])):
         if i == 0:
