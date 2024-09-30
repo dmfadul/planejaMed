@@ -99,7 +99,7 @@ class Message(db.Model):
                 message = re.sub(r'\*.*?\*', 'Você tem uma SOLICITAÇÃO PENDENTE de ', self.content)
                 message = re.sub(r'\+[^+]*\+', '', message)
                 message = message + ". Aperte Cancelar para cancelar a solicitação."
-            elif self.action == "info":
+            elif self.action == "info" and self.request:
                 answer = "autorizada" if self.request.response == 'authorized' else "negada"
                 message = re.sub(r'\*.*?\*', 'Sua SOLICITAÇÃO DE ', self.content)
                 message = re.sub(r'\+[^+]*\+', '', message) + f" foi {answer}."
@@ -108,7 +108,7 @@ class Message(db.Model):
         except Exception as e:
             message = f"""Uma mensagem apresentou erro.
             Por favor, informe ao administrador o código m-{self.id},
-            para que este erro seja corrijido."""
+            para que este erro seja corrijido.{e}"""
         return message
 
     @property

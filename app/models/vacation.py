@@ -1,6 +1,8 @@
 from app import db
 from app.models import User, BaseAppointment, Month
 import app.global_vars as global_vars
+from dateutil.relativedelta import relativedelta
+import datetime
 
 
 class Vacation(db.Model):
@@ -36,9 +38,26 @@ class Vacation(db.Model):
         db.session.commit()
         return f"Férias de {self.user.abbreviated_name} removidas"
 
-    @classmethod
-    def check(cls, user_id):
-        base_check = cls.check_base(user_id)
+    def check(self):
+        results = {'base': self.check_base(self.user_id)}       
+
+        curr_month = Month.get_current()
+
+        start_check_month = (self.start_date.month - 6)
+        
+        if start_check_month < 1:
+            start_check_month = start_check_month + 12
+            start_check_year = self.start_date.year - 1
+        else:
+            start_check_year = self.start_date.year
+
+        start_check = datetime.datetime(start_check_year, start_check_month, 1)
+
+        while start_check.month < self.start_date.month:
+            print(start_check)
+            start_check += relativedelta(months=1)
+
+
 
     @classmethod
     def check_base(cls, user_id):
@@ -56,17 +75,14 @@ class Vacation(db.Model):
 
     def calculate_payment(self):
         from app.hours_conversion import convert_hours_to_line, sum_hours
-        months = self.months_in_range
+        months_range = self.get_months_range()
+        months = self.get_months_in_range(months_range)
         
         output = ""
-        for year_month in months:
-            month = Month.query.filter_by(number=year_month[1], year=year_month[0]).first()
-            if not month:
-                return "Month not found", 404
-        
+        for month in months:       
             original_dict = month.get_original_dict()
-            if isinstance(original_dict, str):
-                output += original_dict
+            if not original_dict:
+                output += f"O mês {self.number}/{self.year} não tem original registrado\n"
                 continue
             
             doctors_dict = original_dict.get('data').get(str(self.user.crm))
@@ -103,8 +119,7 @@ class Vacation(db.Model):
 
         return output
 
-    @property
-    def months_in_range(self):
+    def get_months_range(self):
         curr_year, curr_month = self.start_date.year, self.start_date.month
 
         months = []
@@ -127,5 +142,13 @@ class Vacation(db.Model):
             else:
                 extra_year = self.end_date.year
             months.append((extra_year, extra_month))
-        
+
         return months
+
+    def get_months_in_range(self, months_range):
+        months_obj = []
+        for year_month in months_range:
+            month = Month.query.filter_by(number=year_month[1], year=year_month[0]).first()
+            months_obj.append(month)
+
+        return months_obj

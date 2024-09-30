@@ -305,7 +305,7 @@ class Month(db.Model):
         file_name = f"original_{self.number}_{self.year}.json"
        
         if file_name not in os.listdir('instance/originals'):
-            return f"O mês {self.number}/{self.year} não tem original registrado\n"
+            return None
             
         with open(f"instance/originals/{file_name}", 'r') as f:
             original_dict = json.load(f)
