@@ -37,7 +37,7 @@ def gen_month_table(center_abbr, month, year, names_only=False, include_crm=Fals
 
     table = table_header
     users = sorted(month.users, key=lambda x: x.full_name)
-    users = [user for user in users if user.is_visible]
+    # users = [user for user in users if user.is_visible]
     for user in users:
         name = user.abbreviated_name if abbr_names else user.full_name
         if names_only:
