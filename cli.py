@@ -11,11 +11,8 @@ from datetime import datetime
 import json
 
 
-app = create_app()
-with app.app_context():
-    message = Message.query.filter_by(id=468).first()
-
-    print(message)
+# app = create_app()
+# with app.app_context():
     # user = User.query.filter_by(crm=26704).first()
     # s_date = datetime(2024, 12, 1)
     # e_date = datetime(2024, 12, 30)
