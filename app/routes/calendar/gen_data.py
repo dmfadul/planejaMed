@@ -53,12 +53,14 @@ def gen_day_hours(center_abbr, day_num):
     return appointments_dict
 
 
-def gen_doctors_dict():
+def gen_doctors_dict(exclude_invisible=False):
     doctors = User.query.filter_by(is_active=True).all()
 
     doctors_dict = {}
     doctors_list = []
     for doctor in doctors:
+        if exclude_invisible and not doctor.is_visible:
+            continue
         if doctor.crm not in doctors_dict:
             doctors_list.append((doctor.crm, doctor.full_name))
             doctors_dict[doctor.crm] = {}
