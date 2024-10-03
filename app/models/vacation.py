@@ -54,7 +54,10 @@ class Vacation(db.Model):
         start_check = datetime.datetime(start_check_year, start_check_month, 1)
 
         while start_check.month < self.start_date.month:
-            print(start_check)
+            check_month = Month.query.filter_by(number=start_check.month, year=start_check.year).first()
+            # if not check_month:
+                
+            print('i', check_month)
             start_check += relativedelta(months=1)
 
 

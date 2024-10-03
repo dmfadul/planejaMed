@@ -105,7 +105,11 @@ def print_table(center_abbr, month_name, year):
     
     second_header = ["Grupo de Anestesia Mackenzie"] + [''] * (len(data_table[0]) - 1)
     second_header[len(data_table[0])//3] = f"{center.name} - {center.abbreviation}"
-    second_header[2*(len(data_table[0])//3)] = f"COMPETÊNCIA: {month.name}/{month.year}"
+    if len(data_table[0]) == 32:
+        second_header_index = 21
+    else:
+        second_header_index = 20 
+    second_header[second_header_index] = f"COMPETÊNCIA: {month.name}/{month.year}"
 
     third_header = [f"RESPONSÁVEL: {month.leader}"] + [''] * (len(data_table[0]) - 1)
     third_header[len(data_table[0])//2] = f"CURITIBA, {global_vars.STR_DAY}/{month.number}/{month.year}"

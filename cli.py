@@ -11,18 +11,18 @@ from datetime import datetime
 import json
 
 
-# app = create_app()
-# with app.app_context():
-    # user = User.query.filter_by(crm=26704).first()
-    # s_date = datetime(2024, 12, 1)
-    # e_date = datetime(2024, 12, 30)
+app = create_app()
+with app.app_context():
+    user = User.query.filter_by(crm=26704).first()
+    s_date = datetime(2024, 12, 1)
+    e_date = datetime(2024, 12, 30)
 
-    # vacation = Vacation(user_id=user.id,
-    #                     start_date=s_date,
-    #                     end_date=e_date)
+    vacation = Vacation(user_id=user.id,
+                        start_date=s_date,
+                        end_date=e_date)
     
     # print(Vacation.check(user.id))
-    # vacation.check()
+    vacation.check()
 
 #     users = User.query.all()
 #     for user in users:
