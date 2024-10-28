@@ -11,6 +11,23 @@
         <a href="/schedule"><button class="common-button">Meus Horários</button></a>
     </section>
 
+    <section>
+        <form method="post" action="{{ url_for('admin.calculate_vacations') }}" target="_blank">
+            <label for="create-center">Calcular Férias:</label>
+            <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 30px; margin-top: 20px;">
+                <div style="margin-right: 10px;">
+                    <input type="date" id="start-date" name="start_date" required>
+                </div>
+    
+                <div style="margin-right: 10px;">
+                    <input type="date" id="end-date" name="end_date" required>
+                </div>
+            </div>
+    
+            <button type="submit">Calcular</button>
+        </form>
+    </section> 
+
     {% if pending_requests %}
         <section class="warning">
             <p>Você tem Requisições Pendentes!</p>
