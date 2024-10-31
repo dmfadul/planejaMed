@@ -19,8 +19,8 @@
     {% endif %}
 
     <section>
-        <form method="post" action="{{ url_for('dashboard.resolve_vacations') }}" target="">
-            <label for="create-center">Pedir Férias:</label>
+        <form method="post" action="{{ url_for('dashboard.resolve_vacations') }}">
+            <label for="create-center">Solicitar Férias:</label>
             <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 30px; margin-top: 20px;">
                 <div style="margin-right: 10px;">
                     <input type="date" id="start-date" name="start_date" required>
@@ -31,7 +31,7 @@
                 </div>
             </div>
     
-            <button type="submit">Pedir</button>
+            <button type="submit">Solicitar</button>
         </form>
     </section> 
 

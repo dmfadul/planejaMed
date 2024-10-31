@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify, flash
+from flask import Blueprint, render_template, redirect, request, jsonify, flash, url_for
 from flask_login import login_required, current_user
 import app.global_vars as global_vars
 from app.models import Center, Month, Request, Message
@@ -45,7 +45,9 @@ def resolve_vacations():
     print(current_user)
     print(request.form)
 
-    return jsonify({"status": "success", 'message': 'Vacations updated'})
+    flash("Férias Solicitadas", "success")
+
+    return redirect(url_for('dashboard.dashboard'))
 
 
 @dashboard_bp.route('/requests')
