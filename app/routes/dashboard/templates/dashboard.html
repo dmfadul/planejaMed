@@ -11,9 +11,16 @@
         <a href="/schedule"><button class="common-button">Meus Horários</button></a>
     </section>
 
+    {% if pending_requests %}
+    <section class="warning">
+        <p>Você tem Requisições Pendentes!</p>
+        <a href="{{ url_for('dashboard.requests') }}"><button class="common-button">Resolver Pendências</button></a>
+    </section>
+    {% endif %}
+
     <section>
-        <form method="post" action="{{ url_for('admin.calculate_vacations') }}" target="_blank">
-            <label for="create-center">Calcular Férias:</label>
+        <form method="post" action="{{ url_for('dashboard.resolve_vacations') }}" target="">
+            <label for="create-center">Pedir Férias:</label>
             <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 30px; margin-top: 20px;">
                 <div style="margin-right: 10px;">
                     <input type="date" id="start-date" name="start_date" required>
@@ -24,16 +31,9 @@
                 </div>
             </div>
     
-            <button type="submit">Calcular</button>
+            <button type="submit">Pedir</button>
         </form>
     </section> 
-
-    {% if pending_requests %}
-        <section class="warning">
-            <p>Você tem Requisições Pendentes!</p>
-            <a href="{{ url_for('dashboard.requests') }}"><button class="common-button">Resolver Pendências</button></a>
-        </section>
-    {% endif %}
 
     <section>
         <form method="post" action="{{ url_for('dataview.monthview') }}">

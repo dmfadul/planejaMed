@@ -39,6 +39,15 @@ def dashboard():
                             )
 
 
+@dashboard_bp.route('/resolve-vacations', methods=['POST'])
+@login_required
+def resolve_vacations():
+    print(current_user)
+    print(request.form)
+
+    return jsonify({"status": "success", 'message': 'Vacations updated'})
+
+
 @dashboard_bp.route('/requests')
 @login_required
 def requests():
