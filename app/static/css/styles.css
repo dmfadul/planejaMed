@@ -182,67 +182,93 @@ input[type=password] {
 
 /* Celulares Grandes (até 425px) */
 @media (max-width: 425px) {
+  #logo {
+    width: 100px;
+    padding-top: 20px;
+    padding-right: 20px;
+  }
+  
+  .user-name {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 22px;
+  }
+  
+  .user-name a {
+    margin-right: 0px;
+  }
+
   .header-content {
-    font-size: 28px;
-    padding-left: 22px;
+    font-size: 25px;
   }
-  .backdrop {
-    height: auto; /* Adjust the height for smaller screens if needed */
-    top: 50px; /* Example of adding some space from the top */
-  }
-  .flex-container{
-    display: flex;
-    flex-wrap: wrap;
-  }
+
   .button-logout{
     width: 100%;
-    position: relative;
-    top: 20px;
+    margin: 0;
+    top: 0px;
   }
 }
+
 
 /* Celulares Médios (até 375px) */
 @media (max-width: 375px) {
+  #logo {
+    width: 80px;
+    padding-top: 20px;
+    padding-right: 20px;
+  }
+  
+  .user-name {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+  
+  .user-name a {
+    margin-right: 5px;
+  }
+
   .header-content {
-    font-size: 28px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
+    font-size: 25px;
   }
-  .backdrop {
-    height: auto; /* Adjust the height for smaller screens if needed */
-    top: 50px; /* Example of adding some space from the top */
-  }
-  .flex-container{
-    display: flex;
-    flex-wrap: wrap;
-  }
+
   .button-logout{
     width: 100%;
-    position: relative;
-    top: 20px;
+    margin: 0;
+    top: 0px;
   }
 }
 
+
 /* Celulares Pequenos (até 320px) */
-@media (max-width: 320px) {
+@media (max-width: 320px) {   
+  #logo {
+    width: 60px;
+    padding-top: 15px;
+    padding-right: 15px;
+  }
+  
+  .user-name {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 16px;
+  }
+  
+  .user-name a {
+    margin-right: 15px;
+  }
+
   .header-content {
     font-size: 18px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
   }
-  .backdrop {
-    height: auto; /* Adjust the height for smaller screens if needed */
-    top: 50px; /* Example of adding some space from the top */
-  }
-  .flex-container{
-    display: flex;
-    flex-wrap: wrap;
-  }
+
   .button-logout{
     width: 100%;
-    position: relative;
-    top: 20px;
+    margin: 0;
+    top: 0px;
+  }
+
+  .button-logout button {
+    padding: 5px 8px;
   }
 }

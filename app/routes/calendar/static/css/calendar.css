@@ -49,3 +49,99 @@
 .day-clicked {
     box-shadow: 0px 0px 10px #000; /* Example shadow effect */
 }
+
+
+/* Celulares Pequenos (até 425px) */
+@media (max-width: 425px) {
+    .calendar {
+        margin: 12px auto;
+    }
+    
+    .calendar-header {
+        width: 80px;
+    }
+    
+    .calendar th, .calendar td {
+        padding: 12px;
+    }
+    
+    #dictData {
+        left: 0px;  /* adjust this value to move the entire list to the right */
+    }
+    
+    #dictData ul {
+        padding: 5px 5px;
+    }
+    
+    #dictData li {
+        width: 350px;
+        font-size: medium;
+        padding: 8px 8px;  /* Padding inside each card */
+        margin: 5px 0;  /* Space between cards */
+        border-radius: 2px;  /* Rounded corners */
+    }
+  }
+
+
+/* Celulares Pequenos (até 375px) */
+@media (max-width: 375px) {
+    .calendar {
+        margin: 12px auto;
+    }
+    
+    .calendar-header {
+        width: 80px;
+    }
+    
+    .calendar th, .calendar td {
+        padding: 9px;
+    }
+    
+    #dictData {
+        left: 0px;  /* adjust this value to move the entire list to the right */
+    }
+    
+    #dictData ul {
+        padding: 5px 5px;
+    }
+    
+    #dictData li {
+        width: 310px;
+        font-size: medium;
+        padding: 8px 8px;  /* Padding inside each card */
+        margin: 5px 0;  /* Space between cards */
+        border-radius: 2px;  /* Rounded corners */
+    }
+  }
+
+
+/* Celulares Pequenos (até 320px) */
+@media (max-width: 320px) {
+    .calendar {
+        margin: 10px auto;
+    }
+    
+    .calendar-header {
+        width: 60px;
+    }
+    
+    .calendar th, .calendar td {
+        padding: 5px;
+    }
+    
+    #dictData {
+        left: 0px;  /* adjust this value to move the entire list to the right */
+    }
+    
+    #dictData ul {
+        padding: 5px 5px;
+    }
+    
+    #dictData li {
+        width: 250px;
+        font-size: small;
+        padding: 5px 5px;  /* Padding inside each card */
+        margin: 5px 0;  /* Space between cards */
+        border-radius: 2px;  /* Rounded corners */
+    }
+  }
