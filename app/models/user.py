@@ -404,3 +404,11 @@ class User(db.Model, UserMixin):
             app_dict[center_abbr][app_day].append(app.hour)
 
         return app_dict
+
+    def has_vacations_rights(self):
+        if not self.is_active or not self.is_visible:
+            return False
+
+        if pre_approved_vacation:
+            return True
+            

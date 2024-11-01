@@ -38,32 +38,45 @@ class Vacation(db.Model):
         db.session.commit()
         return f"Férias de {self.user.abbreviated_name} removidas"
 
-    def check(self):
-        results = {'base': self.check_base(self.user_id)}       
+    @classmethod
+    def check(cls, start_date):
+        str_month = int(start_date.strftime('%m'))
+        str_year = int(start_date.strftime('%Y'))
 
-        curr_month = Month.get_current()
-
-        start_check_month = (self.start_date.month - 6)
+        months = []
+        for i in range(1, 13):
+            months.append((str_month + i) % 12)
         
-        if start_check_month < 1:
-            start_check_month = start_check_month + 12
-            start_check_year = self.start_date.year - 1
-        else:
-            start_check_year = self.start_date.year
+        files = []
+        for i, month in enumerate(months):
+            month = 12 if month == 0 else month
+            
+            if i == 0 and month == 1:
+                year = str_year
+            elif month == 1:
+                year = str_year + 1
+            else:
+                year = str_year
+            
+            files.append(f"original_{month}_{year}.json")
 
-        start_check = datetime.datetime(start_check_year, start_check_month, 1)
 
-        while start_check.month < self.start_date.month:
-            check_month = Month.query.filter_by(number=start_check.month, year=start_check.year).first()
-            # if not check_month:
+        print(files)
+        print(len(files))
+    
+    @classmethod
+    def check_original(cls, original_path):
+        try:
+            with open(f"instance/originals/{original_path}", 'r') as file:
+                data = file.read()
+                print(data)
                 
-            print('i', check_month)
-            start_check += relativedelta(months=1)
-
+        except FileNotFoundError:
+            return -1
 
 
     @classmethod
-    def check_base(cls, user_id):
+    def has_base_rights(cls, user_id):
         user = User.query.filter_by(id=user_id).first()
         if not user:
             return f"Usuário com id {user_id} não encontrado"
@@ -72,9 +85,9 @@ class Vacation(db.Model):
         rules_dict = user.get_vacation_rules()
 
         if base_dict['routine'] < rules_dict['routine'] or base_dict['plaintemps'] < rules_dict['plaintemps']:
-            return True
+            return False
 
-        return False
+        return True
 
     def calculate_payment(self):
         from app.hours_conversion import convert_hours_to_line, sum_hours

@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, redirect, request, jsonify, flash, url_for
 from flask_login import login_required, current_user
 import app.global_vars as global_vars
-from app.models import Center, Month, Request, Message
+from app.models import Center, Month, Request, Message, Vacation, User
+from datetime import datetime
 
 dashboard_bp = Blueprint(
                         'dashboard',
@@ -42,9 +43,15 @@ def dashboard():
 @dashboard_bp.route('/resolve-vacations', methods=['POST'])
 @login_required
 def resolve_vacations():
-    print(current_user)
-    print(request.form)
+    start_date = datetime.strptime(request.form['start_date'], "%Y-%m-%d")
+    end_date = datetime.strptime(request.form['end_date'], "%Y-%m-%d")
 
+    if start_date >= end_date:
+        flash("Data de início não pode ser posterior a data final", "danger")
+        return redirect(url_for('dashboard.dashboard'))
+
+    # Vacation.check(start_date)
+    print(Vacation.check_original("original_1_2024.json"))
     flash("Férias Solicitadas", "success")
 
     return redirect(url_for('dashboard.dashboard'))
