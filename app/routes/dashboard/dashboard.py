@@ -50,8 +50,10 @@ def resolve_vacations():
         flash("Data de início não pode ser posterior a data final", "danger")
         return redirect(url_for('dashboard.dashboard'))
 
-    # Vacation.check(start_date)
-    print(Vacation.check_original("original_1_2024.json"))
+    # Vacation.check(start_date, current_user.id)
+    Vacation.has_base_rights(current_user.id)
+
+
     flash("Férias Solicitadas", "success")
 
     return redirect(url_for('dashboard.dashboard'))

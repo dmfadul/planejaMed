@@ -3,6 +3,7 @@ from app.models import User, BaseAppointment, Month
 import app.global_vars as global_vars
 from dateutil.relativedelta import relativedelta
 import datetime
+import json
 
 
 class Vacation(db.Model):
@@ -39,7 +40,7 @@ class Vacation(db.Model):
         return f"Férias de {self.user.abbreviated_name} removidas"
 
     @classmethod
-    def check(cls, start_date):
+    def check(cls, start_date, user_id):
         str_month = int(start_date.strftime('%m'))
         str_year = int(start_date.strftime('%Y'))
 
@@ -47,7 +48,7 @@ class Vacation(db.Model):
         for i in range(1, 13):
             months.append((str_month + i) % 12)
         
-        files = []
+        paths = []
         for i, month in enumerate(months):
             month = 12 if month == 0 else month
             
@@ -58,18 +59,27 @@ class Vacation(db.Model):
             else:
                 year = str_year
             
-            files.append(f"original_{month}_{year}.json")
+            paths.append(f"original_{month}_{year}.json")
 
+        results = []
+        for path in paths:
+            results.append(cls.check_original(path, user_id))
 
-        print(files)
-        print(len(files))
+        print('r: ', results)
     
     @classmethod
-    def check_original(cls, original_path):
+    def check_original(cls, original_path, user_id):
+        user = User.query.filter_by(id=user_id).first()
+        if not user:
+            return f"Usuário com id {user_id} não encontrado"
+
         try:
             with open(f"instance/originals/{original_path}", 'r') as file:
-                data = file.read()
-                print(data)
+                data = json.load(file).get('data')
+                doctor_dict = data.get(str(user.crm))
+                
+                print("doc_dic", doctor_dict)
+                return 1
                 
         except FileNotFoundError:
             return -1

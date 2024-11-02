@@ -311,4 +311,14 @@ class Month(db.Model):
             original_dict = json.load(f)
         
         return original_dict
+    
+    def get_users_total(self, user_id):
+        output = {"routine": 0, "plaintemps": 0}
+        for app in self.appointments:
+            if app.week_day in [5, 6] or app.is_night:
+                output["plaintemps"] += 1
+            else:
+                output["routine"] += 1
+
+        return output
         
