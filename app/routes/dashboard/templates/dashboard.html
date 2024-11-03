@@ -12,11 +12,28 @@
     </section>
 
     {% if pending_requests %}
-        <section class="warning">
-            <p>Você tem Requisições Pendentes!</p>
-            <a href="{{ url_for('dashboard.requests') }}"><button class="common-button">Resolver Pendências</button></a>
-        </section>
+    <section class="warning">
+        <p>Você tem Requisições Pendentes!</p>
+        <a href="{{ url_for('dashboard.requests') }}"><button class="common-button">Resolver Pendências</button></a>
+    </section>
     {% endif %}
+
+    <section>
+        <form method="post" action="{{ url_for('dashboard.resolve_vacations') }}">
+            <label for="create-center">Solicitar Férias:</label>
+            <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 30px; margin-top: 20px;">
+                <div style="margin-right: 10px;">
+                    <input type="date" id="start-date" name="start_date" required>
+                </div>
+    
+                <div style="margin-right: 10px;">
+                    <input type="date" id="end-date" name="end_date" required>
+                </div>
+            </div>
+    
+            <button type="submit">Solicitar</button>
+        </form>
+    </section> 
 
     <section>
         <form method="post" action="{{ url_for('dataview.monthview') }}">
