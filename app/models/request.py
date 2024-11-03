@@ -57,6 +57,26 @@ class Request(db.Model):
         return new_request
     
     @classmethod
+    def vacation(cls, doctor_id, start_date, end_date):
+        new_request = cls(
+            requester_id=doctor_id,
+            receivers_code="*",
+            # requestee_code="*",
+            action="approve_vacation",
+        )
+
+        db.session.add(new_request)
+        db.session.commit()
+
+        new_request.info=f"""O Médico {new_request.requester.full_name} solicitou férias de
+                            {start_date.strftime("%d/%m/%y")} a {end_date.strftime("%d/%m/%y")}."""
+        
+        db.session.commit()
+
+        return new_request
+
+
+    @classmethod
     def exclusion(cls, doctor, center, day, hours, requester):
         new_request = cls(
             requester_id=requester.id,
