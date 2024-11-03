@@ -315,7 +315,7 @@ class Month(db.Model):
     def get_users_total(self, user_id):
         output = {"routine": 0, "plaintemps": 0}
         for app in self.appointments:
-            if app.week_day in [5, 6] or app.is_night:
+            if app.week_day in [5, 6] or app.is_night or app.is_holiday:
                 output["plaintemps"] += 1
             else:
                 output["routine"] += 1
