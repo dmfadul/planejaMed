@@ -20,9 +20,9 @@
     </div>
 
     <section>
-        <form method="post" action="{{ url_for('dataview.sum_by_doctor') }}">
+        <form method="post" action="{{ url_for('dataview.sum_doctor_by_month') }}">
 
-            <label for="option">Carga Horária:</label>
+            <label for="option">Carga Horária Mês:</label>
             <select name="month">
                 {% for month in months %}
                     <option value="{{ month }}" {% if month==current_month_name %} selected {% endif %}>{{ month }}</option>
@@ -40,6 +40,16 @@
             <button type="submit">Calcular</button>
         </form>
     </section>
+
+    <section>
+        <form method="post" action="{{ url_for('dataview.sum_doctor_by_base') }}">
+
+            <label for="option">Carga Horária Base:</label>
+            <input type="hidden" name="action" value="calc">
+            <button type="submit">Calcular</button>
+        </form>
+    </section>
+
 
     <section>
         <form method="post" action="{{ url_for('admin.exclude_doctor') }}" onsubmit="return confirmExclusion()">

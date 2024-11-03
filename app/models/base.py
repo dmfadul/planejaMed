@@ -103,6 +103,23 @@ class BaseAppointment(db.Model):
 
         return output
     
+    @classmethod
+    def get_user_by_center(cls, user_id, center_id, split_the_fifth=False):
+        apps = cls.query.filter_by(user_id=user_id, center_id=center_id).all()
+
+        output = {"routine": 0, "plaintemps": 0}
+        for app in apps:
+            count = 1
+            if split_the_fifth and app.week_index == 5:
+                count /= 3
+
+            if app.week_day in [5, 6] or app.is_night:
+                output["plaintemps"] += count
+            else:
+                output["routine"] += count
+
+        return output
+
     @property
     def is_night(self):
         from app.global_vars import NIGHT_HOURS

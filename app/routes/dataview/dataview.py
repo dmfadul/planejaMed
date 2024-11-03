@@ -113,9 +113,37 @@ def resolve_holidays():
 
     return jsonify({"status": "success", 'message': 'Holidays updated'})
 
-@dataview_bp.route("/sum-doctors", methods=["POST"])
+
+@dataview_bp.route("/sum-doctors-base", methods=["POST"])
 @login_required
-def sum_by_doctor():
+def sum_doctor_by_base():
+    if not current_user.is_admin:
+        return jsonify({"status": "error", 'message': 'You are not an admin'})
+
+    centers = [center.abbreviation for center in Center.query.filter_by(is_active=True).all()]
+    doctors = sorted(User.query.filter_by(is_active=True, is_visible=True).all(), key=lambda x: x.full_name)
+
+    header_1 = ["", ""] + [x for tup in list(zip(centers, centers)) for x in tup] + ["Total", "Total"]
+    header_2 = ['Nº', 'Anestesiologista'] + ['Rotina', 'Plantão'] * (len(centers) + 1)
+    data = [header_1, header_2]
+
+    for i, doctor in enumerate(doctors):
+        row = [i+1, doctor.full_name]
+        for center in Center.query.filter_by(is_active=True).all():
+            center_hours = BaseAppointment.get_user_by_center(doctor.id, center.id, split_the_fifth=True)
+            row += [round(center_hours.get('routine')), round(center_hours.get('plaintemps'))]
+
+        total = BaseAppointment.get_users_total(doctor.id, split_the_fifth=True)
+        row += [round(total.get('routine')), round(total.get('plaintemps'))]
+        data.append(row)
+
+    return render_template("doctor-sumview.html", data=data)
+    
+
+
+@dataview_bp.route("/sum-doctors-month", methods=["POST"])
+@login_required
+def sum_doctor_by_month():
     if not current_user.is_admin:
         return jsonify({"status": "error", 'message': 'You are not an admin'})
     
@@ -128,7 +156,7 @@ def sum_by_doctor():
     # doctors = sorted(User.query.filter_by(is_active=True, is_visible=True).all(), key=lambda x: x.full_name)
 
     header_1 = ["", month] + [x for tup in list(zip(centers, centers)) for x in tup]
-    header_2 = ['Nº', 'Anestesiologista'] + ['Rotina', 'Plantões'] * len(centers)
+    header_2 = ['Nº', 'Anestesiologista'] + ['Rotina', 'Plantão'] * len(centers)
     data = [header_1, header_2]
 
     for i, doctor in enumerate(doctors):
