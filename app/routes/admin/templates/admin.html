@@ -22,7 +22,7 @@
     <section>
         <form method="post" action="{{ url_for('dataview.sum_by_doctor') }}">
 
-            <label for="option">Calcular Mês:</label>
+            <label for="option">Carga Horária:</label>
             <select name="month">
                 {% for month in months %}
                     <option value="{{ month }}" {% if month==current_month_name %} selected {% endif %}>{{ month }}</option>
