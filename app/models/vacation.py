@@ -69,17 +69,34 @@ class Vacation(db.Model):
     
     @classmethod
     def check_original(cls, original_path, user_id):
+        from app.global_vars import NIGHT_HOURS
+
         user = User.query.filter_by(id=user_id).first()
         if not user:
             return f"Usuário com id {user_id} não encontrado"
 
         try:
             with open(f"instance/originals/{original_path}", 'r') as file:
-                data = json.load(file).get('data')
-                doctor_dict = data.get(str(user.crm))
+                original_file = json.load(file)
+            
+            data = original_file.get('data')
+            holidays = original_file.get('holidays')
+            doctor_dict = data.get(str(user.crm))
                 
-                print("doc_dic", doctor_dict)
-                return 1
+            orig_dict = {"routine": 0, "plaintemps": 0}
+            for center, days_dict in doctor_dict.items():
+                for day, hours in days_dict.items():
+                    for hour in hours:
+                        if int(day) in holidays or hour in NIGHT_HOURS:
+                            orig_dict['plaintemps'] += 1
+                        else:
+                            orig_dict['routine'] += 1
+
+            user_rules = user.get_vacation_rules()
+            if orig_dict['routine'] < user_rules['routine'] or orig_dict['plaintemps'] < user_rules['plaintemps']:
+                return 0
+            
+            return 1
                 
         except FileNotFoundError:
             return -1
