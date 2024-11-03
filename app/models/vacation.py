@@ -30,11 +30,12 @@ class Vacation(db.Model):
         check = cls.query.filter_by(user_id=user_id, status="pending_approval").all()
         if check:
             return f"""Usuário tem férias pendentes.
-                        Aguarde aprovação ou peça cancelamento para solicitar novas férias"""
+                        Aguarde aprovação ou contacte o Administrador"""
 
         vacation = cls(user_id=user_id,
                        start_date=start_date,
-                       end_date=end_date)
+                       end_date=end_date,
+                       status="pending_approval")
 
         db.session.add(vacation)
         db.session.commit()
@@ -44,7 +45,7 @@ class Vacation(db.Model):
     def remove_entry(self):
         db.session.delete(self)
         db.session.commit()
-        return f"Férias de {self.user.abbreviated_name} removidas"
+        return 0
 
     @classmethod
     def check_past_vacations(cls, start_date, end_date, user_id):
@@ -60,18 +61,18 @@ class Vacation(db.Model):
             return "Usuário já utilizou todas as férias este ano este ano"
         
         old_vacation = vacations[0]
-        old_vac_duration = vacation.end_date - vacation.start_date
+        old_vac_duration = old_vacation.end_date - old_vacation.start_date
         new_vac_duration = end_date - start_date
 
         if old_vac_duration.days > TOTAL_VACATION_DAYS - MIN_VACATION_DURATION:
             return "Usuário já utilizou todas as férias este ano este ano"
 
         if old_vac_duration.days < MIN_VACATION_DURATION:
-            old_vac_duration = MIN_VACATION_DURATION
+            old_vac_duration = datetime.timedelta(MIN_VACATION_DURATION)
 
         if old_vac_duration.days + new_vac_duration.days > TOTAL_VACATION_DAYS:
             return "O total de férias ultrapassa o limite"
-        
+    
         return 0
 
     @classmethod
