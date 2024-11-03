@@ -50,11 +50,17 @@ def resolve_vacations():
         flash("Data de início não pode ser posterior a data final", "danger")
         return redirect(url_for('dashboard.dashboard'))
 
-    Vacation.check(start_date, current_user.id)
+    if current_user.pre_approved_vacation:
+        flash("Usuário tem férias pré-aprovadas por ser parte do administrativo", "success")
+        return redirect(url_for('dashboard.dashboard'))
 
+    flag = Vacation.check(start_date, current_user.id)
 
+    if isinstance(flag, str):
+        flash(flag, "danger")
+        return redirect(url_for('dashboard.dashboard'))
+    
     flash("Férias Solicitadas", "success")
-
     return redirect(url_for('dashboard.dashboard'))
 
 
