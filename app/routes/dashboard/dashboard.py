@@ -62,7 +62,19 @@ def resolve_vacations():
         flash(flag, "danger")
         return redirect(url_for('dashboard.dashboard'))
 
-    # request = Request()
+    new_vacation = Vacation.add_entry(start_date=start_date,
+                                      end_date=end_date,
+                                      user_id=current_user.id)
+
+    if isinstance(new_vacation, str):
+        flash(new_vacation, "danger")
+        return redirect(url_for('dashboard.dashboard'))
+
+    new_request = Request.vacation(current_user.id, new_vacation.start_date, new_vacation.end_date)
+    if isinstance(new_request, str):
+        new_vacation.remove_entry()
+        flash(new_request, "danger")
+        return redirect(url_for('dashboard.dashboard'))
 
     flash("Férias Solicitadas", "success")
     return redirect(url_for('dashboard.dashboard'))
