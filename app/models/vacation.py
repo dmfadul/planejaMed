@@ -13,7 +13,7 @@ class Vacation(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
-    status = db.Column(db.String(100), nullable=False, default='pending')
+    status = db.Column(db.String(100), nullable=False, default='pending_approval')
 
     user = db.relationship('User', back_populates='vacations', lazy=True)
 
@@ -27,11 +27,15 @@ class Vacation(db.Model):
         if not user:
             return f"Usuário com id {user_id} não encontrado"
 
-        check = cls.query.filter_by(user_id=user_id, start_date=start_date, end_date=end_date).first()
+        check = cls.query.filter_by(user_id=user_id, status="pending_approval").all()
         if check:
-            return check
+            return f"""Usuário tem férias pendentes.
+                        Aguarde aprovação ou peça cancelamento para solicitar novas férias"""
 
-        vacation = cls(user_id=user_id, start_date=start_date, end_date=end_date)
+        vacation = cls(user_id=user_id,
+                       start_date=start_date,
+                       end_date=end_date)
+
         db.session.add(vacation)
         db.session.commit()
 
