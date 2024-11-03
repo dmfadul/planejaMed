@@ -40,6 +40,12 @@ class Vacation(db.Model):
         return f"Férias de {self.user.abbreviated_name} removidas"
 
     @classmethod
+    def check_past_vacations(cls, start_date, end_date, user_id):
+        vacations = cls.query.filter_by(user_id=user_id).all()
+        
+        return 0
+
+    @classmethod
     def check(cls, start_date, user_id):
         user = User.query.filter_by(id=user_id).first()
         if not user:
