@@ -63,7 +63,6 @@ def resolve_vacations():
         return redirect(url_for('dashboard.dashboard'))
 
     # request = Request()
-    # test2
 
     flash("Férias Solicitadas", "success")
     return redirect(url_for('dashboard.dashboard'))
