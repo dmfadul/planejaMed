@@ -49,7 +49,7 @@ class Vacation(db.Model):
         vacations = cls.query.filter_by(user_id=user_id).all()
         vacations = [vacation for vacation in vacations if vacation.year == start_date.year]
 
-        elif len(vacations) == 0:
+        if len(vacations) == 0:
             return 0
 
         if len(vacations) == MAX_VACATION_SPLIT:
