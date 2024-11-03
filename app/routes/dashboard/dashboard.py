@@ -58,7 +58,11 @@ def resolve_vacations():
             return redirect(url_for('dashboard.dashboard'))
     
     flag = Vacation.check_past_vacations(start_date, end_date, current_user.id)
-    print(flag)
+    if isinstance(flag, str):
+        flash(flag, "danger")
+        return redirect(url_for('dashboard.dashboard'))
+
+    # request = Request()
 
     flash("Férias Solicitadas", "success")
     return redirect(url_for('dashboard.dashboard'))

@@ -16,7 +16,10 @@ class Vacation(db.Model):
     status = db.Column(db.String(100), nullable=False, default='pending')
 
     user = db.relationship('User', back_populates='vacations', lazy=True)
-    
+
+    @property
+    def year(self):
+        return self.start_date.year
 
     @classmethod
     def add_entry(cls, user_id, start_date, end_date):
@@ -41,7 +44,29 @@ class Vacation(db.Model):
 
     @classmethod
     def check_past_vacations(cls, start_date, end_date, user_id):
+        from app.global_vars import MAX_VACATION_SPLIT, MIN_VACATION_DURATION, TOTAL_VACATION_DAYS
+
         vacations = cls.query.filter_by(user_id=user_id).all()
+        vacations = [vacation for vacation in vacations if vacation.year == start_date.year]
+
+        elif len(vacations) == 0:
+            return 0
+
+        if len(vacations) == MAX_VACATION_SPLIT:
+            return "Usuário já utilizou todas as férias este ano este ano"
+        
+        old_vacation = vacations[0]
+        old_vac_duration = vacation.end_date - vacation.start_date
+        new_vac_duration = end_date - start_date
+
+        if old_vac_duration.days > TOTAL_VACATION_DAYS - MIN_VACATION_DURATION:
+            return "Usuário já utilizou todas as férias este ano este ano"
+
+        if old_vac_duration.days < MIN_VACATION_DURATION:
+            old_vac_duration = MIN_VACATION_DURATION
+
+        if old_vac_duration.days + new_vac_duration.days > TOTAL_VACATION_DAYS:
+            return "O total de férias ultrapassa o limite"
         
         return 0
 
