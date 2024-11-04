@@ -426,6 +426,10 @@ class Request(db.Model):
             self.respond(responder_id=responder_id, response='authorized')
             return f"O usuário {new_user.full_name} foi incluído com sucesso", 'success'
 
+        if self.action == 'approve_vacation':
+            print("approve_vacation")
+            return "Férias aprovadas", 'success'
+
         if self.action == "include_appointments":
             for app in self.appointments:
                 app.confirm()
