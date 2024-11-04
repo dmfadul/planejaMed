@@ -48,8 +48,8 @@ MESES = [
 
 SYSTEM_CRM = 0
 
-VACATION_NEW_RULES = {"routine": 24, "plaintemps": 36}
-VACATION_OLD_RULES = {"routine": 12, "plaintemps": 36}
+VACATION_NEW_RULES = {"routine": 104, "plaintemps": 36}
+VACATION_OLD_RULES = {"routine": 52, "plaintemps": 36}
 VACATION_NEW_RULE_START = datetime(year=2023, month=12, day=8)
 
 MAX_VACATION_SPLIT = 2
