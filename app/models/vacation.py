@@ -86,7 +86,8 @@ class Vacation(db.Model):
 
         target_date = start_date.replace(year=start_date.year - 1)
         if user.date_joined > target_date.date():
-            return "Usuário entrou no grupo menos de um ano antes do início das férias"
+            return f"""Usuário entrou no grupo menos de um ano antes do
+                        início das férias ({start_date.strftime('%d/%m/%Y')})"""
     
         user_rules = user.get_vacation_rules()
         base_dict = BaseAppointment.get_users_total(user.id, split_the_fifth=True)
