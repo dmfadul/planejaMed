@@ -51,9 +51,9 @@ class Vacation(db.Model):
     def check_past_vacations(cls, start_date, end_date, user_id):
         from app.global_vars import MAX_VACATION_SPLIT, MIN_VACATION_DURATION, TOTAL_VACATION_DAYS
 
-        vacations = cls.query.filter_by(user_id=user_id).all()
+        vacations = cls.query.filter_by(user_id=user_id).filter(~cls.status.in_(['pending_approval', 'denied', 'cancelled'])).all()
         vacations = [vacation for vacation in vacations if vacation.year == start_date.year]
-
+        print('vacations', vacations)
         if len(vacations) == 0:
             return 0
 
