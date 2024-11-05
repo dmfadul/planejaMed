@@ -47,6 +47,11 @@ class Vacation(db.Model):
         db.session.commit()
         return 0
 
+    def deny(self):
+        self.status = "denied"
+        db.session.commit()
+        return 0
+        
     @classmethod
     def check_past_vacations(cls, start_date, end_date, user_id):
         from app.global_vars import MAX_VACATION_SPLIT, MIN_VACATION_DURATION, TOTAL_VACATION_DAYS
