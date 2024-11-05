@@ -23,6 +23,8 @@ class Vacation(db.Model):
 
     @classmethod
     def add_entry(cls, user_id, start_date, end_date):
+        from app.global_vars import TOTAL_VACATION_DAYS
+
         user = User.query.filter_by(id=user_id).first()
         if not user:
             return f"Usuário com id {user_id} não encontrado"
@@ -31,6 +33,9 @@ class Vacation(db.Model):
         if check:
             return f"""Usuário tem férias pendentes.
                         Aguarde aprovação ou contacte o Administrador"""
+
+        if end_date - start_date > datetime.timedelta(TOTAL_VACATION_DAYS):
+            return f"Duração das férias ultrapassa o limite de {TOTAL_VACATION_DAYS} dias"
 
         vacation = cls(user_id=user_id,
                        start_date=start_date,
@@ -51,14 +56,14 @@ class Vacation(db.Model):
         self.status = "denied"
         db.session.commit()
         return 0
-        
+
     @classmethod
     def check_past_vacations(cls, start_date, end_date, user_id):
         from app.global_vars import MAX_VACATION_SPLIT, MIN_VACATION_DURATION, TOTAL_VACATION_DAYS
 
         vacations = cls.query.filter_by(user_id=user_id).filter(~cls.status.in_(['pending_approval', 'denied', 'cancelled'])).all()
         vacations = [vacation for vacation in vacations if vacation.year == start_date.year]
-        print('vacations', vacations)
+        
         if len(vacations) == 0:
             return 0
 
