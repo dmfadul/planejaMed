@@ -431,7 +431,10 @@ class Request(db.Model):
             return f"O usuário {new_user.full_name} foi incluído com sucesso", 'success'
 
         if self.action == 'approve_vacation':
-            print("approve_vacation")
+            vacation = self.requester.vacations[-1]
+            vacation.approve()
+
+            self.respond(responder_id=responder_id, response='authorized')
             return "Férias aprovadas", 'success'
 
         if self.action == "include_appointments":
