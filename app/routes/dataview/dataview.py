@@ -111,6 +111,7 @@ def resolve_holidays():
     elif action == "remove":
         day.remove_holiday()
 
+    month.save_holiday_to_original(day=day.date.day, operation=action)
     return jsonify({"status": "success", 'message': 'Holidays updated'})
 
 

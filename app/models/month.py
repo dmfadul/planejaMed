@@ -300,7 +300,7 @@ class Month(db.Model):
             json.dump(original_dict, f, indent=2)
 
         return 0
-    
+
     def get_original_dict(self):
         file_name = f"original_{self.number}_{self.year}.json"
        
@@ -311,7 +311,37 @@ class Month(db.Model):
             original_dict = json.load(f)
         
         return original_dict
-    
+
+    def save_holiday_to_original(self, day, operation):
+        original_dict = self.get_original_dict()
+        
+        if not original_dict:
+            return -1
+
+        holidays = original_dict.get('holidays')
+
+        print("day_num", day)
+        print("operation", operation)
+        print("original", original_dict.get('holidays'))
+        
+        if operation == "add":
+            holidays.append(day)
+        elif operation == "remove":
+            try:
+                holidays.remove(day)
+            except ValueError:
+                print(f"Day {day} not found")
+                return -1
+        else:
+            return -1
+
+        original_dict['holidays'] = holidays
+        print("new", original_dict.get('holidays'))
+
+        with open(f"instance/originals/original_{self.number}_{self.year}.json", 'w') as f:
+            json.dump(original_dict, f, indent=2)
+        
+
     def get_users_total(self, user_id):
         output = {"routine": 0, "plaintemps": 0}
         for app in [a for a in self.appointments if a.user_id == user_id]:
