@@ -57,9 +57,9 @@ class Request(db.Model):
         return new_request
     
     @classmethod
-    def vacation(cls, doctor_id, start_date, end_date):
+    def vacation(cls, doctor, start_date, end_date):
         new_request = cls(
-            requester_id=doctor_id,
+            requester_id=doctor.id,
             receivers_code="*",
             # requestee_code="*",
             action="approve_vacation",
@@ -68,8 +68,8 @@ class Request(db.Model):
         db.session.add(new_request)
         db.session.commit()
 
-        new_request.info=f"""O Médico {new_request.requester.full_name} solicitou férias de
-                            {start_date.strftime("%d/%m/%y")} a {end_date.strftime("%d/%m/%y")}."""
+        new_request.info=f"""*{doctor.full_name}* +solicitou+ férias de
+                            {start_date.strftime("%d/%m/%y")} a {end_date.strftime("%d/%m/%y")}"""
         
         db.session.commit()
 
@@ -414,6 +414,10 @@ class Request(db.Model):
             for app in self.appointments:
                 if not app.is_confirmed:
                     app.delete_entry(del_requests=False)
+
+            if self.action == 'approve_vacation':
+                denied_vacation = self.requester.vacations[-1]
+                denied_vacation.deny()
 
             self.respond(responder_id=responder_id, response="denied")
             return "A solicitação foi Negada", 'success'
