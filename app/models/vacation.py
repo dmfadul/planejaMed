@@ -29,7 +29,11 @@ class Vacation(db.Model):
         if not user:
             return f"Usuário com id {user_id} não encontrado"
 
-        check = cls.query.filter_by(user_id=user_id, status="pending_approval").all()
+        check = cls.query.filter(
+            cls.user_id == user_id,
+            cls.status.in_(["pending_approval", "approved"])
+        ).all()
+        
         if check:
             return f"""Usuário tem férias pendentes.
                         Aguarde aprovação ou contacte o Administrador"""
