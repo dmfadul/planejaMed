@@ -52,6 +52,11 @@ class Vacation(db.Model):
         db.session.commit()
         return 0
 
+    def approve(self):
+        self.status = "approved"
+        db.session.commit()
+        return 0
+
     def deny(self):
         self.status = "denied"
         db.session.commit()
