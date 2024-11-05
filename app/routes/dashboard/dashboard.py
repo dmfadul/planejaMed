@@ -70,7 +70,7 @@ def resolve_vacations():
         flash(new_vacation, "danger")
         return redirect(url_for('dashboard.dashboard'))
 
-    new_request = Request.vacation(current_user.id, new_vacation.start_date, new_vacation.end_date)
+    new_request = Request.vacation(current_user, new_vacation.start_date, new_vacation.end_date)
     if isinstance(new_request, str):
         new_vacation.remove_entry()
         flash(new_request, "danger")
