@@ -43,6 +43,8 @@ def dashboard():
 @dashboard_bp.route('/resolve-vacations', methods=['POST'])
 @login_required
 def resolve_vacations():
+    Vacation.update_status()
+    
     start_date = datetime.strptime(request.form['start_date'], "%Y-%m-%d")
     end_date = datetime.strptime(request.form['end_date'], "%Y-%m-%d")
 
