@@ -67,6 +67,20 @@ class Vacation(db.Model):
         return 0
 
     @classmethod
+    def update_status(cls):
+        approved_vacations = cls.query.filter_by(status='approved').all()
+        for vacation in approved_vacations:
+            if vacation.end_date < datetime.date.today():
+                vacation.status = 'completed'
+                db.session.commit()
+                return 0
+
+            if vacation.start_date < datetime.date.today():
+                vacation.status = 'ongoing'
+                db.session.commit()
+                return 0
+                
+    @classmethod
     def check_past_vacations(cls, start_date, end_date, user_id):
         from app.global_vars import MAX_VACATION_SPLIT, MIN_VACATION_DURATION, TOTAL_VACATION_DAYS
 
