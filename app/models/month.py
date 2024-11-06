@@ -319,12 +319,8 @@ class Month(db.Model):
             return -1
 
         holidays = original_dict.get('holidays')
-
-        print("day_num", day)
-        print("operation", operation)
-        print("original", original_dict.get('holidays'))
         
-        if operation == "add":
+        if operation == "add" and day not in holidays:
             holidays.append(day)
         elif operation == "remove":
             try:
@@ -336,7 +332,6 @@ class Month(db.Model):
             return -1
 
         original_dict['holidays'] = holidays
-        print("new", original_dict.get('holidays'))
 
         with open(f"instance/originals/original_{self.number}_{self.year}.json", 'w') as f:
             json.dump(original_dict, f, indent=2)
