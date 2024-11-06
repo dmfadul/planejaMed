@@ -1,0 +1,26 @@
+{% extends 'basic-view.html' %}
+
+
+{% block head_links %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('dataview.static', filename='css/table.css') }}">
+{% endblock %}
+
+{% block title %}
+    <div><header>{{center}} {{ month }} {{ year }}</header></div>
+{% endblock %}
+
+{% block reports %}
+    {% if is_admin %}
+    <button type="button" id="gen-report">Gerar Relatório</button>    
+    {% endif %}
+{% endblock %}
+
+{% block addRemoveHolidays %}
+    <button type="button" id="add-holiday" onclick="addHoliday()">Incluir Feriado</button>
+    <button type="button" id="remove-holiday" onclick="removeHoliday()">Excluir Feriado</button>
+{% endblock %}
+
+
+{% block otherScripts %}
+    <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/holidays.js') }}"></script>
+{% endblock %}
