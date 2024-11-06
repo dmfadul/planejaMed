@@ -221,7 +221,9 @@ def vacations_report():
     if not current_user.is_admin:
         return "Unauthorized", 401
 
-    return render_template('vacations-report.html', title='Relatório de Férias')
+    vacations = Vacation.report()
+    return render_template('vacations-report.html', vacations=vacations)
+    
 
 @admin_bp.route('/admin/calculate-vacations', methods=['POST', 'GET'])
 @login_required
