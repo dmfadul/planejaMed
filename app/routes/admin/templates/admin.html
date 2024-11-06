@@ -142,8 +142,17 @@
     
             <button type="submit">Calcular</button>
         </form>
-    </section> 
-   
+    </section>
+
+    <section>
+        <form method="post" action="{{ url_for('admin.calculate_vacations') }}" target="_blank">
+            <label for="create-center">Relatório de Férias:</label>
+            <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 30px; margin-top: 20px;"></div>
+    
+            <button type="submit">Entrar</button>
+        </form>
+    </section>
+    
     {% if user_is_root %}
         {% if maintenance_is_on %}
         <section style="text-align: center;">
