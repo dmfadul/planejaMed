@@ -212,6 +212,15 @@ class Vacation(db.Model):
         except FileNotFoundError:
             return -1
 
+    @classmethod
+    def report(cls):
+        vacations = cls.query.all()
+        output = []
+        for vacation in vacations:
+            output.append(vacation.gen_dict())
+        
+        return output
+
     def gen_dict(self):
         return {
             "name": self.user.full_name,
