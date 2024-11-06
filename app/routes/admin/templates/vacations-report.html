@@ -1,26 +1,41 @@
-{% extends 'basic-view.html' %}
+{% extends 'base.html' %}
 
 
 {% block head_links %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('dataview.static', filename='css/table.css') }}">
 {% endblock %}
 
-{% block title %}
-    <div><header>{{center}} {{ month }} {{ year }}</header></div>
-{% endblock %}
+{% block mainContent %}
+        <div id="hourModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Confirmar Ação</h2>
+                <!-- Dynamic content will be loaded here -->
+                <div id="modalBody"></div>
+                <div class="button-group">
+                    <button id="cancelButton" class="submit-button cancel-button">Cancel</button>
+                    <button id="saveButton" class="submit-button save-button">Save</button>
+                </div>
+            </div>
+        </div>
+        <div id="overlay" class="overlay hidden"></div>
 
-{% block reports %}
-    {% if is_admin %}
-    <button type="button" id="gen-report">Gerar Relatório</button>    
-    {% endif %}
-{% endblock %}
-
-{% block addRemoveHolidays %}
-    <button type="button" id="add-holiday" onclick="addHoliday()">Incluir Feriado</button>
-    <button type="button" id="remove-holiday" onclick="removeHoliday()">Excluir Feriado</button>
-{% endblock %}
 
 
-{% block otherScripts %}
-    <script type="text/javascript" src="{{ url_for('dataview.static', filename='scripts/holidays.js') }}"></script>
+        <div id="vacations-report-table">
+            <table>
+                <head>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CRM</th>
+                        <th>Período</th>
+                        <th>Justificativa</th>
+                        <th>Status</th>
+                    </tr>
+                </head>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}
