@@ -3,6 +3,7 @@
 
 {% block head_links %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('dataview.static', filename='css/table.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/buttons.css') }}">
 {% endblock %}
 
 {% block mainContent %}
@@ -30,7 +31,7 @@
                         <th>Início</th>
                         <th>Final</th>
                         <th>Status</th>
-                        <th>Cancelar</th>
+                        <th></th>
                     </tr>
                 </head>
                 <tbody>
@@ -41,7 +42,7 @@
                             <td>{{ vacation.start_date }}</td>
                             <td>{{ vacation.end_date }}</td>
                             <td>{{ vacation.status }}</td>
-                            <td><button onclick=""></button></td>
+                            <td><button class="submit-button save-button" onclick=""></button></td>
                         </tr>
                     {% endfor %}
                     
