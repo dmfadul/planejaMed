@@ -215,6 +215,16 @@ def create_center():
     return redirect(url_for('admin.admin'))
 
 
+@admin_bp.route('/admin/vacations-report', methods=['GET'])
+@login_required
+def vacations_report():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    vacations = Vacation.report()
+    return render_template('vacations-report.html', vacations=vacations)
+    
+
 @admin_bp.route('/admin/calculate-vacations', methods=['POST', 'GET'])
 @login_required
 def calculate_vacations():

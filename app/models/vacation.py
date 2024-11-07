@@ -212,6 +212,24 @@ class Vacation(db.Model):
         except FileNotFoundError:
             return -1
 
+    @classmethod
+    def report(cls):
+        vacations = cls.query.all()
+        output = []
+        for vacation in vacations:
+            output.append(vacation.gen_dict())
+        
+        return output
+
+    def gen_dict(self):
+        return {
+            "name": self.user.full_name,
+            "crm": self.user.crm,
+            "start_date": self.start_date.strftime('%d/%m/%Y'),
+            "end_date": self.end_date.strftime('%d/%m/%Y'),
+            "status": self.status
+        }
+
     def calculate_payment(self):
         from app.hours_conversion import convert_hours_to_line, sum_hours
         months_range = self.get_months_range()
