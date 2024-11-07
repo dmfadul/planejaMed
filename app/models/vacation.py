@@ -222,12 +222,20 @@ class Vacation(db.Model):
         return output
 
     def gen_dict(self):
+        translation_dict = {
+            "pending_approval": "Pendente",
+            "approved": "Aprovado",
+            "denied": "Negado",
+            "completed": "Concluído",
+            "ongoing": "Em andamento"
+        }
+
         return {
             "name": self.user.full_name,
             "crm": self.user.crm,
             "start_date": self.start_date.strftime('%d/%m/%Y'),
             "end_date": self.end_date.strftime('%d/%m/%Y'),
-            "status": self.status
+            "status": translation_dict.get(self.status)
         }
 
     def calculate_payment(self):
