@@ -25,11 +25,12 @@
             <table>
                 <head>
                     <tr>
-                        <th>CRM</th>
                         <th>Médico</th>
-                        <th>Data Inicial</th>
-                        <th>Data Final</th>
+                        <th>CRM</th>
+                        <th>Início</th>
+                        <th>Final</th>
                         <th>Status</th>
+                        <th>Cancelar</th>
                     </tr>
                 </head>
                 <tbody>
@@ -40,6 +41,7 @@
                             <td>{{ vacation.start_date }}</td>
                             <td>{{ vacation.end_date }}</td>
                             <td>{{ vacation.status }}</td>
+                            <td><button onclick=""></button></td>
                         </tr>
                     {% endfor %}
                     
