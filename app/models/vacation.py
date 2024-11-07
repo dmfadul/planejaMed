@@ -245,7 +245,7 @@ class Vacation(db.Model):
             doctors_dict = original_dict.get('data').get(str(self.user.crm))
 
             if not doctors_dict:
-                output += f"O médico {doctor.full_name} não tem horas no original do mês {month[1]}/{month[0]}\n"
+                output += f"O médico {self.doctor.full_name} não tem horas no original do mês {month[1]}/{month[0]}\n"
                 continue
 
             output_lst = []
