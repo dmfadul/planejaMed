@@ -100,7 +100,10 @@ class BaseAppointment(db.Model):
             if app.week_day in [5, 6] or app.is_night:
                 output["plaintemps"] += count
             else:
-                output["routine"] += count         
+                output["routine"] += count    
+
+        output["plaintemps"] = math.ceil(output["plaintemps"])
+        output["routine"] = math.ceil(output["routine"])     
 
         return output
     
@@ -121,7 +124,7 @@ class BaseAppointment(db.Model):
 
         output["plaintemps"] = math.ceil(output["plaintemps"])
         output["routine"] = math.ceil(output["routine"])
-        
+
         return output
 
     @property
