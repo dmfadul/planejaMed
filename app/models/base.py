@@ -1,3 +1,4 @@
+import math
 from app import db
 from sqlalchemy import ForeignKey
 
@@ -118,6 +119,9 @@ class BaseAppointment(db.Model):
             else:
                 output["routine"] += count
 
+        output["plaintemps"] = math.ceil(output["plaintemps"])
+        output["routine"] = math.ceil(output["routine"])
+        
         return output
 
     @property
