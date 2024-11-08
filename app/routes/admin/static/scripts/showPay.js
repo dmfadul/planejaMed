@@ -1,8 +1,17 @@
 function showPay(button) {
-    fetch('/admin/calculate-vacation-pay')
+    const vacationID = button.getAttribute('data-id');
+    
+    fetch('/admin/calculate-vacation-pay', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ vacationID: vacationID }),
+    })
     .then(response => response.json())
     .then(data => {
-        document.getElementById('payModal').innerText = data.message;
+        console.log('Success:', data);
+        document.getElementById('payModal').innerText = data;
         document.getElementById('payModal').style.display = 'block';
     })
     .catch(error => {
@@ -13,3 +22,7 @@ function showPay(button) {
 function closeModal() {
     document.getElementById('payModal').style.display = 'none';
 }
+
+window.onclick = function() {
+    closeModal();
+};
