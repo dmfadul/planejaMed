@@ -225,9 +225,9 @@ def vacations_report():
     return render_template('vacations-report.html', vacations=vacations)
     
 
-@admin_bp.route('/admin/calculate-vacations', methods=['POST', 'GET'])
+@admin_bp.route('/admin/calculate-vacation-pay', methods=['POST', 'GET'])
 @login_required
-def calculate_vacations():
+def calculate_vacation_pay():
     if not current_user.is_admin:
         return "Unauthorized", 401
 
