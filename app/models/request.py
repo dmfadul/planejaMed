@@ -355,6 +355,26 @@ class Request(db.Model):
     def filter_by_user(cls, user_id):
         return [req for req in cls.query.filter_by(is_open=True).all() if user_id in req.receivers]
 
+    @classmethod
+    def report(cls):
+        requests = cls.query.all()
+
+        output = []
+        for req in requests:
+            output.append({
+                "id": req.id,
+                "requester": req.requester.full_name,
+                "receivers": [User.query.get(user_id).full_name for user_id in req.receivers],
+                "action": req.action,
+                "creation_date": req.creation_date,
+                "is_open": req.is_open,
+                "response_date": req.response_date,
+                "response": req.response,
+                "info": req.info
+            })
+
+        return output
+
     @property
     def receivers(self):
         from app.models.user import User
