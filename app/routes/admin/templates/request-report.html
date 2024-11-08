@@ -27,8 +27,8 @@
             <table>
                 <head>
                     <tr>
-                        <th>ID</th>
                         <th>Requester</th>
+                        <th>ID</th>
                         <th>Receivers</th>
                         <th>Action</th>
                         <th>Creation Date</th>
@@ -42,8 +42,8 @@
                 <tbody>
                     {% for req in reqs %}
                         <tr>
-                            <td>{{ req.id }}</td>
                             <td>{{ req.requester }}</td>
+                            <td>{{ req.id }}</td>
                             <td>{{ req.receivers }}</td>
                             <td>{{ req.action }}</td>
                             <td>{{ req.creation_date }}</td>
