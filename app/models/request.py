@@ -358,7 +358,7 @@ class Request(db.Model):
     @classmethod
     def report(cls):
         from app.models.user import User
-        requests = cls.query.order_by(desc(cls.creation_date)).all()
+        requests = cls.query.order_by(desc(cls.id)).all()
 
         output = []
         for req in requests:
