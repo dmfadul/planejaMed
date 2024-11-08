@@ -26,3 +26,9 @@ function closeModal() {
 window.onclick = function() {
     closeModal();
 };
+
+window.onkeydown = function(event) {
+    if (event.key === 'Escape') {
+        closeModal();
+    }
+};
