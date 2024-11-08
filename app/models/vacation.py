@@ -1,9 +1,10 @@
-from app import db
-from app.models import User, BaseAppointment, Month
-import app.global_vars as global_vars
-from dateutil.relativedelta import relativedelta
-import datetime
 import json
+import datetime
+from app import db
+from sqlalchemy import desc
+import app.global_vars as global_vars
+# from dateutil.relativedelta import relativedelta
+from app.models import User, BaseAppointment, Month
 
 
 class Vacation(db.Model):
@@ -222,7 +223,7 @@ class Vacation(db.Model):
             "ongoing": "Em andamento"
         }
         
-        vacations = cls.query.all()
+        vacations = cls.query.order_by(desc(cls.id)).all()
         output = []
         for vacation in vacations:
             output.append({
@@ -242,10 +243,11 @@ class Vacation(db.Model):
         months = self.get_months_in_range(months_range)
         
         output = ""
-        for month in months:       
+        for month in months:
+            print(month) 
             original_dict = month.get_original_dict()
             if not original_dict:
-                output += f"O mês {self.number}/{self.year} não tem original registrado\n"
+                output += f"O mês não tem original registrado\n"
                 continue
             
             doctors_dict = original_dict.get('data').get(str(self.user.crm))
