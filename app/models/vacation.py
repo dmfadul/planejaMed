@@ -214,14 +214,6 @@ class Vacation(db.Model):
 
     @classmethod
     def report(cls):
-        vacations = cls.query.all()
-        output = []
-        for vacation in vacations:
-            output.append(vacation.gen_dict())
-        
-        return output
-
-    def gen_dict(self):
         translation_dict = {
             "pending_approval": "Pendente",
             "approved": "Aprovado",
@@ -229,15 +221,20 @@ class Vacation(db.Model):
             "completed": "Concluído",
             "ongoing": "Em andamento"
         }
-
-        return {
-            "name": self.user.full_name,
-            "crm": self.user.crm,
-            "start_date": self.start_date.strftime('%d/%m/%Y'),
-            "end_date": self.end_date.strftime('%d/%m/%Y'),
-            "status": translation_dict.get(self.status)
-        }
-
+        
+        vacations = cls.query.all()
+        output = []
+        for vacation in vacations:
+            output.append({
+                "name": vacation.user.full_name,
+                "crm": vacation.user.crm,
+                "start_date": vacation.start_date.strftime('%d/%m/%Y'),
+                "end_date": vacation.end_date.strftime('%d/%m/%Y'),
+                "status": translation_dict.get(vacation.status)
+        })
+        
+        return output
+        
     def calculate_payment(self):
         from app.hours_conversion import convert_hours_to_line, sum_hours
         months_range = self.get_months_range()
