@@ -1,5 +1,5 @@
 from app import db
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, desc
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from .associations import request_appointment_association
@@ -358,7 +358,7 @@ class Request(db.Model):
     @classmethod
     def report(cls):
         from app.models.user import User
-        requests = cls.query.all()
+        requests = cls.query.order_by(desc(cls.creation_date)).all()
 
         output = []
         for req in requests:
