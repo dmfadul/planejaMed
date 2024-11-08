@@ -357,6 +357,7 @@ class Request(db.Model):
 
     @classmethod
     def report(cls):
+        from app.models.user import User
         requests = cls.query.all()
 
         output = []
