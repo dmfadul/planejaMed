@@ -243,11 +243,14 @@ class Vacation(db.Model):
         months = self.get_months_in_range(months_range)
         
         output = ""
-        for month in months:
-            print(month) 
+        for i, month in enumerate(months):
+            if not month:
+                output += f"O mês {months_range[i][1]}/{months_range[i][0]} não foi encontrado\n"
+                continue
+
             original_dict = month.get_original_dict()
             if not original_dict:
-                output += f"O mês não tem original registrado\n"
+                output += f"O mês {months_range[i][1]}/{months_range[i][0]} não tem original\n"
                 continue
             
             doctors_dict = original_dict.get('data').get(str(self.user.crm))
