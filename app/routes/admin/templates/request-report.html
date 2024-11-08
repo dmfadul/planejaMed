@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+
+{% block head_links %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('dataview.static', filename='css/table.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/buttons.css') }}">
+    <script type="text/javascript" src="{{ url_for('admin.static', filename='scripts/showPay.js') }}"></script>
+{% endblock %}
+
+{% block mainContent %}
+        <div id="payModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Confirmar Ação</h2>
+                <!-- Dynamic content will be loaded here -->
+                <div id="modalBody"></div>
+                <div class="button-group">
+                    <button id="cancelButton" class="submit-button cancel-button">Cancel</button>
+                    <button id="saveButton" class="submit-button save-button">Save</button>
+                </div>
+            </div>
+        </div>
+        <div id="overlay" class="overlay hidden"></div>
+
+
+
+        <div id="vacations-report-table">
+            <table>
+                <head>
+                    <tr>
+                        <th>ID</th>
+                        <th>Requester</th>
+                        <th>Receivers</th>
+                        <th>Action</th>
+                        <th>Creation Date</th>
+                        <th>Is Open</th>
+                        <th>Response Date</th>
+                        <th>Response</th>
+                        <th>Info</th>
+                        <th></th>
+                    </tr>
+                </head>
+                <tbody>
+                    {% for req in reqs %}
+                        <tr>
+                            <td>{{ req.id }}</td>
+                            <td>{{ req.requester }}</td>
+                            <td>{{ req.receivers }}</td>
+                            <td>{{ req.action }}</td>
+                            <td>{{ req.creation_date }}</td>
+                            <td>{{ req.is_open }}</td>
+                            <td>{{ req.response_date }}</td>
+                            <td>{{ req.response }}</td>
+                            <td>{{ req.info }}</td>
+                            <td><button class="submit-button save-button" onclick="showPay()"></button></td>
+                        </tr>
+                    {% endfor %}
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
