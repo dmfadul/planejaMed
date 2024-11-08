@@ -226,6 +226,7 @@ class Vacation(db.Model):
         output = []
         for vacation in vacations:
             output.append({
+                "id": vacation.id,
                 "name": vacation.user.full_name,
                 "crm": vacation.user.crm,
                 "start_date": vacation.start_date.strftime('%d/%m/%Y'),
@@ -234,7 +235,7 @@ class Vacation(db.Model):
         })
         
         return output
-        
+
     def calculate_payment(self):
         from app.hours_conversion import convert_hours_to_line, sum_hours
         months_range = self.get_months_range()
