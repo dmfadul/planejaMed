@@ -231,7 +231,7 @@ def vacations_report():
     if not current_user.is_admin:
         return "Unauthorized", 401
 
-    Vacation.update()
+    Vacation.update_status()
     vacations = Vacation.report()
     return render_template('vacations-report.html', vacations=vacations)
     
