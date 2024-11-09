@@ -1,3 +1,4 @@
+import re
 from app import db
 from sqlalchemy import ForeignKey, desc
 from sqlalchemy.orm import relationship
@@ -38,6 +39,49 @@ class Request(db.Model):
     def __repr__(self):
         return self.message
     
+    @property
+    def appointment_date(self):
+        date_pattern = r"\b\d{2}/\d{2}/\d{2}\b"
+        date = re.search(date_pattern, self.info)
+
+        if date:
+            return datetime.strptime(date.group(), "%d/%m/%y")
+
+        return None
+
+    @property
+    def working_month(self):
+        from app.global_vars import STR_DAY
+
+        if not 31 >= self.appointment_date.day >= STR_DAY:
+            return self.appointment_date.month
+
+        if self.appointment_date.month == 12:
+            return 1
+        
+        return self.appointment_date.month + 1
+
+    @property
+    def working_year(self):
+        from app.global_vars import STR_DAY
+
+        if not 31 >= self.appointment_date.day >= STR_DAY:
+            return self.appointment_date.year
+        
+        if self.appointment_date.month == 12:
+            return self.appointment_date.year + 1
+        
+        return self.appointment_date.year
+
+    @property
+    def center(self):
+        check = self.info.find("centro")
+
+        if check == -1:
+            return None
+        
+        return self.info.split("centro")[1].strip()
+
     @classmethod
     def new_user(cls, doctor_to_include_id):
         new_request = cls(
