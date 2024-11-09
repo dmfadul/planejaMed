@@ -80,7 +80,28 @@ class Request(db.Model):
         if check == -1:
             return None
         
-        return self.info.split("centro")[1].strip()
+        center = self.info.split("centro")[1].strip()
+        center = center.split()[0].strip()
+
+        return center
+
+    @property
+    def hour_range(self):
+        check = self.info.find("horários:")
+
+        if check == -1:
+            return None
+        
+        hours = self.info.split("horários:")[1].strip()
+        hours = hours.split("no")[0].strip()
+        str_hour, end_hour = hours.split("-") 
+
+        str_hour = str_hour.split(":")[0].strip()
+        end_hour = end_hour.split(":")[0].strip()
+
+        hour_range = range(int(str_hour), int(end_hour) + 1)
+
+        return hour_range
 
     @classmethod
     def new_user(cls, doctor_to_include_id):
