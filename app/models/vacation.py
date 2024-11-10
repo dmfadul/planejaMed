@@ -26,9 +26,22 @@ class Vacation(db.Model):
     def add_entry(cls, user_id, start_date, end_date):
         from app.global_vars import TOTAL_VACATION_DAYS
 
+        if start_date >= end_date:
+        return "Data de início não pode ser posterior a data final", "danger"
+
         user = User.query.filter_by(id=user_id).first()
         if not user:
             return f"Usuário com id {user_id} não encontrado"
+
+        if not current_user.pre_approved_vacation:
+            flag = Vacation.check(start_date, current_user.id)
+
+            if isinstance(flag, str):
+                return flag
+
+        flag = Vacation.check_past_vacations(start_date, end_date, current_user.id)
+        if isinstance(flag, str):
+            return flag       
 
         check = cls.query.filter(
             cls.user_id == user_id,
