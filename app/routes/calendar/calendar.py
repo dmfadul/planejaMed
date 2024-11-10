@@ -3,7 +3,9 @@ from flask_login import login_required, current_user
 # from .gen_data import gen_days_dict, gen_doctors_dict
 from .gen_data import gen_day_hours
 from .resolve_data import resolve_data
-from app.models import Month, Center
+from app.models import Month, Center, User
+from app.hours_conversion import gen_redudant_hour_list
+
 
 
 calendar_bp = Blueprint(
@@ -84,3 +86,32 @@ def get_day_data():
     day_dict = gen_day_hours(center, day)
     
     return jsonify(day_dict)
+
+
+@calendar_bp.route("/get-doctors", methods=["GET"])
+@login_required
+def get_doctors():
+    # doctors_dict, doctors_list = gen_doctors_dict(exclude_invisible=True)
+    doctors = User.query.filter_by(is_active=True, is_visible=True).order_by(User.first_name).all()
+    doctors_list = [(doctor.crm, doctor.full_name) for doctor in doctors]
+
+    return jsonify(doctors_list)
+
+
+@calendar_bp.route("/get-redundant-hours", methods=["GET"])
+@login_required
+def get_redundant_hours():
+    crm = request.args.get('crm')
+    center = request.args.get('center')
+
+    month = Month.get_current()
+    day = request.args.get('day')
+    day_date = month.get_day(int(day)).date
+
+    doctor = User.query.filter_by(crm=crm).first()
+    if doctor is None:
+        return jsonify([])
+    
+    redundant_hour_list = gen_redudant_hour_list(doctor.app_dict.get(center).get(day_date), include_line=True)
+
+    return jsonify(redundant_hour_list)

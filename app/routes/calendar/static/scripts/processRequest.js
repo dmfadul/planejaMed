@@ -72,14 +72,7 @@ function handleSchExclude(infoDict) {
 
 // Calendar functions
 function processCalRequest(crm, action) {
-    if (parseInt(crm) !== 0) {
-        redudantHoursList = daysDict[day][crm]["hours"][1];
-        redudantHoursList = redudantHoursList.map(h => [h, h]);
-    }
-
     infoDict = {};
-    // infoDict["year"] = monthYear;
-    // infoDict["month_name"] = monthName;
     infoDict["day"] = day;
     infoDict["center"] = openCenter;
     infoDict["crm"] = parseInt(crm);
@@ -99,17 +92,28 @@ function processCalRequest(crm, action) {
 
 // include function
 function handleInclude(infoDict) {
-    let doctors = doctorsList;
-    let title = "Escolha quem Incluir";
-    let label = "Médicos: ";
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', '/get-doctors', true);
+    xhr.onload = function() {
+        if (this.status === 200) {
+            let doctors = JSON.parse(this.responseText);
+            doctors = doctors.map(d => [d[0], d[1]]);
 
-    openModal("modal1", doctors, title, label, function(selectedDoc) {
-        infoDict["crm"] = selectedDoc;
-        openHourModal(function(selectedValue){
-            infoDict["hours"] = selectedValue;
-            sendHoursToServer("include", infoDict);
-        });
-    });
+            let title = "Escolha quem Incluir";
+            let label = "Médicos: ";
+        
+            openModal("modal1", doctors, title, label, function(selectedDoc) {
+                infoDict["crm"] = selectedDoc;
+                openHourModal(function(selectedValue){
+                    infoDict["hours"] = selectedValue;
+                    sendHoursToServer("include", infoDict);
+                });
+            });
+        } else {
+            console.log("Error: Could not get doctors list");
+        }
+    }
+    xhr.send();
 }
 
 // exchange functions
@@ -213,14 +217,30 @@ function handleExchangeFromOtherUser(infoDict) {
 
 // exclude function
 function handleExclude(infoDict) {
-    let availableHours = redudantHoursList;
-    let title = "Especifique Horas para Excluir";
-    let label = "Horários: "
+    let crm = infoDict["crm"];
+    let center = infoDict["center"];
+    let day = infoDict["day"];
     
-    openModal('modal1', availableHours, title, label, function(selectedValue) {
-        infoDict["hours"] = selectedValue;
-        sendHoursToServer("exclude", infoDict);
-    });
+    xhr = new XMLHttpRequest();
+    xhr.open('GET', `/get-redundant-hours?crm=${crm}&center=${center}&day=${day}`, true);
+
+    xhr.onload = function() {
+        if (this.status === 200) {
+            let availableHours = JSON.parse(this.responseText);
+            availableHours = availableHours.map(h => [h, h]);
+
+            let title = "Especifique Horas para Excluir";
+            let label = "Horários: "
+ 
+            openModal('modal1', availableHours, title, label, function(selectedValue) {
+                infoDict["hours"] = selectedValue;
+                sendHoursToServer("exclude", infoDict);
+            });
+        } else {
+            console.log("Error: Could not get redundant hours list");
+        }
+    }
+    xhr.send();
 }
 
 // donation functions
