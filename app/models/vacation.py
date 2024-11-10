@@ -27,14 +27,14 @@ class Vacation(db.Model):
         from app.global_vars import TOTAL_VACATION_DAYS
 
         if start_date >= end_date:
-        return "Data de início não pode ser posterior a data final", "danger"
+            return "Data de início não pode ser posterior a data final", "danger"
 
         user = User.query.filter_by(id=user_id).first()
         if not user:
             return f"Usuário com id {user_id} não encontrado"
 
-        if not current_user.pre_approved_vacation:
-            flag = Vacation.check(start_date, current_user.id)
+        if not user.pre_approved_vacation:
+            flag = Vacation.check(start_date, user.id)
 
             if isinstance(flag, str):
                 return flag
