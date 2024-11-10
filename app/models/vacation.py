@@ -233,7 +233,8 @@ class Vacation(db.Model):
             "approved": "Aprovado",
             "denied": "Negado",
             "completed": "Concluído",
-            "ongoing": "Em andamento"
+            "ongoing": "Em andamento",
+            "paid": "Pago"
         }
         
         vacations = cls.query.order_by(desc(cls.id)).all()
@@ -299,6 +300,12 @@ class Vacation(db.Model):
             output += f"Total de plantões: {total_p} horas - Total de rotinas: {total_r} horas \n"
 
         return output
+
+    def pay(self):
+        self.status = "paid"
+        db.session.commit()
+
+        return 0
 
     def get_months_range(self):
         curr_year, curr_month = self.start_date.year, self.start_date.month
