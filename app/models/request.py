@@ -143,7 +143,7 @@ class Request(db.Model):
             
             if app.is_confirmed:
                 db.session.rollback()
-                return f"""Conflito - {doctor.full_name} já tem esse horário
+                return f"""Conflito 1 - {doctor.full_name} já tem esse horário
                         (ou parte dele) no centro {app.center.abbreviation}"""
             
             if app.has_open_requests:
@@ -153,7 +153,7 @@ class Request(db.Model):
         
             if not app.is_confirmed:
                 db.session.rollback()
-                return f"""Conflito - Já há Requisição pendente para {doctor.full_name}
+                return f"""Conflito 2- Já há Requisição pendente para {doctor.full_name}
                             em {center.abbreviation} no dia {day.date}
                             para o horário pedido (ou parte dele)."""
         
@@ -317,7 +317,7 @@ class Request(db.Model):
 
             if in_app_doc_1 and not in_app_doc_1 == out_app_doc_1:
                 db.session.rollback()             
-                return f"""Conflito - {doctor_1.full_name} já tem esse horário
+                return f"""Conflito 3 - {doctor_1.full_name} já tem esse horário
                         (ou parte dele) no centro {in_app_doc_1.center.abbreviation}"""
             
             in_app_doc_2 = Appointment.query.filter_by(
@@ -329,7 +329,7 @@ class Request(db.Model):
 
             if in_app_doc_2 and not in_app_doc_2 == out_app_doc_2:
                 db.session.rollback()
-                return f"""Conflito - {doctor_2.full_name} já tem esse horário
+                return f"""Conflito 4 - {doctor_2.full_name} já tem esse horário
                         (ou parte dele) no centro {in_app_doc_2.center.abbreviation}"""
 
             new_request.appointments.append(out_app_doc_1)         
@@ -468,7 +468,7 @@ class Request(db.Model):
 
                 if test_app:
                     self.delete()
-                    return f"""Conflito - {User.query.get(doctor_that_receives).full_name} já tem esse horário
+                    return f"""Conflito 5- {User.query.get(doctor_that_receives).full_name} já tem esse horário
                             (ou parte dele) no centro {test_app.center.abbreviation}""", 'danger'
 
             for app in self.appointments:
