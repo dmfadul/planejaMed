@@ -279,9 +279,21 @@ def calculate_vacation_pay():
     doctor = vacation.user   
     
     output = vacation.calculate_payment()
-    print(output)
 
     return jsonify(output)
+
+
+@admin_bp.route('/admin/pay-vacation', methods=['POST'])
+@login_required
+def pay_vacation():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    vacation_id = request.json['vacationID']
+    vacation = Vacation.query.get(vacation_id)
+
+    vacation.pay()
+    return jsonify("success")
 
 
 @admin_bp.route('/admin/toggle-maintenance', methods=['POST', 'GET'])
