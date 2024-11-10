@@ -98,6 +98,32 @@ def get_doctors():
     return jsonify(doctors_list)
 
 
+@calendar_bp.route("/get-doctor-centers", methods=["GET"])
+@login_required
+def get_doctor_centers():
+    crm = request.args.get('crm')
+    doctor = User.query.filter_by(crm=crm).first()
+    if doctor is None:
+        return jsonify([])
+    
+    centers = doctor.app_dict.keys()
+    return jsonify(list(centers))
+
+
+@calendar_bp.route("/get-doctor-days", methods=["GET"])
+@login_required
+def get_doctor_days():
+    crm = request.args.get('crm')
+    center = request.args.get('center')
+
+    doctor = User.query.filter_by(crm=crm).first()
+    if doctor is None:
+        return jsonify([])
+    
+    days = [date.day for date in doctor.app_dict.get(center).keys()]
+    return jsonify(list(days))
+
+
 @calendar_bp.route("/get-redundant-hours", methods=["GET"])
 @login_required
 def get_redundant_hours():
