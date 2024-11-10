@@ -17,8 +17,9 @@ with app.app_context():
     user = User.query.filter_by(crm=35198).first()
 
     print(user)
+    print(user.get_month_requests(12, 2024))
 
-    print(user.get_original_appointments_by_month(12, 2024))
+    # print(user.get_original_appointments_by_month(12, 2024))
 #     user = User.query.filter_by(crm=26704).first()
 #     s_date = datetime(2024, 12, 1)
 #     e_date = datetime(2024, 12, 30)

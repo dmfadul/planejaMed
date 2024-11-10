@@ -160,7 +160,41 @@ class User(db.Model, UserMixin):
         reqs = [req for req in reqs if req.working_year == year_num]
         reqs = [req for req in reqs if req.response == "authorized"]
 
-        return reqs
+        reqs_info = []
+        signal = 0
+        for req in reqs:
+            if req.action == "include":
+                signal = "+"
+            elif req.action == "donate" and "DE" in req.info:
+                signal = "+"
+            elif req.action == "exchange":
+                print("exchange", '+')
+            elif req.action == "exclude":
+                signal = "-"
+            elif req.action == "donate" and "PARA" in req.info:
+                signal = "-"
+            elif req.action == "exchange":
+                print("exchange", '-')
+            
+            if signal == 0:
+                print(req.action, req.info)
+                print(req.action=="donate")
+
+            reqs_info.append((req.center,
+                              req.appointment_date.day,
+                              req.hour_range,
+                              signal))
+
+        clean_reqs_info = []
+        for req in reqs_info:
+            req_inverse = (req[0], req[1], req[2], "+" if req[3] == "-" else "-")
+            
+            if req_inverse in reqs_info:
+                continue
+
+            clean_reqs_info.append(req)
+
+        return clean_reqs_info
 
     def get_original_appointments_by_month(self, month_num, year_num):
         month_apps = self.get_month_appointments(month_num, year_num)
