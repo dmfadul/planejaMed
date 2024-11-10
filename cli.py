@@ -13,9 +13,12 @@ import json
 
 app = create_app()
 with app.app_context():
-    a = Appointment.query.all()[-1]
+    req = Request.query.filter_by(id=398).first()
+    user = User.query.filter_by(crm=35198).first()
 
-    print(a.user)
+    print(user)
+
+    print(user.get_original_appointments_by_month(12, 2024))
 #     user = User.query.filter_by(crm=26704).first()
 #     s_date = datetime(2024, 12, 1)
 #     e_date = datetime(2024, 12, 30)
