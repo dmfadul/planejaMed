@@ -47,7 +47,7 @@
                             <td><button class="submit-button save-button" onclick="showPay(this)" data-id="{{ vacation.id }}">$</button></td>
                             <td>
                                 <button 
-                                    class="submit-button save-button {% if vacation.status == "Pago" %}disabled-button{% endif %}" 
+                                    class="submit-button save-button {% if vacation.status in ["Pago", "Negado"] %}disabled-button{% endif %}" 
                                     onclick="payVacation(this)" 
                                     data-id="{{ vacation.id }}"
                                     {% if vacation.status == "Pago" %}disabled{% endif %}
