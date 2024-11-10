@@ -302,6 +302,15 @@ class Vacation(db.Model):
         return output
 
     def pay(self):
+        if self.status == "paid":
+            return "Férias já pagas"
+        
+        if self.status == "pending_approval":
+            return "Férias não podem ser pagas antes de aprovadas"
+
+        if self.status == "denied":
+            return "Férias negadas não podem ser pagas"
+
         self.status = "paid"
         db.session.commit()
 
