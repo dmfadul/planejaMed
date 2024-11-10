@@ -39,7 +39,7 @@ class Vacation(db.Model):
             if isinstance(flag, str):
                 return flag
 
-        flag = Vacation.check_past_vacations(start_date, end_date, current_user.id)
+        flag = Vacation.check_past_vacations(start_date, end_date, user.id)
         if isinstance(flag, str):
             return flag       
 
