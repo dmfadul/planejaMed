@@ -225,6 +225,35 @@ def request_report():
     return render_template('request-report.html', reqs=reqs)
 
 
+@admin_bp.route('/admin/add-vacation', methods=['POST'])
+@login_required
+def add_vacation():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    crm = request.form['crm']
+    user = User.query.filter_by(crm=crm).first()
+    if not user:
+        return "User not found", 404
+
+    start_date = datetime.strptime(request.form['start_date'], "%Y-%m-%d")
+    end_date = datetime.strptime(request.form['end_date'], "%Y-%m-%d")
+
+    new_vacation = Vacation.add_entry(start_date=start_date,
+                                      end_date=end_date,
+                                      user_id=user.id)    
+
+    if isinstance(new_vacation, str):
+        flash(new_vacation, "danger")
+        return redirect(url_for('dashboard.dashboard'))
+
+    new_vacation.approve()
+    
+    flash("Férias criadas", "success")
+    return redirect(url_for('admin.admin'))
+      
+
+
 @admin_bp.route('/admin/vacations-report', methods=['GET'])
 @login_required
 def vacations_report():
