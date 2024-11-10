@@ -28,7 +28,6 @@ def calendar(center):
         year = month.year
         calendar = month.calendar
 
-    # days_dict = gen_days_dict(center)
     # doctors_dict, doctors_list = gen_doctors_dict()
 
     kwargs = {
@@ -37,7 +36,6 @@ def calendar(center):
     'open_center': center,
     'calendar_days': calendar,
     'curr_user_data': (current_user.crm, current_user.full_name),
-    'days_dict': [],
     'doctors_dict': {},
     'doctors_list': []
     }
