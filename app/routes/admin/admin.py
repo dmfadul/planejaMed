@@ -292,7 +292,12 @@ def pay_vacation():
     vacation_id = request.json['vacationID']
     vacation = Vacation.query.get(vacation_id)
 
-    vacation.pay()
+    flag = vacation.pay()
+    if isinstance(flag, str):
+        flash(flag, "danger")
+        return jsonify(flag)
+
+    flash("Pagamento efetuado", "success")
     return jsonify("success")
 
 
