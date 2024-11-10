@@ -119,57 +119,118 @@ function handleInclude(infoDict) {
 // exchange functions
 function handleExchange(infoDict) {
     if (parseInt(infoDict["crm"]) === currUserData[0]) {
+        console.log("Exchange from current user");
         handleExchangeFromCurrentUser(infoDict);
     } else {
+        console.log("Exchange from other user");
         handleExchangeFromOtherUser(infoDict);
     }
 }
 
 function handleExchangeFromCurrentUser(infoDict) {
-    let availableHours = redudantHoursList;
-    let title = "Especifique as Horas das quais Você quer Sair";
-    let label = "Horários: ";
+    let crm = infoDict["crm"];
+    let center = infoDict["center"];
+    let day = infoDict["day"];
+
+    xhr = new XMLHttpRequest();
+    xhr.open('GET', `/get-redundant-hours?crm=${crm}&center=${center}&day=${day}`, true);
+
+    xhr.onload = function() {
+        if (this.status === 200) {
+            let availableHours = JSON.parse(this.responseText);
+            availableHours = availableHours.map(h => [h, h]);
+
+            let title = "Especifique as Horas das quais Você quer Sair";
+            let label = "Horários: ";
     
-    openModal('modal1', availableHours, title, label, function(selectedValue) {
-        infoDict["hours"] = selectedValue;
+            openModal('modal1', availableHours, title, label, function(selectedValue) {
+                infoDict["hours"] = selectedValue;
+                
+                xhr = new XMLHttpRequest();
+                xhr.open('GET', '/get-doctors', true);
 
-        let doctors = doctorsList.filter(d => d[0] !== currUserData[0]);
-        let title = "Escolha com quem Trocar";
-        let label = "Médicos: ";
+                xhr.onload = function() {
+                    if (this.status === 200) {
+                        let doctorsList = JSON.parse(this.responseText);
+                        doctors = doctorsList.filter(d => d[0] !== currUserData[0]);
+                        doctors = doctors.map(d => [d[0], d[1]]);
 
-        openModal("modal2", doctors, title, label, function(selectedDoc) {
-            infoDict["crm2"] = selectedDoc;
+                        let title = "Escolha com quem Trocar";
+                        let label = "Médicos: ";
+            
+                        openModal("modal2", doctors, title, label, function(selectedDoc) {
+                            infoDict["crm2"] = selectedDoc;
+                            
+                            xhr = new XMLHttpRequest();
+                            xhr.open('GET', `/get-doctor-centers?crm=${selectedDoc}`, true);
+                            
+                            xhr.onload = function() {
+                                if (this.status === 200) {
+                                    let centers = JSON.parse(this.responseText);
+                                    centers = centers.map(h => [h, h]);
+                
+                                    let title = "Escolha o Centro que você quer entrar";
+                                    let label = "Centros: ";
+                        
+                                    openModal("modal1", centers, title, label, function(selectedCenter) {
+                                        infoDict["center2"] = selectedCenter;
+                                        xhr = new XMLHttpRequest();
+                                        xhr.open('GET', `/get-doctor-days?crm=${selectedDoc}&center=${selectedCenter}`, true);
 
-            let centers = Object.keys(doctorsDict[selectedDoc]);
-            centers = centers.map(h => [h, h]);
-            let title = "Escolha o Centro que você quer entrar";
-            let label = "Centros: ";
+                                        xhr.onload = function() {
+                                            if(this.status === 200) {
+                                                let days = JSON.parse(this.responseText);
+                                                days = days.map(h => [h, h])
+                                                let title = "Escolha o dia que você quer entrar";
+                                                let label = "Dias: ";
+                                 
+                                                openModal("modal2", days, title, label, function(selectedDay) {
+                                                    infoDict["day2"] = selectedDay;
 
-            openModal("modal1", centers, title, label, function(selectedCenter) {
-                infoDict["center2"] = selectedCenter;
+                                                    xhr = new XMLHttpRequest();
+                                                    xhr.open('GET', `/get-redundant-hours?crm=${selectedDoc}&center=${selectedCenter}&day=${selectedDay}`, true);
 
-                let days = Object.keys(doctorsDict[selectedDoc][selectedCenter])
-                days = days.map(h => [h, h])
-                let title = "Escolha o dia que você quer entrar";
-                let label = "Dias: ";
-
-                openModal("modal2", days, title, label, function(selectedDay) {
-                    infoDict["day2"] = selectedDay;
-
-                    let hours = doctorsDict[selectedDoc][selectedCenter][selectedDay]
-                    hours = hours[0].map(h => [h, h]);
-                    let title = "Escolha as Horas que você quer entrar";
-                    let label = "Horas: ";
-
-                    openModal("modal1", hours, title, label, function(selectedHour){
-                        infoDict["hours2"] = selectedHour;
-
-                        sendHoursToServer("exchange", infoDict)
-                    });
-                });
+                                                    xhr.onload = function() {
+                                                        if (this.status === 200) {
+                                                            let hours = JSON.parse(this.responseText);
+                                                            hours = hours.map(h => [h, h]);
+                                                            let title = "Escolha as Horas que você quer entrar";
+                                                            let label = "Horas: ";
+                                                    
+                                                            openModal("modal1", hours, title, label, function(selectedHour){
+                                                                infoDict["hours2"] = selectedHour;
+                                                                
+                                                                sendHoursToServer("exchange", infoDict)
+                                                            });
+                                                        } else {
+                                                            console.log("Error: Could not get redundant hours list");
+                                                        }
+                                                    }
+                                                    xhr.send();
+                                                });
+                                            } else {
+                                                console.log("Error: Could not get doctors list");
+                                            }
+                                        }
+                                        xhr.send();
+                                    });
+                                } else {
+                                    console.log("Error: Could not get doctors list");
+                                }
+                            }
+                            xhr.send();
+                        });
+                    } else {
+                        console.log("Error: Could not get doctors list");
+                    }
+                }
+                xhr.send();
             });
-        });
-    });
+        } else {
+            console.log("Error: Could not get redundant hours list");
+        }
+    }
+    xhr.send();
 }
 
 function handleExchangeFromOtherUser(infoDict) {
