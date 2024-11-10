@@ -148,6 +148,31 @@ class User(db.Model, UserMixin):
                 
         return -2
     
+    def get_month_appointments(self, month_num, year_num):
+        appointments = [a for a in self.appointments if a.day.month.number == month_num]
+        appointments = [a for a in appointments if a.day.month.year == year_num]
+
+        return appointments
+
+    def get_month_requests(self, month_num, year_num):
+        reqs = self.requests_sent + self.requests_received
+        reqs = [req for req in reqs if req.working_month == month_num]
+        reqs = [req for req in reqs if req.working_year == year_num]
+        reqs = [req for req in reqs if req.response == "authorized"]
+
+        return reqs
+
+    def get_original_appointments_by_month(self, month_num, year_num):
+        month_apps = self.get_month_appointments(month_num, year_num)
+        month_reqs = self.get_month_requests(month_num, year_num)
+
+        for app in month_apps:
+            for req in month_reqs:
+                if app.center.abbreviation == req.center:
+                    print(app.center, req.center)
+        
+        return 0
+
     @property
     def full_name(self):
         name = f'{self.first_name} {self.middle_name} {self.last_name}'
