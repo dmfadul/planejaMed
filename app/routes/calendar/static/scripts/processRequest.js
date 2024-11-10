@@ -246,40 +246,87 @@ function handleExclude(infoDict) {
 // donation functions
 function handleDonate(infoDict) {
     if (currUserData[0] === parseInt(infoDict["crm"])) {
+        console.log("Donation from current user");
         handleOfferDonation(infoDict);
     }else{
+        console.log("Donation from other user");
         handleRequestDonation(infoDict);
     }
 }
 
 function handleOfferDonation(infoDict) {
-    let availableHours = redudantHoursList;
-    let title = "Escolha Horas para Doar";
-    let label = "Horários: ";
+    let crm = infoDict["crm"];
+    let center = infoDict["center"];
+    let day = infoDict["day"];
+
+    xhr = new XMLHttpRequest();
+    xhr.open('GET', `/get-redundant-hours?crm=${crm}&center=${center}&day=${day}`, true);
     
-    openModal("modal1", availableHours, title, label, function(selectedHrs) {
-        infoDict["hours"] = selectedHrs;
+    xhr.onload = function() {
+        if (this.status == 200) {
+            let availableHours = JSON.parse(this.responseText);
+            availableHours = availableHours.map(h => [h, h]);
 
-        let doctors = doctorsList.filter(d => d[0] !== parseInt(currUserData[0]));
-        let title = "Escolha para quem Doar";
-        let label = "Médicos: ";
+            let title = "Escolha Horas para Doar";
+            let label = "Horários: ";
+            
+            openModal("modal1", availableHours, title, label, function(selectedHrs) {
+                infoDict["hours"] = selectedHrs;
 
-        openModal("modal2", doctors, title, label, function(selectedDoc) {
-            infoDict["receiverCRM"] = selectedDoc;
-            sendHoursToServer("donate", infoDict);
-        });
-    });
+                xhr = new XMLHttpRequest();
+                xhr.open('GET', '/get-doctors', true);
+
+                xhr.onload = function() {
+                    if (this.status === 200) {
+                        let doctors = JSON.parse(this.responseText);
+                        doctors = doctors.filter(d => d[0] !== parseInt(currUserData[0]));
+                        doctors = doctors.map(d => [d[0], d[1]]);
+
+                        let title = "Escolha para quem Doar";
+                        let label = "Médicos: ";
+        
+                        openModal("modal2", doctors, title, label, function(selectedDoc) {
+                            infoDict["receiverCRM"] = selectedDoc;
+                            sendHoursToServer("donate", infoDict);
+                        });
+                    } else {
+                        console.log("Error: Could not get doctors list");
+                    }
+                }
+                xhr.send();
+            });            
+        } else {
+            console.log("Error: Could not get redundant hours list");
+        }
+    }
+    xhr.send();
 }
 
 function handleRequestDonation(infoDict) {
-    let availableHours = redudantHoursList;
-    let title = "Escolha Horas para Receber";
-    let label = "Horários: ";
+    let crm = infoDict["crm"];
+    let center = infoDict["center"];
+    let day = infoDict["day"];
+
+    xhr = new XMLHttpRequest();
+    xhr.open('GET', `/get-redundant-hours?crm=${crm}&center=${center}&day=${day}`, true);
+
+    xhr.onload = function() {
+        if (this.status === 200) {
+            let availableHours = JSON.parse(this.responseText);
+            availableHours = availableHours.map(h => [h, h]);
+
+            let title = "Escolha Horas para Receber";
+        let label = "Horários: ";
     
-    openModal("modal1", availableHours, title, label, function(selectedHrs) {
-        infoDict["hours"] = selectedHrs;
-        sendHoursToServer("donate", infoDict);
-    });
+        openModal("modal1", availableHours, title, label, function(selectedHrs) {
+            infoDict["hours"] = selectedHrs;
+            sendHoursToServer("donate", infoDict);
+        });
+        } else {
+            console.log("Error: Could not get redundant hours list");
+        }
+    }
+    xhr.send();
 }
 
 
