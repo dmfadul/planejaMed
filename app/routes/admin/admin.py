@@ -245,10 +245,10 @@ def add_vacation():
 
     if isinstance(new_vacation, str):
         flash(new_vacation, "danger")
-        return redirect(url_for('dashboard.dashboard'))
+        return redirect(url_for('admin.admin'))
 
     new_vacation.approve()
-    
+
     flash("Férias criadas", "success")
     return redirect(url_for('admin.admin'))
       
