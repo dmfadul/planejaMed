@@ -33,6 +33,7 @@
                         <th>Final</th>
                         <th>Status</th>
                         <th></th>
+                        <th></th>
                     </tr>
                 </head>
                 <tbody>
@@ -44,9 +45,18 @@
                             <td>{{ vacation.end_date }}</td>
                             <td>{{ vacation.status }}</td>
                             <td><button class="submit-button save-button" onclick="showPay(this)" data-id="{{ vacation.id }}">$</button></td>
+                            <td>
+                                <button 
+                                    class="submit-button save-button {% if vacation.status == "Pago" %}disabled-button{% endif %}" 
+                                    onclick="payVacation(this)" 
+                                    data-id="{{ vacation.id }}"
+                                    {% if vacation.status == "Pago" %}disabled{% endif %}
+                                >
+                                    Pagar
+                                </button>
+                            </td>
                         </tr>
-                    {% endfor %}
-                    
+                    {% endfor %}              
                 </tbody>
             </table>
         </div>
