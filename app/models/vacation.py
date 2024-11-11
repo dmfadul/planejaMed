@@ -181,6 +181,7 @@ class Vacation(db.Model):
     
     @classmethod
     def check_realized(cls, month_num, month_year, user_id):
+        # change to compare realized with original
         month = Month.query.filter_by(number=month_num, year=month_year).first()
         if not month:
             return -1
