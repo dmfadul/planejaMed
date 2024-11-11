@@ -468,6 +468,6 @@ class User(db.Model, UserMixin):
         if not self.is_active or not self.is_visible:
             return False
 
-        if pre_approved_vacation:
+        if self.pre_approved_vacation:
             return True
             
