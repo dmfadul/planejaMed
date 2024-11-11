@@ -1,11 +1,11 @@
-let redudantHoursList = [];
-
-
 function processSchRequest(item, action) {
     let infoDict = {};
-    infoDict["crm"] = currUserData[0];
+    crm = currUserData[0];
+    infoDict["crm"] = crm;
 
-    if (action !=="include") {
+    if (action === "include") {
+        handleSchInclude(infoDict);
+    } else {
         let center = item.split("--")[0].trim();
         let date = item.split("--")[1].trim();
         let hours = item.split("--")[2].trim();
@@ -16,20 +16,29 @@ function processSchRequest(item, action) {
         infoDict["center"] = center;
         infoDict["hours"] = hours;
 
-        redudantHoursList = doctorsDict[currUserData[0]][center][day][0];
-        redudantHoursList = redudantHoursList.map(h => [h, h]);
-    }
+        console.log(crm, day, center, hours);
+        xhr = new XMLHttpRequest();
+        xhr.open('GET', `/get-redundant-hours?crm=${crm}&center=${center}&day=${day}`, true);
 
-    if (action === "include") {
-        handleSchInclude(infoDict);
-    } else if (action === "exclude") {
-        handleSchExclude(infoDict);
-    } else if (action === "donate") {
-        handleOfferDonation(infoDict);
-    } else if (action === "exchange") {
-        handleExchangeFromCurrentUser(infoDict);
-    } else {
-        console.log("Invalid action");
+        xhr.onload = function() {
+            if (this.status === 200) {
+                let redudantHoursList = JSON.parse(this.responseText);
+                redudantHoursList = redudantHoursList.map(h => [h, h]);
+                
+                if (action === "exclude") {
+                    handleSchExclude(infoDict, redudantHoursList);
+                } else if (action === "donate") {
+                    handleOfferDonation(infoDict);
+                } else if (action === "exchange") {
+                    handleExchangeFromCurrentUser(infoDict);
+                } else {
+                    console.log("Invalid action");
+                }
+            } else {
+                console.log("Error: Could not get redundant hours list");
+            }
+        }
+        xhr.send();
     }
 }
 
@@ -58,8 +67,8 @@ function handleSchInclude(infoDict) {
     });
 }
 
-function handleSchExclude(infoDict) {
-    let availableHours = redudantHoursList;
+function handleSchExclude(infoDict, availableHours) {
+    console.log(availableHours);
     let title = "Especifique Horas para Excluir";
     let label = "Horários: ";
     
@@ -377,12 +386,12 @@ function handleRequestDonation(infoDict) {
             availableHours = availableHours.map(h => [h, h]);
 
             let title = "Escolha Horas para Receber";
-        let label = "Horários: ";
+            let label = "Horários: ";
     
-        openModal("modal1", availableHours, title, label, function(selectedHrs) {
-            infoDict["hours"] = selectedHrs;
-            sendHoursToServer("donate", infoDict);
-        });
+            openModal("modal1", availableHours, title, label, function(selectedHrs) {
+                infoDict["hours"] = selectedHrs;
+                sendHoursToServer("donate", infoDict);
+            });
         } else {
             console.log("Error: Could not get redundant hours list");
         }
