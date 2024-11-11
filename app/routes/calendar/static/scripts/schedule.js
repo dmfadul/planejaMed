@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
              <li id="item-${index}">
                  ${item.split("*").join("<br>")}
                  <div class="kebab-menu">
-                     <button class="kebab-button">&#8942;</button>
+                     <button class="kebab-button"></button>
                      <div class="kebab-content">
                          <a href="#" onclick="processSchRequest('${item}', '${action}')" data-action="${action}">${label}</a>
                          ${index !== 0 ? `<a href="#" onclick="processSchRequest('${item}', 'donate')" data-action="donation">Doação</a>` : ''}
