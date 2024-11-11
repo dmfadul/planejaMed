@@ -4,10 +4,10 @@ let day;
 function displayDayData(dayDict) {
     let output = '<ul>'
     output += `
-    <li id="item-0">
+    <li id="item-0" class="card">
         INCLUSÃO
         <div class="kebab-menu">
-            <button class="kebab-button">&#8942;</button>
+            <button class="kebab-button"></button>
             <div class="kebab-content">
                 <a href="#" onclick="processCalRequest('0', 'include')" data-action="include">Inclusão</a>
             </div>
@@ -24,10 +24,10 @@ function displayDayData(dayDict) {
         const itemContent = [name, hourLine].join("<br>");
 
         output += `
-        <li id="${crm}">
+        <li id="${crm}" class="card">
             ${itemContent}
             <div class="kebab-menu">
-                <button class="kebab-button">&#8942;</button>
+                <button class="kebab-button"></button>
                 <div class="kebab-content">
                 <a href="#" onclick="processCalRequest('${crm}', 'exclude')" data-action="exclude">Exclusão</a>
                 <a href="#" onclick="processCalRequest('${crm}', 'donate')" data-action="donation">Doação</a>
