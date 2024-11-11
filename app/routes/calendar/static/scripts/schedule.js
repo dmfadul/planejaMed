@@ -16,10 +16,9 @@ document.addEventListener('DOMContentLoaded', function() {
      let label = (index === 0) ? 'Inclusão' : 'Exclusão';
  
          output += `
-             <li id="item-${index}">
+             <li id="item-${index}" class="card">
                  ${item.split("*").join("<br>")}
                  <div class="kebab-menu">
-                     <button class="kebab-button"></button>
                      <div class="kebab-content">
                          <a href="#" onclick="processSchRequest('${item}', '${action}')" data-action="${action}">${label}</a>
                          ${index !== 0 ? `<a href="#" onclick="processSchRequest('${item}', 'donate')" data-action="donation">Doação</a>` : ''}
