@@ -87,12 +87,16 @@ class Vacation(db.Model):
             if vacation.end_date < datetime.date.today():
                 vacation.status = 'completed'
                 db.session.commit()
-                return 0
 
             if vacation.start_date < datetime.date.today():
                 vacation.status = 'ongoing'
                 db.session.commit()
-                return 0
+
+            vacation_start = datetime.datetime.combine(vacation.start_date, datetime.datetime.min.time())
+            flag = cls.check(vacation_start, vacation.user_id)
+            if isinstance(flag, str):
+                vacation.status = 'unapproved'
+                db.session.commit()
                 
     @classmethod
     def check_past_vacations(cls, start_date, end_date, user_id):
@@ -147,6 +151,8 @@ class Vacation(db.Model):
         months_num = []
         for i in range(1, 13):
             months_num.append((str_month + i) % 12)
+
+        months_num = months_num[5:-1]
         
         months_to_check = []
         year = str_year
@@ -234,7 +240,8 @@ class Vacation(db.Model):
             "denied": "Negado",
             "completed": "Concluído",
             "ongoing": "Em andamento",
-            "paid": "Pago"
+            "paid": "Pago",
+            "unapproved": "Aprovação Retirada"
         }
         
         vacations = cls.query.order_by(desc(cls.id)).all()
