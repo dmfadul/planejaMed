@@ -38,8 +38,6 @@ def calendar(center):
     'open_center': center,
     'calendar_days': calendar,
     'curr_user_data': (current_user.crm, current_user.full_name),
-    'doctors_dict': {},
-    'doctors_list': []
     }
     return render_template("calendar.html", **kwargs)
 
@@ -106,7 +104,7 @@ def get_doctor_centers():
     if doctor is None:
         return jsonify([])
     
-    centers = doctor.app_dict.keys()
+    centers = sorted(doctor.app_dict.keys())
     return jsonify(list(centers))
 
 
