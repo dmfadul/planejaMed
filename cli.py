@@ -13,13 +13,15 @@ import json
 
 app = create_app()
 with app.app_context():
-    req = Request.query.filter_by(id=398).first()
-    user = User.query.filter_by(crm=35198).first()
-
-    print(user)
-    print(user.get_month_requests(12, 2024))
-
-    # print(user.get_original_appointments_by_month(12, 2024))
+    reqs = Request.query.all()
+    req = reqs[-1]
+    
+    print(req.action)
+    print(req.info)
+    print(req.appointment_center)
+    print(req.appointment_center_two)
+    print(req.appointment_hour_range)
+#     print(user.get_original_appointments_by_month(12, 2024))
 #     user = User.query.filter_by(crm=26704).first()
 #     s_date = datetime(2024, 12, 1)
 #     e_date = datetime(2024, 12, 30)
