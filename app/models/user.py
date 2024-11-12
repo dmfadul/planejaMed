@@ -165,9 +165,9 @@ class User(db.Model, UserMixin):
             if not req.signal:
                 continue
 
-            reqs_info.append((req.center,
+            reqs_info.append((req.appointment_center,
                               req.appointment_date.day,
-                              req.hour_range,
+                              req.appointment_hour_range,
                               req.signal))
 
         clean_reqs_info = []
@@ -181,21 +181,13 @@ class User(db.Model, UserMixin):
 
         return clean_reqs_info
 
-    def get_month_exchanges(self, month_num, year_num):
-        reqs = self.requests_sent + self.requests_received
-        reqs = [req for req in reqs if req.working_month == month_num]
-        reqs = [req for req in reqs if req.working_year == year_num]
-        reqs = [req for req in reqs if req.response == "authorized"]
-        reqs = [req for req in reqs if req.action == "exchange"]
 
     def get_original_appointments_by_month(self, month_num, year_num):
         month_apps = self.get_month_appointments(month_num, year_num)
         month_reqs = self.get_month_requests(month_num, year_num)
 
-        for app in month_apps:
-            for req in month_reqs:
-                if app.center.abbreviation == req.center:
-                    print(app.center, req.center)
+        print(month_apps)
+        print(month_reqs)
         
         return 0
 
