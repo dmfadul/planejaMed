@@ -82,13 +82,16 @@ class Vacation(db.Model):
 
     @classmethod
     def update_status(cls):
-        approved_vacations = cls.query.filter_by(status='approved').all()
+        approved_vacations = cls.query.filter(cls.status.notin_(['denied', 'paid', 'completed'])).all()
+
         for vacation in approved_vacations:
-            if vacation.end_date < datetime.date.today():
+            if (vacation.start_date < datetime.date.today()) and vacation.status == 'pending_approval':
+                vacation.status = 'denied'
+                db.session.commit()
+            elif (vacation.end_date < datetime.date.today()) and vacation.status == 'ongoing':
                 vacation.status = 'completed'
                 db.session.commit()
-
-            if vacation.start_date < datetime.date.today():
+            elif (vacation.start_date < datetime.date.today()) and vacation.status == 'approved':
                 vacation.status = 'ongoing'
                 db.session.commit()
 
