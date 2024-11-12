@@ -50,25 +50,42 @@ class Request(db.Model):
         return None
 
     @property
-    def center(self):
-        check = self.info.find("centro")
-
-        if check == -3:
+    def appointment_center(self):
+        if self.action in ['include_user', 'approve_vacation']:
             return None
         
-        center = self.info.split("centro")[-1].strip()
-        center = center.split()[-2].strip()
+        if self.action == 'exchange':
+            first_part = self.info.split("para")[0].strip()
+            center = first_part.split("no centro")[1].strip()
+            center = center.split("no dia")[0].strip()
+            return center
+
+        center = self.info.split("no centro")[1].strip()
+        center = center.split("no dia")[0].strip()
+        return center
+
+    @property
+    def appointment_center_two(self):
+        if not self.action == 'exchange':
+            return None
+        
+        second_part = self.info.split("para")[1].strip()
+        center = second_part.split("no centro")[1].strip()
+        center = center.split("no dia")[0].strip()
 
         return center
 
     @property
-    def hour_range(self):
-        check = self.info.find("horários:")
-
-        if check == -1:
+    def appointment_hour_range(self):
+        if self.action in ['include_user', 'approve_vacation']:
             return None
         
-        hours = self.info.split("horários:")[1].strip()
+        if self.action == 'exchange':
+            text = self.info.split("para")[0].strip()
+        else:
+            text = self.info
+
+        hours = text.split("horários:")[1].strip()
         hours = hours.split("no")[0].strip()
         str_hour, end_hour = hours.split("-") 
 
