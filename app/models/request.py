@@ -126,6 +126,26 @@ class Request(db.Model):
         return user_ids
 
     @property
+    def signal(self):
+        if self.action in ['include_user', 'approve_vacation']:
+            return None
+    
+        if self.action == 'include_appointments':
+            return 1
+        
+        if self.action == 'exclude_appointments':
+            return -1
+
+        if self.action == 'donate' and "DE" in self.info:
+            return -1
+
+        if self.action == 'donate' and "PARA" in self.info:
+            return 1
+        
+        if self.action == 'exchange':
+            return 0        
+
+    @property
     def working_month(self):
         from app.global_vars import STR_DAY
 
