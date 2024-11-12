@@ -37,8 +37,8 @@ class Request(db.Model):
     )
     
     def __repr__(self):
-        return self.message
-    
+        return self.message 
+ 
     @property
     def appointment_date(self):
         date_pattern = r"\b\d{2}/\d{2}/\d{2}\b"
@@ -48,6 +48,65 @@ class Request(db.Model):
             return datetime.strptime(date.group(), "%d/%m/%y")
 
         return None
+
+    @property
+    def center(self):
+        check = self.info.find("centro")
+
+        if check == -3:
+            return None
+        
+        center = self.info.split("centro")[-1].strip()
+        center = center.split()[-2].strip()
+
+        return center
+
+    @property
+    def hour_range(self):
+        check = self.info.find("horários:")
+
+        if check == -1:
+            return None
+        
+        hours = self.info.split("horários:")[1].strip()
+        hours = hours.split("no")[0].strip()
+        str_hour, end_hour = hours.split("-") 
+
+        str_hour = str_hour.split(":")[0].strip()
+        end_hour = end_hour.split(":")[0].strip()
+
+        hour_range = range(int(str_hour), int(end_hour) + 1)
+
+        return hour_range
+        
+    @property
+    def message(self):
+        try:
+            unedit_message = self.info
+            message = unedit_message.replace('*', "")
+            message = message.replace('+', "")
+
+        except Exception as e:
+            message = f"""Uma requisição apresentou erro.
+            Por favor, informe ao administrador o código r-{self.id},
+            para que este erro seja corrijido."""
+
+        return message
+
+    @property
+    def receivers(self):
+        from app.models.user import User
+
+        user_ids = [user.id for user in User.query.all() if user.is_sudo]
+
+        if self.receivers_code == "*":
+        # if self.requestee_code == "*":
+            user_ids += [user.id for user in User.query.all() if user.is_admin]
+        else:
+            user_ids += [user.id for user in User.query.all() if user.id == int(self.receivers_code)]
+            # user_ids += [user.id for user in User.query.all() if user.id == int(self.requestee_code)]
+
+        return user_ids
 
     @property
     def working_month(self):
@@ -72,36 +131,6 @@ class Request(db.Model):
             return self.appointment_date.year + 1
         
         return self.appointment_date.year
-
-    @property
-    def center(self):
-        check = self.info.find("centro")
-
-        if check == -1:
-            return None
-        
-        center = self.info.split("centro")[1].strip()
-        center = center.split()[0].strip()
-
-        return center
-
-    @property
-    def hour_range(self):
-        check = self.info.find("horários:")
-
-        if check == -1:
-            return None
-        
-        hours = self.info.split("horários:")[1].strip()
-        hours = hours.split("no")[0].strip()
-        str_hour, end_hour = hours.split("-") 
-
-        str_hour = str_hour.split(":")[0].strip()
-        end_hour = end_hour.split(":")[0].strip()
-
-        hour_range = range(int(str_hour), int(end_hour) + 1)
-
-        return hour_range
 
     @classmethod
     def new_user(cls, doctor_to_include_id):
@@ -441,35 +470,6 @@ class Request(db.Model):
 
         return output
 
-    @property
-    def receivers(self):
-        from app.models.user import User
-
-        user_ids = [user.id for user in User.query.all() if user.is_sudo]
-
-        if self.receivers_code == "*":
-        # if self.requestee_code == "*":
-            user_ids += [user.id for user in User.query.all() if user.is_admin]
-        else:
-            user_ids += [user.id for user in User.query.all() if user.id == int(self.receivers_code)]
-            # user_ids += [user.id for user in User.query.all() if user.id == int(self.requestee_code)]
-
-    
-        return user_ids
-    
-    @property
-    def message(self):
-        try:
-            unedit_message = self.info
-            message = unedit_message.replace('*', "")
-            message = message.replace('+', "")
-
-        except Exception as e:
-            message = f"""Uma requisição apresentou erro.
-            Por favor, informe ao administrador o código r-{self.id},
-            para que este erro seja corrijido."""
-        return message
-    
     def add_appointment(self, appointment):
         self.appointments.append(appointment)
         db.session.commit()
