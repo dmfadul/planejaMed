@@ -151,8 +151,9 @@ class User(db.Model, UserMixin):
     def get_month_appointments(self, month_num, year_num):
         appointments = [a for a in self.appointments if a.day.month.number == month_num]
         appointments = [a for a in appointments if a.day.month.year == year_num]
+        apps = [(a.center.abbreviation, a.day.date.day, a.hour) for a in appointments if a.is_confirmed]
 
-        return appointments
+        return apps
 
     def get_month_requests(self, month_num, year_num):
         reqs = self.requests_sent + self.requests_received
@@ -162,34 +163,54 @@ class User(db.Model, UserMixin):
 
         reqs_info = []
         for req in reqs:
-            if not req.signal:
-                continue
+            center = req.appointment_center
+            day = req.appointment_date.day
+            hour_range = req.appointment_hour_range
 
-            reqs_info.append((req.appointment_center,
-                              req.appointment_date.day,
-                              req.appointment_hour_range,
-                              req.signal))
+            if req.action == 'donate' and req.signal == 1:
+                action = 'receive_donation'
+            elif req.action == 'donate' and req.signal == -1:
+                action = 'give_donation'
+            else:
+                action = req.action
 
-        clean_reqs_info = []
-        for req in reqs_info:
-            req_inverse = (req[0], req[1], req[2], req[3] * -1)
-            
-            if req_inverse in reqs_info:
-                continue
+            if action == 'exchange':
+                center2 = req.appointment_center_two
+                day2 = req.appointment_date.day_two
+                hour_range2 = req.appointment_hour_range_two
 
-            clean_reqs_info.append(req)
+                req_dict = {'give_donation' : (center, day, hour_range)},
+                reqs_info.append((req.id, req_dict))
 
-        return clean_reqs_info
+                req_dict2 = {'receive_donation' : (center2, day2, hour_range2)}
+                reqs_info.append((req.id, req_dict2))
 
+            else:
+                req_dict = {action : (center, day, hour_range)}
+                reqs_info.append((req.id, req_dict))
+
+        reqs_info = sorted(reqs_info, key=lambda x: x[0], reverse=True)
+        return reqs_info
 
     def get_original_appointments_by_month(self, month_num, year_num):
         month_apps = self.get_month_appointments(month_num, year_num)
         month_reqs = self.get_month_requests(month_num, year_num)
 
-        print(month_apps)
-        print(month_reqs)
-        
-        return 0
+        for month_req in month_reqs:
+            req_dict = month_req[1]
+            for action, req in req_dict.items():
+                for hour in req[2]:
+                    r = req[0], req[1], hour
+                    if action in ["include_appointment", "receive_donation"]:
+                        if not r in month_apps:
+                            return "Erro: não foi possível encontrar gerar a lista de horários originais"
+                        
+                        month_apps.remove(r)
+    
+                    elif action in ["exclude_appointment", "give_donation"]:
+                        month_apps.append(r)
+                
+        return month_apps
 
     @property
     def full_name(self):
