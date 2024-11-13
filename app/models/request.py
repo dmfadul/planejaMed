@@ -175,10 +175,10 @@ class Request(db.Model):
             return -1
 
         if self.action == 'donate' and "DE" in self.info:
-            return -1
+            return 1
 
         if self.action == 'donate' and "PARA" in self.info:
-            return 1
+            return -1
         
         if self.action == 'exchange':
             return 0        

@@ -157,6 +157,7 @@ class User(db.Model, UserMixin):
 
     def get_month_requests(self, month_num, year_num):
         reqs = self.requests_sent + self.requests_received
+        reqs = [req for req in reqs if req.action not in ['include_user', 'approve_vacation']]
         reqs = [req for req in reqs if req.working_month == month_num]
         reqs = [req for req in reqs if req.working_year == year_num]
         reqs = [req for req in reqs if req.response == "authorized"]
@@ -197,18 +198,46 @@ class User(db.Model, UserMixin):
         month_reqs = self.get_month_requests(month_num, year_num)
 
         for month_req in month_reqs:
+            print(month_req)
+
+        app_dict = {}
+        for app in month_apps:
+            center, day, hour = app
+            
+            if center not in app_dict:
+                app_dict[center] = {}
+            
+            if day not in app_dict[center]:
+                app_dict[center][day] = []
+            
+            app_dict[center][day].append(hour)
+
+        for key, value in app_dict.items():
+            print(key)
+            for k, v in value.items():
+                print(k, v)
+                
+        for month_req in month_reqs:
             req_dict = month_req[1]
             for action, req in req_dict.items():
                 for hour in req[2]:
                     r = req[0], req[1], hour
                     if action in ["include_appointment", "receive_donation"]:
                         if not r in month_apps:
-                            return "Erro: não foi possível encontrar gerar a lista de horários originais"
+                            # print(r)
+                            continue
+                            # return "Erro: não foi possível gerar a lista de horários originais1"
                         
                         month_apps.remove(r)
     
                     elif action in ["exclude_appointment", "give_donation"]:
+                        if r in month_apps:
+                            # print(r)
+                            continue
+                            return "Erro: não foi possível gerar a lista de horários originais2"
+                        
                         month_apps.append(r)
+
                 
         return month_apps
 
