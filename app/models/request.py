@@ -41,8 +41,30 @@ class Request(db.Model):
  
     @property
     def appointment_date(self):
+        if self.action in ['include_user', 'approve_vacation']:
+            return None
+        
+        if self.action == 'exchange':
+            text = self.info.split("para")[0].strip()
+        else:
+            text = self.info
+        
         date_pattern = r"\b\d{2}/\d{2}/\d{2}\b"
-        date = re.search(date_pattern, self.info)
+        date = re.search(date_pattern, text)
+
+        if date:
+            return datetime.strptime(date.group(), "%d/%m/%y")
+
+        return None
+
+    @property
+    def appointment_date_two(self):
+        if not self.action == 'exchange':
+            return None
+        
+        second_part = self.info.split("para")[1].strip()
+        date_pattern = r"\b\d{2}/\d{2}/\d{2}\b"
+        date = re.search(date_pattern, second_part)
 
         if date:
             return datetime.strptime(date.group(), "%d/%m/%y")
@@ -55,12 +77,11 @@ class Request(db.Model):
             return None
         
         if self.action == 'exchange':
-            first_part = self.info.split("para")[0].strip()
-            center = first_part.split("no centro")[1].strip()
-            center = center.split("no dia")[0].strip()
-            return center
+            text = self.info.split("para")[0].strip()
+        else:
+            text = self.info
 
-        center = self.info.split("no centro")[1].strip()
+        center = text.split("no centro")[1].strip()
         center = center.split("no dia")[0].strip()
         return center
 
