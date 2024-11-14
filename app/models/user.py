@@ -200,23 +200,30 @@ class User(db.Model, UserMixin):
         month_apps = self.get_month_appointments(month_num, year_num)
         month_reqs = self.get_month_requests(month_num, year_num)
 
+        # for app in month_apps:
+        #     print(app)
         # for month_req in month_reqs:
         #     print(month_req)
         
         for month_req in month_reqs:
+            # print(month_req)
             req_dict = month_req[1]
             for action, req in req_dict.items():
                 for hour in req[2]:
                     r = req[0], req[1], hour
                     if action == "EXCLUDE":
                         if not r in month_apps:
-                            return "Erro: não foi possível gerar a lista de horários originais1"
+                            # print(1, action, r)
+                            # return "Erro: não foi possível gerar a lista de horários originais1"
+                            continue
                         
                         month_apps.remove(r)
     
                     elif action == "INCLUDE":
                         if r in month_apps:
-                            return "Erro: não foi possível gerar a lista de horários originais2"
+                            # print(2, action, r)
+                            continue
+                            # return "Erro: não foi possível gerar a lista de horários originais2"
                         
                         month_apps.append(r)
 
