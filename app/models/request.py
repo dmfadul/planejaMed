@@ -575,6 +575,15 @@ class Request(db.Model):
             # requestee_code=str(self.requester_id),
             )
         return 0
+
+    def close(self, closer_id, response):           
+        self.responder_id = closer_id
+        self.response = response
+        self.response_date = datetime.now()
+        self.is_open = False
+
+        db.session.commit()
+        return 0
     
     def resolve(self, responder_id, authorized):
         from app.models import User
