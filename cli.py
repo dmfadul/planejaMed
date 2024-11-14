@@ -13,41 +13,55 @@ import json
 
 app = create_app()
 with app.app_context():
-    user = User.query.filter_by(crm=34085).first()
-    oa = user.get_original_appointments_by_month(11, 2024)
-    # print(oa)
+    month = 11
+    year = 2024
+    user_crm = 34085
 
+    user = User.query.filter_by(crm=user_crm).first()
 
-#     print(user.get_original_appointments_by_month(12, 2024))
-#     user = User.query.filter_by(crm=26704).first()
-#     s_date = datetime(2024, 12, 1)
-#     e_date = datetime(2024, 12, 30)
+    o_apps = user.get_original_appointments_by_month(11, 2024)
 
-#     vacation = Vacation(user_id=user.id,
-#                         start_date=s_date,
-#                         end_date=e_date)
+    # for center in o_apps:
+    #     print(center)
+    #     for day, hour in o_apps[center].items():
+    #         print(day, hour)
     
-    # print(Vacation.check(user.id))
-    # vacation.check()
+    with open(f"instance/originals/original_{month}_{year}.json") as f:
+        month_dict = json.load(f)
+        data = month_dict["data"]
+         
+        test_originals = data.get(str(user_crm))
+        print(test_originals == o_apps)
 
-#     users = User.query.all()
-#     for user in users:
-#         if user.crm in vacs_crm:
-#             print(f"Pre-approving {user}")
-#             user.pre_approved_vacation = True
-#             db.session.commit()
-#         else:
-#             print(f"Skipping {user}")
-#             user.pre_approved_vacation = False
-#             db.session.commit()
+    #     if len(test_originals) != len(o_apps):
+    #         print("Lengths are different")
 
-  
+    #     for center in test_originals:
+    #         if center not in o_apps:
+    #             print(f"Center {center} is not in original appointments")
+           
+    #     for center in o_apps:
+    #         if center not in test_originals:
+    #             print(f"Center {center} is not in test originals")
+        
+    #     for center in test_originals:
+    #         oa_center = o_apps.get(center)
+    #         test_center = test_originals.get(center)
 
-# migration_funcs.drop_all_tables()
-# migration_funcs.add_centers()
-# migration_funcs.migrate_users()
-# migration_funcs.adjust_users()
+    #         if len(oa_center) != len(test_center):
+    #             print(f"Lengths are different for {center}")
 
-# migration_funcs.migrate_base("CCG--BASE")
+    #         for day in oa_center:
+    #             if day not in test_center:
+    #                 print(f"Day {day} is not in test originals for {center}")
+                
+    #         for day in test_center:
+    #             if day not in oa_center:
+    #                 print(f"Day {day} is not in original appointments for {center}")
 
-# migration_funcs.migrate_months()
+    #         oa_day = oa_center.get(day)
+    #         test_day = test_center.get(day)
+
+    #         if oa_day != test_day:
+    #             print(f"Original appointment {oa_day} is not equal to test appointment {test_day}")
+

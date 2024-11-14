@@ -168,27 +168,30 @@ class User(db.Model, UserMixin):
             day = req.appointment_date.day
             hour_range = req.appointment_hour_range
 
-            if req.action == 'donate' and req.signal == 1:
-                action = 'receive_donation'
-            elif req.action == 'donate' and req.signal == -1:
-                action = 'give_donation'
+            # elif action == 'exchange':
+            #     center2 = req.appointment_center_two
+            #     day2 = req.appointment_date.day_two
+            #     hour_range2 = req.appointment_hour_range_two
+
+            #     req_dict = {'give_donation' : (center, day, hour_range)},
+            #     reqs_info.append((req.id, req_dict))
+
+            #     req_dict2 = {'receive_donation' : (center2, day2, hour_range2)}
+            #     reqs_info.append((req.id, req_dict2))
+            
+            if req.action == 'donate' and 'PARA' in req.info:
+                action = 'INCLUDE'
+            elif req.action == 'donate' and 'DE' in req.info:
+                action = 'EXCLUDE'
+            elif req.action == 'include_appointments':
+                action = 'EXCLUDE'
+            elif req.action == 'exclude_appointments':
+                action = 'INCLUDE'           
             else:
-                action = req.action
-
-            if action == 'exchange':
-                center2 = req.appointment_center_two
-                day2 = req.appointment_date.day_two
-                hour_range2 = req.appointment_hour_range_two
-
-                req_dict = {'give_donation' : (center, day, hour_range)},
-                reqs_info.append((req.id, req_dict))
-
-                req_dict2 = {'receive_donation' : (center2, day2, hour_range2)}
-                reqs_info.append((req.id, req_dict2))
-
-            else:
-                req_dict = {action : (center, day, hour_range)}
-                reqs_info.append((req.id, req_dict))
+                action = 'UNKNOWN'
+            
+            req_dict = {action : (center, day, hour_range)}
+            reqs_info.append((req.id, req_dict))
 
         reqs_info = sorted(reqs_info, key=lambda x: x[0], reverse=True)
         return reqs_info
@@ -197,8 +200,25 @@ class User(db.Model, UserMixin):
         month_apps = self.get_month_appointments(month_num, year_num)
         month_reqs = self.get_month_requests(month_num, year_num)
 
+        # for month_req in month_reqs:
+        #     print(month_req)
+        
         for month_req in month_reqs:
-            print(month_req)
+            req_dict = month_req[1]
+            for action, req in req_dict.items():
+                for hour in req[2]:
+                    r = req[0], req[1], hour
+                    if action == "EXCLUDE":
+                        if not r in month_apps:
+                            return "Erro: não foi possível gerar a lista de horários originais"
+                        
+                        month_apps.remove(r)
+    
+                    elif action == "INCLUDE":
+                        if r in month_apps:
+                            return "Erro: não foi possível gerar a lista de horários originais"
+                        
+                        month_apps.append(r)
 
         app_dict = {}
         for app in month_apps:
@@ -207,39 +227,12 @@ class User(db.Model, UserMixin):
             if center not in app_dict:
                 app_dict[center] = {}
             
-            if day not in app_dict[center]:
-                app_dict[center][day] = []
+            if str(day) not in app_dict[center]:
+                app_dict[center][str(day)] = []
             
-            app_dict[center][day].append(hour)
-
-        for key, value in app_dict.items():
-            print(key)
-            for k, v in value.items():
-                print(k, v)
-                
-        for month_req in month_reqs:
-            req_dict = month_req[1]
-            for action, req in req_dict.items():
-                for hour in req[2]:
-                    r = req[0], req[1], hour
-                    if action in ["include_appointment", "receive_donation"]:
-                        if not r in month_apps:
-                            # print(r)
-                            continue
-                            # return "Erro: não foi possível gerar a lista de horários originais1"
-                        
-                        month_apps.remove(r)
-    
-                    elif action in ["exclude_appointment", "give_donation"]:
-                        if r in month_apps:
-                            # print(r)
-                            continue
-                            return "Erro: não foi possível gerar a lista de horários originais2"
-                        
-                        month_apps.append(r)
-
-                
-        return month_apps
+            app_dict[center][str(day)].append(hour)
+        
+        return app_dict
 
     @property
     def full_name(self):

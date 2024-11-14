@@ -98,6 +98,8 @@ class Request(db.Model):
 
     @property
     def appointment_hour_range(self):
+        from ..hours_conversion import gen_hour_range
+
         if self.action in ['include_user', 'approve_vacation']:
             return None
         
@@ -113,7 +115,7 @@ class Request(db.Model):
         str_hour = str_hour.split(":")[0].strip()
         end_hour = end_hour.split(":")[0].strip()
 
-        hour_range = range(int(str_hour), int(end_hour) + 1)
+        hour_range = gen_hour_range((int(str_hour), int(end_hour)-1))
 
         return hour_range
 
