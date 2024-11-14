@@ -121,18 +121,21 @@ class Request(db.Model):
 
     @property
     def appointment_hour_range_two(self):
+        from ..hours_conversion import gen_hour_range
+
         if not self.action == 'exchange':
             return None
         
         second_part = self.info.split("para")[1].strip()
-        hours = second_part.split("horários:")[1].strip()
-        hours = hours.split("no")[0].strip()
+        hours = second_part.split("no")[0].strip()
+
         str_hour, end_hour = hours.split("-") 
 
         str_hour = str_hour.split(":")[0].strip()
         end_hour = end_hour.split(":")[0].strip()
 
-        hour_range = range(int(str_hour), int(end_hour) + 1)
+        hour_range = gen_hour_range((int(str_hour), int(end_hour)-1))
+
 
         return hour_range
     

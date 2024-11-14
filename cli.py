@@ -13,6 +13,9 @@ import json
 
 app = create_app()
 with app.app_context():
+    # r = Request.query.all()[-1]
+    # print(r.info)
+    
     month = 11
     year = 2024
     user_crm = 34085
@@ -20,6 +23,7 @@ with app.app_context():
     user = User.query.filter_by(crm=user_crm).first()
 
     o_apps = user.get_original_appointments_by_month(11, 2024)
+    # print(o_apps)
 
     # for center in o_apps:
     #     print(center)

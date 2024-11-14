@@ -161,37 +161,37 @@ class User(db.Model, UserMixin):
         reqs = [req for req in reqs if req.working_month == month_num]
         reqs = [req for req in reqs if req.working_year == year_num]
         reqs = [req for req in reqs if req.response == "authorized"]
-
+        
         reqs_info = []
         for req in reqs:
             center = req.appointment_center
             day = req.appointment_date.day
             hour_range = req.appointment_hour_range
 
-            # elif action == 'exchange':
-            #     center2 = req.appointment_center_two
-            #     day2 = req.appointment_date.day_two
-            #     hour_range2 = req.appointment_hour_range_two
+            if req.action == 'exchange':
+                req_dict = {'INCLUDE' : (center, day, hour_range)}
+                reqs_info.append((req.id, req_dict))
+ 
+                center2 = req.appointment_center_two
+                day2 = req.appointment_date_two.day
+                hour_range2 = req.appointment_hour_range_two
 
-            #     req_dict = {'give_donation' : (center, day, hour_range)},
-            #     reqs_info.append((req.id, req_dict))
-
-            #     req_dict2 = {'receive_donation' : (center2, day2, hour_range2)}
-            #     reqs_info.append((req.id, req_dict2))
-            
-            if req.action == 'donate' and 'PARA' in req.info:
-                action = 'INCLUDE'
-            elif req.action == 'donate' and 'DE' in req.info:
-                action = 'EXCLUDE'
-            elif req.action == 'include_appointments':
-                action = 'EXCLUDE'
-            elif req.action == 'exclude_appointments':
-                action = 'INCLUDE'           
+                req_dict2 = {'EXCLUDE' : (center2, day2, hour_range2)}
+                reqs_info.append((req.id, req_dict2))
             else:
-                action = 'UNKNOWN'
-            
-            req_dict = {action : (center, day, hour_range)}
-            reqs_info.append((req.id, req_dict))
+                if req.action == 'donate' and 'PARA' in req.info:
+                    action = 'INCLUDE'
+                elif req.action == 'donate' and 'DE' in req.info:
+                    action = 'EXCLUDE'
+                elif req.action == 'include_appointments':
+                    action = 'EXCLUDE'
+                elif req.action == 'exclude_appointments':
+                    action = 'INCLUDE'           
+                else:
+                    action = 'UNKNOWN'
+                
+                req_dict = {action : (center, day, hour_range)}
+                reqs_info.append((req.id, req_dict))
 
         reqs_info = sorted(reqs_info, key=lambda x: x[0], reverse=True)
         return reqs_info
@@ -210,13 +210,13 @@ class User(db.Model, UserMixin):
                     r = req[0], req[1], hour
                     if action == "EXCLUDE":
                         if not r in month_apps:
-                            return "Erro: não foi possível gerar a lista de horários originais"
+                            return "Erro: não foi possível gerar a lista de horários originais1"
                         
                         month_apps.remove(r)
     
                     elif action == "INCLUDE":
                         if r in month_apps:
-                            return "Erro: não foi possível gerar a lista de horários originais"
+                            return "Erro: não foi possível gerar a lista de horários originais2"
                         
                         month_apps.append(r)
 
@@ -231,7 +231,14 @@ class User(db.Model, UserMixin):
                 app_dict[center][str(day)] = []
             
             app_dict[center][str(day)].append(hour)
-        
+
+        hours_order = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5, 6]
+        order_map = {num: idx for idx, num in enumerate(hours_order)}
+
+        for center in app_dict:
+            for day in app_dict[center]:
+                app_dict[center][day] = sorted(app_dict[center][day], key=lambda x: order_map[x])
+
         return app_dict
 
     @property
