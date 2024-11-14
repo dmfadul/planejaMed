@@ -27,7 +27,7 @@ def test_originals(month, year, single_user=None):
             if single_user is None:
                 result = test_originals if isinstance(o_apps, str) else test_originals == o_apps
                 bool_result = "True" if result is True else "False"
-                final_result = final_result and result
+                final_result = final_result and (result is True)
 
                 print(f"User {user} - {user_crm}: {test_originals == o_apps}")
             
