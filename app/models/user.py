@@ -156,7 +156,9 @@ class User(db.Model, UserMixin):
         return apps
 
     def get_month_requests(self, month_num, year_num):
-        reqs = self.requests_sent + self.requests_received
+        from app.models import Request
+
+        reqs = Request.query.all()
         reqs = [req for req in reqs if req.action not in ['include_user', 'approve_vacation']]
         reqs = [req for req in reqs if self.full_name in req.info]
         reqs = [req for req in reqs if req.working_month == month_num]
