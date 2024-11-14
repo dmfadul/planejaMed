@@ -17,6 +17,7 @@ def test_originals(month, year, single_user=None):
         to_search = single_user if single_user else data
 
     app = create_app()
+    final_result = True
     with app.app_context():    
         for user_crm in to_search:
             test_originals = data.get(str(user_crm))
@@ -24,13 +25,23 @@ def test_originals(month, year, single_user=None):
             o_apps = user.get_original_appointments_by_month(month, year)
 
             if single_user is None:
-                print(f"User {user} - {user_crm}: {test_originals == o_apps}")
+                result = test_originals if isinstance(o_apps, str) else test_originals == o_apps
+                bool_result = "True" if result is True else "False"
+                final_result = final_result and result
 
-    #         # for center in o_apps:
-    #         #     print(center)
-    #         #     for day, hour in o_apps[center].items():
-    #         #         print(day, hour)
-    
+                print(f"User {user} - {user_crm}: {test_originals == o_apps}")
+            
+            else:
+                print(f"User {user} - {user_crm}: {o_apps == test_originals}")
+                if isinstance(o_apps, str):
+                    print(o_apps)
+                else:
+                    for center in o_apps:
+                        print(center)
+                        for day, hour in o_apps[center].items():
+                            print(day, hour)
+
+        print(f"Final result: {final_result}")
     #         if isinstance(o_apps, str):
     #             print(f"User {user} - {user_crm}: {o_apps}")
     #         else:

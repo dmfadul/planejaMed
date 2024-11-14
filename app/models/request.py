@@ -168,8 +168,7 @@ class Request(db.Model):
 
         return user_ids
 
-    @property
-    def signal(self):
+    def signal(self, requester_crm):
         if self.action in ['include_user', 'approve_vacation']:
             return None
     
@@ -179,11 +178,15 @@ class Request(db.Model):
         if self.action == 'exclude_appointments':
             return -1
 
-        if self.action == 'donate' and "DE" in self.info:
-            return 1
-
-        if self.action == 'donate' and "PARA" in self.info:
-            return -1
+        if self.action == 'donate':
+            if self.requester.crm == requester_crm and "DE" in self.info:
+                return 1
+            if not self.requester.crm == requester_crm and "PARA" in self.info:
+                return 1
+            if self.requester.crm == requester_crm and "PARA" in self.info:
+                return -1
+            if not self.requester.crm == requester_crm and "DE" in self.info:
+                return -1
         
         if self.action == 'exchange':
             return 0        

@@ -158,6 +158,7 @@ class User(db.Model, UserMixin):
     def get_month_requests(self, month_num, year_num):
         reqs = self.requests_sent + self.requests_received
         reqs = [req for req in reqs if req.action not in ['include_user', 'approve_vacation']]
+        reqs = [req for req in reqs if self.full_name in req.info]
         reqs = [req for req in reqs if req.working_month == month_num]
         reqs = [req for req in reqs if req.working_year == year_num]
         reqs = [req for req in reqs if req.response == "authorized"]
@@ -177,11 +178,15 @@ class User(db.Model, UserMixin):
                 hour_range2 = req.appointment_hour_range_two
 
                 req_dict2 = {'EXCLUDE' : (center2, day2, hour_range2)}
+                reqs_tuple = (req.id, req_dict2)
+                if reqs_tuple not in reqs_info:
+                    reqs_info.append(reqs_tuple)
+
                 reqs_info.append((req.id, req_dict2))
             else:
-                if req.action == 'donate' and 'PARA' in req.info:
+                if req.action == 'donate' and req.signal(self.crm) == -1:
                     action = 'INCLUDE'
-                elif req.action == 'donate' and 'DE' in req.info:
+                elif req.action == 'donate' and req.signal(self.crm) == 1:
                     action = 'EXCLUDE'
                 elif req.action == 'include_appointments':
                     action = 'EXCLUDE'
@@ -191,7 +196,9 @@ class User(db.Model, UserMixin):
                     action = 'UNKNOWN'
                 
                 req_dict = {action : (center, day, hour_range)}
-                reqs_info.append((req.id, req_dict))
+                reqs_tuple = (req.id, req_dict)
+                if reqs_tuple not in reqs_info:
+                    reqs_info.append(reqs_tuple)
 
         reqs_info = sorted(reqs_info, key=lambda x: x[0], reverse=True)
         return reqs_info
@@ -206,24 +213,23 @@ class User(db.Model, UserMixin):
         #     print(month_req)
         
         for month_req in month_reqs:
-            # print(month_req)
             req_dict = month_req[1]
             for action, req in req_dict.items():
                 for hour in req[2]:
                     r = req[0], req[1], hour
                     if action == "EXCLUDE":
                         if not r in month_apps:
-                            # print(1, action, r)
-                            # return "Erro: não foi possível gerar a lista de horários originais1"
-                            continue
+                            # print(1, action, month_req[0], r)
+                            # continue
+                            return "Erro: não foi possível gerar a lista de horários originais1"
                         
                         month_apps.remove(r)
     
                     elif action == "INCLUDE":
                         if r in month_apps:
-                            # print(2, action, r)
-                            continue
-                            # return "Erro: não foi possível gerar a lista de horários originais2"
+                            # print(2, action, month_req[0], r)
+                            # continue
+                            return "Erro: não foi possível gerar a lista de horários originais2"
                         
                         month_apps.append(r)
 

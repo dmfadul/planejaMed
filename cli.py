@@ -14,12 +14,15 @@ import json
 
 # app = create_app()
 # with app.app_context():
-#     rs = [374, 373, 359, 355]
-    
-#     for n in rs:
-#         r = Request.query.filter_by(id=n).first()
-#         print(r, r.response)
+    # req = Request.query.filter_by(id=359).first()
+    # print(req.signal(26704))
+
+    # user = User.query.filter_by(crm=26704).first()
+    # reqs = user.get_month_requests(11, 2024)
+
+    # for req in reqs:
+    #     r = Request.query.filter_by(id=req[0]).first()
+    #     print(r)
 
 
-tests.test_originals(11, 2024)
-
+tests.test_originals(11, 2024, single_user=[26704])
