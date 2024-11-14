@@ -72,9 +72,10 @@ class Appointment(db.Model):
         db.session.commit()
 
         return 0
-        
+
     def delete_requests(self):
-        for req in self.requests:
+        open_reqs = [req for req in self.requests if req.is_open]
+        for req in open_reqs:
             req.delete()
         
         return 0
