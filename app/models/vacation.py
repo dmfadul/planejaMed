@@ -34,12 +34,12 @@ class Vacation(db.Model):
             return f"Usuário com id {user_id} não encontrado"
 
         if not user.pre_approved_vacation:
-            flag = Vacation.check(start_date, user.id)
+            flag = cls.check(start_date, user.id)
 
             if isinstance(flag, str):
                 return flag
 
-        flag = Vacation.check_past_vacations(start_date, end_date, user.id)
+        flag = cls.check_past_vacations(start_date, end_date, user.id)
         if isinstance(flag, str):
             return flag       
 
@@ -85,10 +85,10 @@ class Vacation(db.Model):
         approved_vacations = cls.query.filter(cls.status.notin_(['denied', 'paid', 'completed'])).all()
 
         for vacation in approved_vacations:
-            if (vacation.start_date < datetime.date.today()) and vacation.status == 'pending_approval':
-                vacation.status = 'denied'
-                db.session.commit()
-            elif (vacation.end_date < datetime.date.today()) and vacation.status == 'ongoing':
+            # if (vacation.start_date < datetime.date.today()) and vacation.status == 'pending_approval':
+            #     vacation.status = 'denied'
+            #     db.session.commit()
+            if (vacation.end_date < datetime.date.today()) and vacation.status == 'ongoing':
                 vacation.status = 'completed'
                 db.session.commit()
             elif (vacation.start_date < datetime.date.today()) and vacation.status == 'approved':
@@ -131,6 +131,12 @@ class Vacation(db.Model):
 
     @classmethod
     def check(cls, start_date, user_id):
+        vac_report = cls.get_vacation_report(start_date, user_id)
+
+        return 0
+
+    @classmethod
+    def get_vacation_report(cls, start_date, user_id):
         user = User.query.filter_by(id=user_id).first()
         if not user:
             return f"Usuário com id {user_id} não encontrado"
@@ -154,8 +160,6 @@ class Vacation(db.Model):
         months_num = []
         for i in range(1, 13):
             months_num.append((str_month + i) % 12)
-
-        months_num = months_num[5:-1]
         
         months_to_check = []
         year = str_year
@@ -170,6 +174,8 @@ class Vacation(db.Model):
             
             months_to_check.append((month, year))
 
+        months_to_check = months_to_check[5:-1]
+
         original_results = []
         realized_results = []
         for month, year in months_to_check:
@@ -177,35 +183,22 @@ class Vacation(db.Model):
             original_results.append(cls.check_original(original_path, user.crm, user_rules))
             realized_results.append(cls.check_realized(month, year, user.id))
 
-        if any([result == 0 for result in original_results]) or any([result == 0 for result in realized_results]):
-            return "Usuário não tem horas suficientes no original ou realizado"
-
-        return 0
+        print(realized_results)
+        print(original_results)
     
     @classmethod
     def check_realized(cls, month_num, month_year, user_id):
         # change to compare realized with original
         month = Month.query.filter_by(number=month_num, year=month_year).first()
         if not month:
-            return -1
+            return 0
         
         user = User.query.filter_by(id=user_id).first()
         if not user:
-            return -2
-        
-        user_rules = user.get_vacation_rules()
-        month_dict = month.get_users_total(user_id)
+            return 0
 
-        if month_dict['routine'] > user_rules['routine'] and month_dict['plaintemps'] > user_rules['plaintemps']:
-            return 1
+                
 
-        if month_dict['routine'] + 12 > user_rules['routine'] and month_dict['plaintemps'] + 12 > user_rules['plaintemps']:
-            return 2
-        
-        if month_dict['routine'] + 24 > user_rules['routine'] and month_dict['plaintemps'] + 24 > user_rules['plaintemps']:
-            return 3
-
-        return 0
 
     @classmethod
     def check_original(cls, original_path, user_crm, user_rules):
