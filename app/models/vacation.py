@@ -183,22 +183,16 @@ class Vacation(db.Model):
             original_results.append(cls.check_original(original_path, user.crm, user_rules))
             realized_results.append(cls.check_realized(month, year, user.id))
 
-        print(realized_results)
-        print(original_results)
+        print('e', realized_results)
+        print('o', original_results)
     
     @classmethod
-    def check_realized(cls, month_num, month_year, user_id):
-        # change to compare realized with original
-        month = Month.query.filter_by(number=month_num, year=month_year).first()
-        if not month:
-            return 0
-        
+    def check_realized(cls, month_num, month_year, user_id):       
         user = User.query.filter_by(id=user_id).first()
         if not user:
             return 0
 
-                
-
+        return user.get_month_hour_balance(month_num, month_year)
 
     @classmethod
     def check_original(cls, original_path, user_crm, user_rules):
