@@ -41,6 +41,3 @@ import json
     # for req in reqs:
     #     r = Request.query.filter_by(id=req[0]).first()
     #     print(r)
-
-
-tests.test_originals(11, 2024, single_user=[34085])
