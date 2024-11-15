@@ -14,30 +14,3 @@ import json
 
 # app = create_app()
 # with app.app_context():
-    # user = User.query.filter_by(crm=26704).first()
-    # month = Month.get_current()
-    # day = month.get_day(25)
-    # center = Center.query.filter_by(abbreviation="CCG").first()
-
-    # apps = Appointment.query.filter_by(user_id=user.id,
-    #                                    day_id=day.id,
-    #                                    center_id=center.id).all()
-    
-    # for a in apps:
-    #     print(a.user, a.day, a.center.abbreviation, a.hour, a.is_confirmed)
-    #     a.delete_entry()
-
-    # r = Request.query.all()[-1]
-    # print(r, r.id, r.response, r.is_open)
-
-    # r.delete()
-
-    # req = Request.query.filter_by(id=359).first()
-    # print(req.signal(26704))
-
-    # user = User.query.filter_by(crm=26704).first()
-    # reqs = user.get_month_requests(11, 2024)
-
-    # for req in reqs:
-    #     r = Request.query.filter_by(id=req[0]).first()
-    #     print(r)
