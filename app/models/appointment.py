@@ -73,10 +73,10 @@ class Appointment(db.Model):
 
         return 0
 
-    def delete_requests(self):
+    def close_requests(self, closer_id, response):
         open_reqs = [req for req in self.requests if req.is_open]
         for req in open_reqs:
-            req.delete()
+            req.close(closer_id, response)
         
         return 0
 

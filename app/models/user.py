@@ -221,9 +221,9 @@ class User(db.Model, UserMixin):
                     r = req[0], req[1], hour
                     if action == "EXCLUDE":
                         if not r in month_apps:
-                            # print(1, action, month_req[0], r)
-                            # continue
-                            return "Erro: não foi possível gerar a lista de horários originais1"
+                            print(1, action, month_req[0], r)
+                            continue
+                            # return "Erro: não foi possível gerar a lista de horários originais1"
                         
                         month_apps.remove(r)
     

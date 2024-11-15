@@ -557,7 +557,7 @@ class Request(db.Model):
         self.appointments.append(appointment)
         db.session.commit()
 
-    def respond(self, responder_id, response):
+    def respond(self, responder_id, response, send_confirmation=True):
         from app.models.message import Message
         for message in self.messages:
             message.delete()
@@ -568,24 +568,25 @@ class Request(db.Model):
         self.is_open = False
 
         db.session.commit()
-        Message.new_confirmation_message(
-            sender_id=responder_id,
-            request_id=self.id,
-            receivers_code=str(self.requester_id),
-            # requestee_code=str(self.requester_id),
-            )
+        if send_confirmation:
+            Message.new_confirmation_message(
+                sender_id=responder_id,
+                request_id=self.id,
+                receivers_code=str(self.requester_id),
+                # requestee_code=str(self.requester_id),
+                )
         return 0
 
-    def close(self, closer_id, response):           
-        self.responder_id = closer_id
-        self.response = response
-        self.response_date = datetime.now()
-        self.is_open = False
+    # def close(self, closer_id, response):           
+    #     self.responder_id = closer_id
+    #     self.response = response
+    #     self.response_date = datetime.now()
+    #     self.is_open = False
 
-        db.session.commit()
-        return 0
+    #     db.session.commit()
+    #     return 0
     
-    def resolve(self, responder_id, authorized):
+    def resolve(self, responder_id, authorized, send_confirmation=True):
         from app.models import User
 
         if not authorized:
@@ -619,14 +620,20 @@ class Request(db.Model):
             for app in self.appointments:
                 app.confirm()
 
-            self.respond(responder_id=responder_id, response='authorized')
+            self.respond(responder_id=responder_id,
+                         response='authorized',
+                         send_confirmation=send_confirmation)
+
             return "Os horários foram incluídos com sucesso", 'success'
         
         if self.action == "exclude_appointments":
             for app in self.appointments:   
                 app.delete_entry(del_requests=False)
 
-            self.respond(responder_id=responder_id, response='authorized')
+            self.respond(responder_id=responder_id,
+                         response='authorized',
+                         send_confirmation=send_confirmation)
+                         
             return "Os horários foram excluídos com sucesso", 'success'
         
         if self.action == "donate":

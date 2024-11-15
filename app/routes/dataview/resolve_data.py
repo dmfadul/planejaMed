@@ -89,8 +89,6 @@ def resolve_month_appointments(data):
                     is_confirmed=True
                 ).all()
 
-                appointments.delete_requests()
-
                 hours = [appointment.hour for appointment in appointments]
                 req = Request.exclusion(doctor=doctor,
                                         center=center,
@@ -98,12 +96,19 @@ def resolve_month_appointments(data):
                                         hours=hours,
                                         requester=system_user)
 
-                if not isinstance(req, str):
-                    req.close(system_user.id, "authorized")
+                if isinstance(req, str):
+                    return req
 
-                for appointment in appointments:
-                    appointment.delete_entry(del_requests=False)
-                   
+                req.resolve(responder_id=system_user.id,
+                            authorized=True,
+                            send_confirmation=False)
+
+                # for appointment in appointments:
+                #     appointment.close_requests(system_user.id, "app_deleted")
+                #     appointment.delete_entry(del_requests=False)
+
+                # if not isinstance(req, str):
+                #     req.close(system_user.id, "authorized")                   
             return 0
 
         elif action in ["add", "add-direct"]:
@@ -120,15 +125,20 @@ def resolve_month_appointments(data):
                                         hours=hours,
                                         requester=system_user)
 
-                if not isinstance(req, str):
-                    req.close(system_user.id, "authorized")
+                if isinstance(req, str):
+                    return req
 
-                flags = []
-                for hour in hours:
-                    flag = Appointment.add_entry(doctor.id, center.id, day.id, hour)
-                    if isinstance(flag, str):
-                        flags.append(flag)
+                req.resolve(responder_id=system_user.id,
+                            authorized=True,
+                            send_confirmation=False)
 
-            return 0 if not flags else '\n'.join(list(set(flags)))       
+                # flags = []
+                # for hour in hours:
+                #     flag = Appointment.add_entry(doctor.id, center.id, day.id, hour)
+                #     if isinstance(flag, str):
+                #         flags.append(flag)
+
+            # return 0 if not flags else '\n'.join(list(set(flags)))       
+            return 0
         else:
             print("Erro")
