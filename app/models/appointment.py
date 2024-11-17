@@ -73,13 +73,6 @@ class Appointment(db.Model):
 
         return 0
 
-    def close_requests(self, closer_id, response):
-        open_reqs = [req for req in self.requests if req.is_open]
-        for req in open_reqs:
-            req.close(closer_id, response)
-        
-        return 0
-
     @property
     def has_open_requests(self):
         return any(request.is_open for request in self.requests)

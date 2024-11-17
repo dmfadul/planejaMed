@@ -102,13 +102,7 @@ def resolve_month_appointments(data):
                 req.resolve(responder_id=system_user.id,
                             authorized=True,
                             send_confirmation=False)
-
-                # for appointment in appointments:
-                #     appointment.close_requests(system_user.id, "app_deleted")
-                #     appointment.delete_entry(del_requests=False)
-
-                # if not isinstance(req, str):
-                #     req.close(system_user.id, "authorized")                   
+                                             
             return 0
 
         elif action in ["add", "add-direct"]:
