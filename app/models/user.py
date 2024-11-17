@@ -148,18 +148,18 @@ class User(db.Model, UserMixin):
                 
         return -2
 
-    def get_month_hour_balance(self, month_num, year_num):
-        reqs = self.requests_received + self.requests_sent
-        reqs = [req for req in reqs if req.action not in ['include_user', 'approve_vacation']]
-        reqs = [req for req in reqs if req.working_month == month_num]
-        reqs = [req for req in reqs if req.working_year == year_num]
-        reqs = [req for req in reqs if req.response == "authorized"]
+    # def get_month_hour_balance(self, month_num, year_num):
+    #     reqs = self.requests_received + self.requests_sent
+    #     reqs = [req for req in reqs if req.action not in ['include_user', 'approve_vacation']]
+    #     reqs = [req for req in reqs if req.working_month == month_num]
+    #     reqs = [req for req in reqs if req.working_year == year_num]
+    #     reqs = [req for req in reqs if req.response == "authorized"]
         
-        balance = 0
-        for req in reqs:
-            balance += len(req.appointment_hour_range) * req.signal(req.requester.crm)
+    #     balance = 0
+    #     for req in reqs:
+    #         balance += len(req.appointment_hour_range) * req.signal(req.requester.crm)
         
-        return balance
+    #     return balance
     
     @property
     def full_name(self):
