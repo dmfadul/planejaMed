@@ -1,4 +1,5 @@
 import json
+import math
 import datetime
 from app import db
 from sqlalchemy import desc
@@ -43,24 +44,24 @@ class Vacation(db.Model):
         if isinstance(flag, str):
             return flag       
 
-        check = cls.query.filter(
-            cls.user_id == user_id,
-            cls.status.in_(["pending_approval", "approved"])
-        ).all()
+        existing_vacation = cls.query.filter(
+                            cls.user_id == user_id,
+                            cls.status.in_(["pending_approval", "approved"])
+                            ).all()
         
-        if check:
+        if existing_vacation:
             return f"""Usuário tem férias pendentes.
                         Aguarde aprovação ou contacte o Administrador"""
 
         if end_date - start_date > datetime.timedelta(TOTAL_VACATION_DAYS):
             return f"Duração das férias ultrapassa o limite de {TOTAL_VACATION_DAYS} dias"
 
-        vacation = cls(user_id=user_id,
-                       start_date=start_date,
-                       end_date=end_date,
-                       status="pending_approval")
+        new_vacation = cls(user_id=user_id,
+                           start_date=start_date,
+                           end_date=end_date,
+                           status="pending_approval")
 
-        db.session.add(vacation)
+        db.session.add(new_vacation)
         db.session.commit()
 
         return vacation
@@ -131,8 +132,38 @@ class Vacation(db.Model):
 
     @classmethod
     def check(cls, start_date, user_id):
+        user = User.query.filter_by(id=user_id).first()
         vac_report = cls.get_vacation_report(start_date, user_id)
 
+        originals = vac_report.get('original')
+        realizeds = vac_report.get('realized')
+
+        if not originals or not realizeds:
+            return "Erro ao buscar dados"
+        
+        original_len = len([o for o in originals if o != -1])
+        if original_len < 3:
+            return """Usuário não tem dados suficientes para solicitar férias.
+                    Por favor, façao o pedido diretamente ao Administrador"""
+
+        original_routine_avg = sum([o['routine'] for o in originals if o != -1])/original_len
+        original_plaintemps_avg = sum([o['plaintemps'] for o in originals if o != -1])/original_len
+
+        realized_len = len([r for r in realizeds if r != -1])
+        realized_routine_avg = sum([r['routine'] for r in realizeds])/realized_len
+        realized_plaintemps_avg = sum([r['plaintemps'] for r in realizeds])/realized_len
+
+        ora = math.ceil(original_routine_avg * 1.1)
+        opa = math.ceil(original_plaintemps_avg * 1.1)
+        rra = math.ceil(realized_routine_avg * 1.1)
+        rpa = math.ceil(realized_plaintemps_avg * 1.1)
+        
+        rules = user.get_vacation_rules()
+
+        if rra < rules['routine'] or rpa < rules['plaintemps']:
+            return "Usuário não manteve horas nas escalas realizadas para ter direito à férias" 
+
+        # print(checked_all_months)
         return 0
 
     @classmethod
@@ -149,7 +180,7 @@ class Vacation(db.Model):
             return f"""Usuário entrou no grupo menos de um ano antes do
                         início das férias ({start_date.strftime('%d/%m/%Y')})"""
     
-        user_rules = user.get_vacation_rules()
+        # user_rules = user.get_vacation_rules()
         base_dict = BaseAppointment.get_users_total(user.id, split_the_fifth=True)
 
         if base_dict['routine'] < user_rules['routine'] or base_dict['plaintemps'] < user_rules['plaintemps']:
@@ -183,16 +214,27 @@ class Vacation(db.Model):
             original_results.append(cls.check_original(original_path, user.crm, user_rules))
             realized_results.append(cls.check_realized(month, year, user.id))
 
-        print('e', realized_results)
-        print('o', original_results)
+        return {"original": original_results, "realized": realized_results}
     
     @classmethod
-    def check_realized(cls, month_num, month_year, user_id):       
+    def check_realized(cls, month_num, month_year, user_id):  
+        from app.global_vars import NIGHT_HOURS
+
         user = User.query.filter_by(id=user_id).first()
         if not user:
             return 0
 
-        return user.get_month_hour_balance(month_num, month_year)
+        appointments = [a for a in user.appointments if a.day.month.number == month_num]
+        appointments = [a for a in appointments if a.day.month.year == month_year]
+
+        realized_dict = {"routine": 0, "plaintemps": 0}
+        for app in appointments:
+            if app.day.is_holiday or app.hour in NIGHT_HOURS:
+                realized_dict['plaintemps'] += 1
+            else:
+                realized_dict['routine'] += 1
+
+        return realized_dict
 
     @classmethod
     def check_original(cls, original_path, user_crm, user_rules):
@@ -214,11 +256,8 @@ class Vacation(db.Model):
                             orig_dict['plaintemps'] += 1
                         else:
                             orig_dict['routine'] += 1
-
-            if orig_dict['routine'] < user_rules['routine'] or orig_dict['plaintemps'] < user_rules['plaintemps']:
-                return 0
             
-            return 1
+            return orig_dict
                 
         except FileNotFoundError:
             return -1
