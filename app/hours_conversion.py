@@ -154,11 +154,13 @@ def gen_redudant_hour_list(apps, include_line=False):
             end_time = f"{i_dict['end']+1:02d}:00" if i_dict['end'] != 23 else "00:00"
             if letter in major_hours and i_dict['total'] == 12:
                 output.append(f"{letter}: {str_time} - {end_time}")
+            elif letter in major_hours and i_dict['total'] == 24:
+                output.append(f"{letter}: {str_time} - {end_time}")
             elif letter not in major_hours and i_dict['total'] == 6:
                 output.append(f"{letter}: {str_time} - {end_time}")
             else:
                 output.append(f"{letter}{i_dict['total']}: {str_time} - {end_time}")
-            
+
     return sorted(output, key=appointments_letters_key)
     
 

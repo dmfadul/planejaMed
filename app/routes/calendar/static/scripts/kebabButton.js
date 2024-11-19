@@ -1,9 +1,15 @@
 document.addEventListener('click', function(event) {
-    if (event.target.classList.contains('kebab-button')) {
-        event.target.nextElementSibling.style.display = 'block';
+    if (event.target.classList.contains('card')) {
+        let openMenus = document.querySelectorAll('.kebab-content');
+        for (let menu of openMenus) {
+            if (menu.style.display === 'block') {
+                menu.style.display = 'none';
+            }
+        }
+        event.target.closest('.card').querySelector('.kebab-content').style.display = 'block';
     } else {
-        var openMenus = document.querySelectorAll('.kebab-content');
-        for (var menu of openMenus) {
+        let openMenus = document.querySelectorAll('.kebab-content');
+        for (let menu of openMenus) {
             if (menu.style.display === 'block') {
                 menu.style.display = 'none';
             }

@@ -34,9 +34,6 @@
         var monthName = {{ month_name | tojson | safe }};
         var monthYear = {{ month_year | tojson | safe }};
         
-        var daysDict = {{ days_dict | tojson | safe }};
         var currUserData = {{ curr_user_data | tojson | safe }};
-        var doctorsDict = {{ doctors_dict | tojson | safe }};
-        var doctorsList = {{ doctors_list | tojson | safe }};
     </script>
 {% endblock %}
