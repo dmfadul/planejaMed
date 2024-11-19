@@ -245,43 +245,86 @@ function handleExchangeFromCurrentUser(infoDict) {
 function handleExchangeFromOtherUser(infoDict) {
     let selectedDoc = currUserData[0];
 
-    let availableHours = redudantHoursList;
-    let title = "Especifique as Horas nas quais Você quer Entrar";
-    let label = "Horários: ";
+    let crm = infoDict["crm"];
+    let center = infoDict["center"];
+    let day = infoDict["day"];
     
-    openModal('modal2', availableHours, title, label, function(selectedValue) {
-        infoDict["hours"] = selectedValue;
-        infoDict["crm2"] = currUserData[0];
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', `/get-redundant-hours?crm=${crm}&center=${center}&day=${day}`, true);
 
-        let centers = Object.keys(doctorsDict[selectedDoc]);
-        centers = centers.map(h => [h, h]);
-        let title = "Escolha o Centro do qual você quer sair";
-        let label = "Centros: ";
+    xhr.onload = function() {
+        if (this.status === 200) {
+            let availableHours = JSON.parse(this.responseText);
+            availableHours = availableHours.map(h => [h, h]);
 
-        openModal("modal1", centers, title, label, function(selectedCenter) {
-            infoDict["center2"] = selectedCenter;
+            let title = "Especifique as Horas nas quais Você quer Entrar";
+            let label = "Horários: ";
 
-            let days = Object.keys(doctorsDict[selectedDoc][selectedCenter])
-            days = days.map(h => [h, h])
-            let title = "Escolha o dia que você do qual você quer sair";
-            let label = "Dias: ";
-
-            openModal("modal2", days, title, label, function(selectedDay) {
-                infoDict["day2"] = selectedDay;
-
-                let hours = doctorsDict[selectedDoc][selectedCenter][selectedDay]
-                hours = hours[0].map(h => [h, h]);
-                let title = "Escolha as Horas das quais você quer sair";
-                let label = "Horas: ";
+            openModal('modal1', availableHours, title, label, function(selectedValue) {
+                if (selectedValue === null) return; // User cancelled
+                infoDict["hours"] = selectedValue;
+                infoDict["crm2"] = currUserData[0];
                 
-                openModal("modal1", hours, title, label, function(selectedHour){
-                    infoDict["hours2"] = selectedHour;
+                let xhr = new XMLHttpRequest();
+                xhr.open('GET', `/get-doctor-centers?crm=${selectedDoc}`, true);
 
-                    sendHoursToServer("exchange_from_other_user", infoDict)
-                });
+                xhr.onload = function() {
+                    if (this.status === 200) {
+                        let centers = JSON.parse(this.responseText);
+                        centers = centers.map(h => [h, h]);
+                
+                        let title = "Escolha o Centro do qual você quer sair";
+                        let label = "Centros: ";
+
+                        openModal("modal1", centers, title, label, function(selectedCenter) {
+                            if (selectedCenter === null) return; // User cancelled
+                            infoDict["center2"] = selectedCenter;
+                            
+                            let xhr = new XMLHttpRequest();
+                            xhr.open('GET', `/get-doctor-days?crm=${selectedDoc}&center=${selectedCenter}`, true);
+
+                            xhr.onload = function() {
+                                if(this.status === 200) {
+                                    let days = JSON.parse(this.responseText);
+                                    days = days.map(h => [h, h]);
+
+                                    let title = "Escolha o dia que você do qual você quer sair";
+                                    let label = "Dias: ";
+
+                                    openModal("modal2", days, title, label, function(selectedDay) {
+                                        if (selectedDay === null) return; // User cancelled
+                                        infoDict["day2"] = selectedDay;
+
+                                        let xhr = new XMLHttpRequest();
+                                        xhr.open('GET', `/get-redundant-hours?crm=${selectedDoc}&center=${selectedCenter}&day=${selectedDay}`, true);
+
+                                        xhr.onload = function() {
+                                            if (this.status === 200) {
+                                                let hours = JSON.parse(this.responseText);
+                                                hours = hours.map(h => [h, h]);
+                                                let title = "Escolha as Horas das quais você quer sair";
+                                                let label = "Horas: ";
+
+                                                openModal("modal1", hours, title, label, function(selectedHour){
+                                                    if (selectedHour === null) return; // User cancelled
+                                                    infoDict["hours2"] = selectedHour;
+                                                    sendHoursToServer("exchange_from_other_user", infoDict);
+                                                });
+                                            }
+                                        }
+                                        xhr.send();
+                                    });
+                                }
+                            }
+                            xhr.send();
+                        });
+                    }
+                }
+                xhr.send();
             });
-        });
-    });
+        }
+    }
+    xhr.send();
 }
 
 
