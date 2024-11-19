@@ -1,5 +1,6 @@
+import re
 from app import db
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, desc
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from .associations import request_appointment_association
@@ -36,8 +37,184 @@ class Request(db.Model):
     )
     
     def __repr__(self):
-        return self.message
+        return self.message 
+ 
+    @property
+    def appointment_date(self):
+        if self.action in ['include_user', 'approve_vacation']:
+            return None
+        
+        if self.action == 'exchange':
+            text = self.info.split("para")[0].strip()
+        else:
+            text = self.info
+        
+        date_pattern = r"\b\d{2}/\d{2}/\d{2}\b"
+        date = re.search(date_pattern, text)
+
+        if date:
+            return datetime.strptime(date.group(), "%d/%m/%y")
+
+        return None
+
+    @property
+    def appointment_date_two(self):
+        if not self.action == 'exchange':
+            return None
+        
+        second_part = self.info.split("para")[1].strip()
+        date_pattern = r"\b\d{2}/\d{2}/\d{2}\b"
+        date = re.search(date_pattern, second_part)
+
+        if date:
+            return datetime.strptime(date.group(), "%d/%m/%y")
+
+        return None
+
+    @property
+    def appointment_center(self):
+        if self.action in ['include_user', 'approve_vacation']:
+            return None
+        
+        if self.action == 'exchange':
+            text = self.info.split("para")[0].strip()
+        else:
+            text = self.info
+
+        center = text.split("no centro")[1].strip()
+        center = center.split("no dia")[0].strip()
+        return center
+
+    @property
+    def appointment_center_two(self):
+        if not self.action == 'exchange':
+            return None
+        
+        second_part = self.info.split("para")[1].strip()
+        center = second_part.split("no centro")[1].strip()
+        center = center.split("no dia")[0].strip()
+
+        return center
+
+    @property
+    def appointment_hour_range(self):
+        from ..hours_conversion import gen_hour_range
+
+        if self.action in ['include_user', 'approve_vacation']:
+            return None
+        
+        if self.action == 'exchange':
+            text = self.info.split("para")[0].strip()
+        else:
+            text = self.info
+
+        hours = text.split("horários:")[1].strip()
+        hours = hours.split("no")[0].strip()
+        str_hour, end_hour = hours.split("-") 
+
+        str_hour = str_hour.split(":")[0].strip()
+        end_hour = end_hour.split(":")[0].strip()
+
+        hour_range = gen_hour_range((int(str_hour), int(end_hour)-1))
+
+        return hour_range
+
+    @property
+    def appointment_hour_range_two(self):
+        from ..hours_conversion import gen_hour_range
+
+        if not self.action == 'exchange':
+            return None
+        
+        second_part = self.info.split("para")[1].strip()
+        hours = second_part.split("no")[0].strip()
+
+        str_hour, end_hour = hours.split("-") 
+
+        str_hour = str_hour.split(":")[0].strip()
+        end_hour = end_hour.split(":")[0].strip()
+
+        hour_range = gen_hour_range((int(str_hour), int(end_hour)-1))
+
+
+        return hour_range
     
+    @property
+    def message(self):
+        try:
+            unedit_message = self.info
+            message = unedit_message.replace('*', "")
+            message = message.replace('+', "")
+
+        except Exception as e:
+            message = f"""Uma requisição apresentou erro.
+            Por favor, informe ao administrador o código r-{self.id},
+            para que este erro seja corrijido."""
+
+        return message
+
+    @property
+    def receivers(self):
+        from app.models.user import User
+
+        user_ids = [user.id for user in User.query.all() if user.is_sudo]
+
+        if self.receivers_code == "*":
+        # if self.requestee_code == "*":
+            user_ids += [user.id for user in User.query.all() if user.is_admin]
+        else:
+            user_ids += [user.id for user in User.query.all() if user.id == int(self.receivers_code)]
+            # user_ids += [user.id for user in User.query.all() if user.id == int(self.requestee_code)]
+
+        return user_ids
+
+    def signal(self, requester_crm):
+        if self.action in ['include_user', 'approve_vacation']:
+            return None
+    
+        if self.action == 'include_appointments':
+            return 1
+        
+        if self.action == 'exclude_appointments':
+            return -1
+
+        if self.action == 'donate':
+            if self.requester.crm == requester_crm and "DE" in self.info:
+                return 1
+            if not self.requester.crm == requester_crm and "PARA" in self.info:
+                return 1
+            if self.requester.crm == requester_crm and "PARA" in self.info:
+                return -1
+            if not self.requester.crm == requester_crm and "DE" in self.info:
+                return -1
+        
+        if self.action == 'exchange':
+            return 0        
+
+    @property
+    def working_month(self):
+        from app.global_vars import STR_DAY
+
+        if not 31 >= self.appointment_date.day >= STR_DAY:
+            return self.appointment_date.month
+
+        if self.appointment_date.month == 12:
+            return 1
+        
+        return self.appointment_date.month + 1
+
+    @property
+    def working_year(self):
+        from app.global_vars import STR_DAY
+
+        if not 31 >= self.appointment_date.day >= STR_DAY:
+            return self.appointment_date.year
+        
+        if self.appointment_date.month == 12:
+            return self.appointment_date.year + 1
+        
+        return self.appointment_date.year
+
     @classmethod
     def new_user(cls, doctor_to_include_id):
         new_request = cls(
@@ -355,40 +532,32 @@ class Request(db.Model):
     def filter_by_user(cls, user_id):
         return [req for req in cls.query.filter_by(is_open=True).all() if user_id in req.receivers]
 
-    @property
-    def receivers(self):
+    @classmethod
+    def report(cls):
         from app.models.user import User
+        requests = cls.query.order_by(desc(cls.id)).all()
 
-        user_ids = [user.id for user in User.query.all() if user.is_sudo]
+        output = []
+        for req in requests:
+            output.append({
+                "id": req.id,
+                "requester": req.requester.full_name,
+                "receivers": [User.query.get(user_id).full_name for user_id in req.receivers],
+                "action": req.action,
+                "creation_date": req.creation_date,
+                "is_open": req.is_open,
+                "response_date": req.response_date,
+                "response": req.response,
+                "info": req.info
+            })
 
-        if self.receivers_code == "*":
-        # if self.requestee_code == "*":
-            user_ids += [user.id for user in User.query.all() if user.is_admin]
-        else:
-            user_ids += [user.id for user in User.query.all() if user.id == int(self.receivers_code)]
-            # user_ids += [user.id for user in User.query.all() if user.id == int(self.requestee_code)]
+        return output
 
-    
-        return user_ids
-    
-    @property
-    def message(self):
-        try:
-            unedit_message = self.info
-            message = unedit_message.replace('*', "")
-            message = message.replace('+', "")
-
-        except Exception as e:
-            message = f"""Uma requisição apresentou erro.
-            Por favor, informe ao administrador o código r-{self.id},
-            para que este erro seja corrijido."""
-        return message
-    
     def add_appointment(self, appointment):
         self.appointments.append(appointment)
         db.session.commit()
 
-    def respond(self, responder_id, response):
+    def respond(self, responder_id, response, send_confirmation=True):
         from app.models.message import Message
         for message in self.messages:
             message.delete()
@@ -399,15 +568,25 @@ class Request(db.Model):
         self.is_open = False
 
         db.session.commit()
-        Message.new_confirmation_message(
-            sender_id=responder_id,
-            request_id=self.id,
-            receivers_code=str(self.requester_id),
-            # requestee_code=str(self.requester_id),
-            )
+        if send_confirmation:
+            Message.new_confirmation_message(
+                sender_id=responder_id,
+                request_id=self.id,
+                receivers_code=str(self.requester_id),
+                # requestee_code=str(self.requester_id),
+                )
         return 0
+
+    # def close(self, closer_id, response):           
+    #     self.responder_id = closer_id
+    #     self.response = response
+    #     self.response_date = datetime.now()
+    #     self.is_open = False
+
+    #     db.session.commit()
+    #     return 0
     
-    def resolve(self, responder_id, authorized):
+    def resolve(self, responder_id, authorized, send_confirmation=True):
         from app.models import User
 
         if not authorized:
@@ -441,14 +620,20 @@ class Request(db.Model):
             for app in self.appointments:
                 app.confirm()
 
-            self.respond(responder_id=responder_id, response='authorized')
+            self.respond(responder_id=responder_id,
+                         response='authorized',
+                         send_confirmation=send_confirmation)
+
             return "Os horários foram incluídos com sucesso", 'success'
         
         if self.action == "exclude_appointments":
             for app in self.appointments:   
                 app.delete_entry(del_requests=False)
 
-            self.respond(responder_id=responder_id, response='authorized')
+            self.respond(responder_id=responder_id,
+                         response='authorized',
+                         send_confirmation=send_confirmation)
+                         
             return "Os horários foram excluídos com sucesso", 'success'
         
         if self.action == "donate":

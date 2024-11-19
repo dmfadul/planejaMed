@@ -11,37 +11,7 @@ from datetime import datetime
 import json
 
 
-# app = create_app()
-# with app.app_context():
-#     user = User.query.filter_by(crm=26704).first()
-#     s_date = datetime(2024, 12, 1)
-#     e_date = datetime(2024, 12, 30)
-
-#     vacation = Vacation(user_id=user.id,
-#                         start_date=s_date,
-#                         end_date=e_date)
-    
-    # print(Vacation.check(user.id))
-    # vacation.check()
-
-#     users = User.query.all()
-#     for user in users:
-#         if user.crm in vacs_crm:
-#             print(f"Pre-approving {user}")
-#             user.pre_approved_vacation = True
-#             db.session.commit()
-#         else:
-#             print(f"Skipping {user}")
-#             user.pre_approved_vacation = False
-#             db.session.commit()
-
-  
-
-# migration_funcs.drop_all_tables()
-# migration_funcs.add_centers()
-# migration_funcs.migrate_users()
-# migration_funcs.adjust_users()
-
-# migration_funcs.migrate_base("CCG--BASE")
-
-# migration_funcs.migrate_months()
+app = create_app()
+with app.app_context():    
+    datetime_object = datetime.strptime("2024-11-20", "%Y-%m-%d")
+    Vacation.check(datetime_object, 26)

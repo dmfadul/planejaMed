@@ -71,6 +71,8 @@ class Appointment(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+        return 0
+
     @property
     def has_open_requests(self):
         return any(request.is_open for request in self.requests)

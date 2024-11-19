@@ -1,8 +1,8 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import current_user, login_required
 
 import app.global_vars as global_vars
-from app.models import Center, Month, User, Vacation
+from app.models import Center, Month, User, Vacation, Request
 from app.routes.calendar.gen_data import gen_doctors_dict
 from app.config import Config
 from datetime import datetime
@@ -215,42 +215,90 @@ def create_center():
     return redirect(url_for('admin.admin'))
 
 
+@admin_bp.route('/admin/request-report', methods=['GET'])
+@login_required
+def request_report():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    reqs = Request.report()
+    return render_template('request-report.html', reqs=reqs)
+
+
+@admin_bp.route('/admin/add-vacation', methods=['POST'])
+@login_required
+def add_vacation():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    crm = request.form['crm']
+    user = User.query.filter_by(crm=crm).first()
+    if not user:
+        return "User not found", 404
+
+    start_date = datetime.strptime(request.form['start_date'], "%Y-%m-%d")
+    end_date = datetime.strptime(request.form['end_date'], "%Y-%m-%d")
+
+    new_vacation = Vacation.add_entry(start_date=start_date,
+                                      end_date=end_date,
+                                      user_id=user.id)    
+
+    if isinstance(new_vacation, str):
+        flash(new_vacation, "danger")
+        return redirect(url_for('admin.admin'))
+
+    new_vacation.approve()
+
+    flash("Férias criadas", "success")
+    return redirect(url_for('admin.admin'))
+      
+
+
 @admin_bp.route('/admin/vacations-report', methods=['GET'])
 @login_required
 def vacations_report():
     if not current_user.is_admin:
         return "Unauthorized", 401
 
+    Vacation.update_status()
     vacations = Vacation.report()
     return render_template('vacations-report.html', vacations=vacations)
     
 
-@admin_bp.route('/admin/calculate-vacations', methods=['POST', 'GET'])
+@admin_bp.route('/admin/calculate-vacation-pay', methods=['POST', 'GET'])
 @login_required
-def calculate_vacations():
+def calculate_vacation_pay():
     if not current_user.is_admin:
         return "Unauthorized", 401
 
-    crm = request.form.get('crm')
-    start_date_str = request.form.get('start_date')
-    end_date_str = request.form.get('end_date')
-    
-    doctor = User.query.filter_by(crm=crm).first()
-    if not doctor:
-        return "Doctor not found", 404
-    
-    start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
-    end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+    vacation_id = request.json['vacationID']
+    vacation = Vacation.query.get(vacation_id)
 
-    vacation = Vacation.add_entry(
-                                user_id=doctor.id,
-                                start_date=start_date,
-                                end_date=end_date
-                                )
+    start_date = vacation.start_date
+    end_date = vacation.end_date
+    doctor = vacation.user   
     
     output = vacation.calculate_payment()
 
-    return output.replace('\n', '<br>')
+    return jsonify(output)
+
+
+@admin_bp.route('/admin/pay-vacation', methods=['POST'])
+@login_required
+def pay_vacation():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    vacation_id = request.json['vacationID']
+    vacation = Vacation.query.get(vacation_id)
+
+    flag = vacation.pay()
+    if isinstance(flag, str):
+        flash(flag, "danger")
+        return jsonify(flag)
+
+    flash("Pagamento efetuado", "success")
+    return jsonify("success")
 
 
 @admin_bp.route('/admin/toggle-maintenance', methods=['POST', 'GET'])
