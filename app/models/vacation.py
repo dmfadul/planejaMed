@@ -101,6 +101,8 @@ class Vacation(db.Model):
             if isinstance(flag, str):
                 vacation.status = 'unapproved'
                 db.session.commit()
+
+
                 
     @classmethod
     def check_past_vacations(cls, start_date, end_date, user_id):
@@ -131,90 +133,96 @@ class Vacation(db.Model):
         return 0
 
     @classmethod
+    def check_concomitant_vacations(cls, start_date, end_date, user_id):
+        pass
+
+
+    @classmethod
     def check(cls, start_date, user_id):
-        user = User.query.filter_by(id=user_id).first()
-        vac_report = cls.get_vacation_report(start_date, user_id)
+        # user = User.query.filter_by(id=user_id).first()
+        # vac_report = cls.get_vacation_report(start_date, user_id)
 
-        originals = vac_report.get('original')
-        realizeds = vac_report.get('realized')
+        # originals = vac_report.get('original')
+        # realizeds = vac_report.get('realized')
 
-        if not originals or not realizeds:
-            return "Erro ao buscar dados"
+        # if not originals or not realizeds:
+        #     return "Erro ao buscar dados"
         
-        original_len = len([o for o in originals if o != -1])
-        if original_len < 3:
-            return """Usuário não tem dados suficientes para solicitar férias.
-                    Por favor, façao o pedido diretamente ao Administrador"""
+        # original_len = len([o for o in originals if o != -1])
+        # if original_len < 3:
+        #     return """Usuário não tem dados suficientes para solicitar férias.
+        #             Por favor, façao o pedido diretamente ao Administrador"""
 
-        original_routine_avg = sum([o['routine'] for o in originals if o != -1])/original_len
-        original_plaintemps_avg = sum([o['plaintemps'] for o in originals if o != -1])/original_len
+        # original_routine_avg = sum([o['routine'] for o in originals if o != -1])/original_len
+        # original_plaintemps_avg = sum([o['plaintemps'] for o in originals if o != -1])/original_len
 
-        realized_len = len([r for r in realizeds if r != -1])
-        realized_routine_avg = sum([r['routine'] for r in realizeds])/realized_len
-        realized_plaintemps_avg = sum([r['plaintemps'] for r in realizeds])/realized_len
+        # realized_len = len([r for r in realizeds if r != -1])
+        # realized_routine_avg = sum([r['routine'] for r in realizeds])/realized_len
+        # realized_plaintemps_avg = sum([r['plaintemps'] for r in realizeds])/realized_len
 
-        ora = math.ceil(original_routine_avg * 1.1)
-        opa = math.ceil(original_plaintemps_avg * 1.1)
-        rra = math.ceil(realized_routine_avg * 1.1)
-        rpa = math.ceil(realized_plaintemps_avg * 1.1)
+        # ora = math.ceil(original_routine_avg * 1.1)
+        # opa = math.ceil(original_plaintemps_avg * 1.1)
+        # rra = math.ceil(realized_routine_avg * 1.1)
+        # rpa = math.ceil(realized_plaintemps_avg * 1.1)
         
-        rules = user.get_vacation_rules()
+        # rules = user.get_vacation_rules()
 
-        if rra < rules['routine'] or rpa < rules['plaintemps']:
-            return "Usuário não manteve horas nas escalas realizadas para ter direito à férias" 
+        # if rra < rules['routine'] or rpa < rules['plaintemps']:
+        #     return "Usuário não manteve horas nas escalas realizadas para ter direito à férias" 
 
         # print(checked_all_months)
         return 0
 
     @classmethod
     def get_vacation_report(cls, start_date, user_id):
-        user = User.query.filter_by(id=user_id).first()
-        if not user:
-            return f"Usuário com id {user_id} não encontrado"
+        return 0
+        # user = User.query.filter_by(id=user_id).first()
+        # if not user:
+        #     return f"Usuário com id {user_id} não encontrado"
 
-        if not user.is_active:
-            return "Usuário inativo. Não pode solicitar férias"
+        # if not user.is_active:
+        #     return "Usuário inativo. Não pode solicitar férias"
 
-        target_date = start_date.replace(year=start_date.year - 1)
-        if user.date_joined > target_date.date():
-            return f"""Usuário entrou no grupo menos de um ano antes do
-                        início das férias ({start_date.strftime('%d/%m/%Y')})"""
+        # target_date = start_date.replace(year=start_date.year - 1)
+        # if user.date_joined > target_date.date():
+        #     return f"""Usuário entrou no grupo menos de um ano antes do
+        #                 início das férias ({start_date.strftime('%d/%m/%Y')})"""
     
         # user_rules = user.get_vacation_rules()
-        base_dict = BaseAppointment.get_users_total(user.id, split_the_fifth=True)
+        # base_dict = BaseAppointment.get_users_total(user.id, split_the_fifth=True)
 
-        if base_dict['routine'] < user_rules['routine'] or base_dict['plaintemps'] < user_rules['plaintemps']:
-            return "Usuário não tem direito Base à férias"
+        # if base_dict['routine'] < user_rules['routine'] or base_dict['plaintemps'] < user_rules['plaintemps']:
+        #     return "Usuário não tem direito Base à férias"
 
-        str_month, str_year = int(start_date.strftime('%m')), int(start_date.strftime('%Y'))
+        # str_month, str_year = int(start_date.strftime('%m')), int(start_date.strftime('%Y'))
 
-        months_num = []
-        for i in range(1, 13):
-            months_num.append((str_month + i) % 12)
+        # months_num = []
+        # for i in range(1, 13):
+        #     months_num.append((str_month + i) % 12)
         
-        months_to_check = []
-        year = str_year
-        for i, month in enumerate(months_num):
-            month = 12 if month == 0 else month
+        # months_to_check = []
+        # year = str_year
+        # for i, month in enumerate(months_num):
+        #     month = 12 if month == 0 else month
             
-            if i == 0 and not month == 1:
-                year -= 1
+        #     if i == 0 and not month == 1:
+        #         year -= 1
 
-            if not year == str_year and month == 1:
-                year = str_year
+        #     if not year == str_year and month == 1:
+        #         year = str_year
             
-            months_to_check.append((month, year))
+        #     months_to_check.append((month, year))
 
-        months_to_check = months_to_check[5:-1]
+        # months_to_check = months_to_check[5:-1]
 
-        original_results = []
-        realized_results = []
-        for month, year in months_to_check:
-            original_path = f"original_{month}_{year}.json"
-            original_results.append(cls.check_original(original_path, user.crm, user_rules))
-            realized_results.append(cls.check_realized(month, year, user.id))
+        # original_results = []
+        # realized_results = []
+        # for month, year in months_to_check:
+        #     original_path = f"original_{month}_{year}.json"
+        #     original_results.append(cls.check_original(original_path, user.crm, user_rules))
+        #     realized_results.append(cls.check_realized(month, year, user.id))
 
-        return {"original": original_results, "realized": realized_results}
+        # return {"original": original_results, "realized": realized_results}
     
     @classmethod
     def check_realized(cls, month_num, month_year, user_id):  
