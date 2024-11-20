@@ -34,15 +34,15 @@ class Vacation(db.Model):
         if not user:
             return f"Usuário com id {user_id} não encontrado"
 
-        if not user.pre_approved_vacation:
-            flag = cls.check(start_date, user.id)
+        # if not user.pre_approved_vacation:
+        #     flag = cls.check(start_date, user.id)
 
-            if isinstance(flag, str):
-                return flag
+        #     if isinstance(flag, str):
+        #         return flag
 
-        flag = cls.check_past_vacations(start_date, end_date, user.id)
-        if isinstance(flag, str):
-            return flag       
+        # flag = cls.check_past_vacations(start_date, end_date, user.id)
+        # if isinstance(flag, str):
+        #     return flag       
 
         existing_vacation = cls.query.filter(
                             cls.user_id == user_id,
@@ -53,8 +53,8 @@ class Vacation(db.Model):
             return f"""Usuário tem férias pendentes.
                         Aguarde aprovação ou contacte o Administrador"""
 
-        if end_date - start_date > datetime.timedelta(TOTAL_VACATION_DAYS):
-            return f"Duração das férias ultrapassa o limite de {TOTAL_VACATION_DAYS} dias"
+        # if end_date - start_date > datetime.timedelta(TOTAL_VACATION_DAYS):
+        #     return f"Duração das férias ultrapassa o limite de {TOTAL_VACATION_DAYS} dias"
 
         new_vacation = cls(user_id=user_id,
                            start_date=start_date,
@@ -64,7 +64,7 @@ class Vacation(db.Model):
         db.session.add(new_vacation)
         db.session.commit()
 
-        return vacation
+        return new_vacation
     
     def remove_entry(self):
         db.session.delete(self)
