@@ -132,36 +132,36 @@ class Vacation(db.Model):
 
     @classmethod
     def check(cls, start_date, user_id):
-        user = User.query.filter_by(id=user_id).first()
-        vac_report = cls.get_vacation_report(start_date, user_id)
+        # user = User.query.filter_by(id=user_id).first()
+        # vac_report = cls.get_vacation_report(start_date, user_id)
 
-        originals = vac_report.get('original')
-        realizeds = vac_report.get('realized')
+        # originals = vac_report.get('original')
+        # realizeds = vac_report.get('realized')
 
-        if not originals or not realizeds:
-            return "Erro ao buscar dados"
+        # if not originals or not realizeds:
+        #     return "Erro ao buscar dados"
         
-        original_len = len([o for o in originals if o != -1])
-        if original_len < 3:
-            return """Usuário não tem dados suficientes para solicitar férias.
-                    Por favor, façao o pedido diretamente ao Administrador"""
+        # original_len = len([o for o in originals if o != -1])
+        # if original_len < 3:
+        #     return """Usuário não tem dados suficientes para solicitar férias.
+        #             Por favor, façao o pedido diretamente ao Administrador"""
 
-        original_routine_avg = sum([o['routine'] for o in originals if o != -1])/original_len
-        original_plaintemps_avg = sum([o['plaintemps'] for o in originals if o != -1])/original_len
+        # original_routine_avg = sum([o['routine'] for o in originals if o != -1])/original_len
+        # original_plaintemps_avg = sum([o['plaintemps'] for o in originals if o != -1])/original_len
 
-        realized_len = len([r for r in realizeds if r != -1])
-        realized_routine_avg = sum([r['routine'] for r in realizeds])/realized_len
-        realized_plaintemps_avg = sum([r['plaintemps'] for r in realizeds])/realized_len
+        # realized_len = len([r for r in realizeds if r != -1])
+        # realized_routine_avg = sum([r['routine'] for r in realizeds])/realized_len
+        # realized_plaintemps_avg = sum([r['plaintemps'] for r in realizeds])/realized_len
 
-        ora = math.ceil(original_routine_avg * 1.1)
-        opa = math.ceil(original_plaintemps_avg * 1.1)
-        rra = math.ceil(realized_routine_avg * 1.1)
-        rpa = math.ceil(realized_plaintemps_avg * 1.1)
+        # ora = math.ceil(original_routine_avg * 1.1)
+        # opa = math.ceil(original_plaintemps_avg * 1.1)
+        # rra = math.ceil(realized_routine_avg * 1.1)
+        # rpa = math.ceil(realized_plaintemps_avg * 1.1)
         
-        rules = user.get_vacation_rules()
+        # rules = user.get_vacation_rules()
 
-        if rra < rules['routine'] or rpa < rules['plaintemps']:
-            return "Usuário não manteve horas nas escalas realizadas para ter direito à férias" 
+        # if rra < rules['routine'] or rpa < rules['plaintemps']:
+        #     return "Usuário não manteve horas nas escalas realizadas para ter direito à férias" 
 
         # print(checked_all_months)
         return 0
@@ -180,7 +180,7 @@ class Vacation(db.Model):
             return f"""Usuário entrou no grupo menos de um ano antes do
                         início das férias ({start_date.strftime('%d/%m/%Y')})"""
     
-        # user_rules = user.get_vacation_rules()
+        user_rules = user.get_vacation_rules()
         base_dict = BaseAppointment.get_users_total(user.id, split_the_fifth=True)
 
         if base_dict['routine'] < user_rules['routine'] or base_dict['plaintemps'] < user_rules['plaintemps']:
