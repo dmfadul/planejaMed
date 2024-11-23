@@ -23,6 +23,8 @@ class Vacation(db.Model):
     def year(self):
         return self.start_date.year
 
+
+#================================== HELPER METHODS ==================================#
     @classmethod
     def add_entry(cls, user_id, start_date, end_date):
         from app.global_vars import TOTAL_VACATION_DAYS
@@ -80,6 +82,21 @@ class Vacation(db.Model):
         self.status = "denied"
         db.session.commit()
         return 0
+    
+    def pay(self):
+        if self.status == "paid":
+            return "Férias já pagas"
+        
+        if self.status == "pending_approval":
+            return "Férias não podem ser pagas antes de aprovadas"
+
+        if self.status == "denied":
+            return "Férias negadas não podem ser pagas"
+
+        self.status = "paid"
+        db.session.commit()
+
+        return 0
 
     @classmethod
     def update_status(cls):
@@ -89,7 +106,7 @@ class Vacation(db.Model):
             # if (vacation.start_date < datetime.date.today()) and vacation.status == 'pending_approval':
             #     vacation.status = 'denied'
             #     db.session.commit()
-            if (vacation.end_date < datetime.date.today()) and vacation.status == 'ongoing':
+            if (vacation.end_date < datetime.date.today()) and vacation.status in ['ongoing', 'approved']:
                 vacation.status = 'completed'
                 db.session.commit()
             elif (vacation.start_date < datetime.date.today()) and vacation.status == 'approved':
@@ -103,7 +120,7 @@ class Vacation(db.Model):
                 db.session.commit()
 
 
-                
+#=============================== QUERY METHODS ================================================#    
     @classmethod
     def check_past_vacations(cls, start_date, end_date, user_id):
         from app.global_vars import MAX_VACATION_SPLIT, MIN_VACATION_DURATION, TOTAL_VACATION_DAYS
@@ -134,7 +151,10 @@ class Vacation(db.Model):
 
     @classmethod
     def check_concomitant_vacations(cls, start_date, end_date, user_id):
-        pass
+        vacations = cls.query.filter(cls.user_id != user_id).filter(~cls.status.in_(['pending_approval', 'approved'])).all()
+
+        print(vacations)
+
 
 
     @classmethod
@@ -274,6 +294,7 @@ class Vacation(db.Model):
     def report(cls):
         translation_dict = {
             "pending_approval": "Pendente",
+            "defered": "Deferido",
             "approved": "Aprovado",
             "denied": "Negado",
             "completed": "Concluído",
@@ -346,21 +367,8 @@ class Vacation(db.Model):
 
         return output
 
-    def pay(self):
-        if self.status == "paid":
-            return "Férias já pagas"
-        
-        if self.status == "pending_approval":
-            return "Férias não podem ser pagas antes de aprovadas"
 
-        if self.status == "denied":
-            return "Férias negadas não podem ser pagas"
-
-        self.status = "paid"
-        db.session.commit()
-
-        return 0
-
+#=============================== UTILITY METHODS ================================================#
     def get_months_range(self):
         curr_year, curr_month = self.start_date.year, self.start_date.month
 
