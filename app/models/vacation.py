@@ -42,9 +42,7 @@ class Vacation(db.Model):
         #     if isinstance(flag, str):
         #         return flag
 
-        # flag = cls.check_past_vacations(start_date, end_date, user.id)
-        # if isinstance(flag, str):
-        #     return flag       
+     
 
         existing_vacation = cls.query.filter(
                             cls.user_id == user_id,
@@ -122,7 +120,7 @@ class Vacation(db.Model):
 
 #=============================== QUERY METHODS ================================================#    
     @classmethod
-    def check_past_vacations(cls, start_date, end_date, user_id):
+    def check_vacations_availability(cls, start_date, end_date, user_id):
         from app.global_vars import MAX_VACATION_SPLIT, MIN_VACATION_DURATION, TOTAL_VACATION_DAYS
 
         vacations = cls.query.filter_by(user_id=user_id).filter(~cls.status.in_(['pending_approval', 'denied', 'cancelled'])).all()
