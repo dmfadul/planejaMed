@@ -271,16 +271,24 @@ def calculate_vacation_pay():
     if not current_user.is_admin:
         return "Unauthorized", 401
 
-    vacation_id = request.json['vacationID']
-    vacation = Vacation.query.get(vacation_id)
-
-    start_date = vacation.start_date
-    end_date = vacation.end_date
-    doctor = vacation.user   
+    data = request.form.to_dict()
     
-    output = vacation.calculate_payment()
+    user = User.query.filter_by(crm=data['crm']).first()
+    start_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
+    end_date = datetime.strptime(data['end_date'], "%Y-%m-%d")
 
-    return jsonify(output)
+    vacation = Vacation.add_entry(start_date=start_date,
+                                  end_date=end_date,
+                                  user_id=user.id)
+
+    if isinstance(vacation, str):
+        flash(vacation, "danger")
+        return vacation
+                                
+    output = vacation.calculate_payment()
+    vacation.remove_entry()
+
+    return output
 
 
 @admin_bp.route('/admin/pay-vacation', methods=['POST'])
