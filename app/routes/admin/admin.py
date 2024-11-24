@@ -261,7 +261,7 @@ def vacations_report():
         return "Unauthorized", 401
 
     Vacation.update_status()
-    vacations = Vacation.report()
+    vacations = Vacation.get_report()
     return render_template('vacations-report.html', vacations=vacations) 
 
 
