@@ -88,6 +88,21 @@ class BaseAppointment(db.Model):
         return app_dict
 
     @classmethod
+    def get_users_delta(cls, user_id, split_the_fifth=True):
+        from app.models import User
+
+        user = User.query.filter_by(id=user_id).first()
+        if not user:
+            return -1
+
+        user_total = cls.get_users_total(user_id, split_the_fifth)
+        user_rules = user.get_vacation_rules()
+        delta = {key: user_total[key] - user_rules[key] for key in user_total}
+
+        return delta
+
+
+    @classmethod
     def get_users_total(cls, user_id, split_the_fifth=False):
         apps = cls.query.filter_by(user_id=user_id).all()
 
@@ -102,8 +117,8 @@ class BaseAppointment(db.Model):
             else:
                 output["routine"] += count    
 
-        output["plaintemps"] = math.ceil(output["plaintemps"])
-        output["routine"] = math.ceil(output["routine"])     
+        output["plaintemps"] = math.ceil(round(output["plaintemps"], 5))
+        output["routine"] = math.ceil(round(output["routine"], 5))
 
         return output
     

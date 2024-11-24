@@ -14,7 +14,11 @@ import json
 app = create_app()
 with app.app_context():
     user = User.query.filter_by(crm="26704").first()
-    Vacation.check_concomitant_vacations("2024-11-20", "2024-11-26", user.id)
+
+    BaseAppointment.get_users_delta(user.id)
+
+
+    # Vacation.check_concomitant_vacations("2024-11-20", "2024-11-26", user.id)
     
     # datetime_object = datetime.strptime("2024-11-20", "%Y-%m-%d")
     # Vacation.check(datetime_object, 26)
