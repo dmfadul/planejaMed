@@ -11,7 +11,7 @@ from datetime import datetime
 import json
 
 
-app = create_app()
-with app.app_context():    
-    datetime_object = datetime.strptime("2024-11-20", "%Y-%m-%d")
-    Vacation.check(datetime_object, 26)
+# app = create_app()
+# with app.app_context():    
+#     current_month = Month.get_current()
+#     print(current_month)
