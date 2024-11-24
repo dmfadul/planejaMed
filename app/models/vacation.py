@@ -64,7 +64,7 @@ class Vacation(db.Model):
         db.session.add(new_vacation)
         db.session.commit()
 
-        return vacation
+        return new_vacation
     
     def remove_entry(self):
         db.session.delete(self)
