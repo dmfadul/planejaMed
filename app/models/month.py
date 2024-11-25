@@ -362,17 +362,17 @@ class Month(db.Model):
         if not holidays:
             return -3
 
-        test1 = []
-        test2 = []
         output = {"routine": 0, "plaintemps": 0}
         for center, data in user_dict.items():
             for day, apps in data.items():
+                day_date = self.get_day(day).date
+                if int(day) in holidays and not day_date.weekday() in [5, 6]:
+                    continue
+
                 for app in apps:
                     if int(day) in holidays or app in NIGHT_HOURS:
-                        test1.append((day, app))
                         output["plaintemps"] += 1
                     else:
-                        test2.append((day, app))
                         output["routine"] += 1
 
         return output
