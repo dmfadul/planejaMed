@@ -1,0 +1,49 @@
+26704:		 2013-06-17			 - 			 Alberto Fadul
+44392:		 2024-03-01			 - 			 Alexandre D. Beck
+40506:		 0					 - 			 Aline R. Portugal
+19256:		 0					 - 			 Ana G. Picavea
+39884:		 0					 - 			 Ana K. Sampaio
+31058:		 0					 - 			 Augusto B. de F.
+33161:		 0					 - 			 Beatriz L. Bidese
+34085:		 2018-03-01			 - 			 Bruno B. Barbosa
+28107:		 0					 - 			 Cláudio Wagner
+31057:		 0					 - 			 Elthon Brambila
+33276:		 0					 - 			 Fabiano S. Martins
+25549:		 0					 - 			 Fabio Perches
+42173:		 0					 - 			 Fabíola de C.
+27811:		 0					 - 			 Felipe Bredow
+27749:		 0					 - 			 Fernanda A. Leite
+39100:		 0					 - 			 Fernanda B. Bettes
+42210:		 2024-05-26			 - 			 Filipe Bianco
+10880:		 1992-03-01			 - 			 Fioretto I. G. Meschino
+15812:		 1999-03-01			 - 			 Gilberto M. Stroparo
+215651:		 0					 - 			 Gustavo A. Fernandes
+40018:		 0					 - 			 Heloisa I. Vieira
+42217:		 2024-07-26			 - 			 Henrique S. Gaertner
+11967:		 1990-03-01			 - 			 Ivo R. Lechinewiski
+24250:		 0					 - 			 Jaaziel P. Gonçalves
+14085:		 0					 - 			 Júllio B. Neto
+31051:		 2016-03-01			 - 			 Kheder B. Chebli
+34071:		 2024-10-26			 - 			 Laila M. Ozono
+42586:		 2024-10-26			 - 			 Leonardo F. Da N.
+23301:		 0					 - 			 Lisiane B. Ribas
+37668:		 *					 - 			 Luiza M. Gusso
+29430:		 0					 - 			 Manuela M. Wobeto
+35636:		 0					 - 			 Marcel P. de M.
+40022:		 2023-03-01			 - 			 Marcela B. Abujamra
+28327:		 0					 - 			 Marcelo Krul
+11305:		 0					 - 			 Marco Paviani
+43386:		 0					 - 			 Marcos Abib
+44623:		 0					 - 			 Mariana M. Teixeira
+43645:		 2024-08-26			 - 			 Mauricio C. Filon
+33594:		 0					 - 			 Maurício Z. Centenaro
+34746:		 0					 - 			 Nikolas Kim
+7804:		 0					 - 			 Paulo E. Leinig
+42390:		 *					 - 			 Pedro B. Vieira
+34790:		 2024-06-26			 - 			 Priscila B. do A.
+33198:		 2018-03-01			 - 			 Rafhael A. Botelho
+31342:		 0					 - 			 Renato L. Gomes
+45861:		 2024-06-26			 - 			 Rodrigo J. Soares
+5078:		 0					 - 			 Victor H. Marcassa
+35198:		 2024-08-26			 - 			 Vinicius R. Batista
+38415:		 2024-09-26			 - 			 William W. Carvalhal

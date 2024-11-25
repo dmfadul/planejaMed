@@ -173,6 +173,10 @@ class Vacation(db.Model):
             return "Erro ao calcular horas do original"
 
         realized_hours = month.get_users_realized_total(user.id)
+        print('realized_hours', realized_hours)
+        print('original_hours', original_hours)
+        print(user.get_vacation_rules())
+        print('user_delta', user_delta)
 
         if original_hours.get('plaintemps') - realized_hours.get('plaintemps') > user_delta.get('plaintemps'):
             return "Usuário não realizou horas suficientes de plantão"
