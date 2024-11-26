@@ -146,17 +146,28 @@ class Vacation(db.Model):
 
         print(vacs)
 
+
     @classmethod
-    def check_vacation_entitlement(cls, user_id, month_number, year):
+    def check_vacation_entitlement(cls, user_id, start_date):
+        user = User.query.filter_by(id=user_id).first()
+        if not user:
+            return "Usuário não encontrado"
+
+        if user.pre_approved_vacation:
+            return 0
+
+        # check if vacation date is six months after entitlment date
+
+
+    @classmethod
+    def check_vacation_entitlement_by_month(cls, user_id, month_number, year):
+        # if this function is static, move it to Month class
         from app.models import User, BaseAppointment, Month
 
         user = User.query.filter_by(id=user_id).first()
         if not user:
             return "Usuário não encontrado"
        
-        if user.pre_approved_vacation:
-            return 0
-
         user_delta = BaseAppointment.get_users_delta(user_id)
         if user_delta == -1:
             return "Erro ao calcular delta do usuário"
@@ -173,15 +184,15 @@ class Vacation(db.Model):
             return "Erro ao calcular horas do original"
 
         realized_hours = month.get_users_realized_total(user.id)
-        print('realized_hours', realized_hours)
-        print('original_hours', original_hours)
-        print(user.get_vacation_rules())
-        print('user_delta', user_delta)
 
-        if original_hours.get('plaintemps') - realized_hours.get('plaintemps') > user_delta.get('plaintemps'):
+        is_short_plaintemps = original_hours.get('plaintemps') - realized_hours.get('plaintemps') > user_delta.get('plaintemps')
+        is_short_routine = original_hours.get('routine') - realized_hours.get('routine') > user_delta.get('routine')
+        user_rules = user.get_vacation_rules()
+
+        if is_short_plaintemps and realized_hours.get('plaintemps') < user_rules.get('plaintemps'):
             return "Usuário não realizou horas suficientes de plantão"
 
-        if original_hours.get('routine') - realized_hours.get('routine') > user_delta.get('routine'):
+        if is_short_routine and realized_hours.get('routine') < user_rules.get('routine'):
             return "Usuário não realizou horas suficientes de rotina"
 
         return 0

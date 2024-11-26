@@ -1,5 +1,5 @@
 26704:		 2013-06-17			 - 			 Alberto Fadul
-44392:		 2024-03-01			 - 			 Alexandre D. Beck
+44392:		 2024-02-01			 - 			 Alexandre D. Beck
 40506:		 0					 - 			 Aline R. Portugal
 19256:		 0					 - 			 Ana G. Picavea
 39884:		 0					 - 			 Ana K. Sampaio
@@ -15,15 +15,15 @@
 27749:		 0					 - 			 Fernanda A. Leite
 39100:		 0					 - 			 Fernanda B. Bettes
 42210:		 2024-05-26			 - 			 Filipe Bianco
-10880:		 1992-03-01			 - 			 Fioretto I. G. Meschino
+10880:		 2024-07-26			 - 			 Fioretto I. G. Meschino
 15812:		 1999-03-01			 - 			 Gilberto M. Stroparo
 215651:		 0					 - 			 Gustavo A. Fernandes
 40018:		 0					 - 			 Heloisa I. Vieira
-42217:		 2024-07-26			 - 			 Henrique S. Gaertner
+42217:		 2024-06-26			 - 			 Henrique S. Gaertner
 11967:		 1990-03-01			 - 			 Ivo R. Lechinewiski
 24250:		 0					 - 			 Jaaziel P. Gonçalves
 14085:		 0					 - 			 Júllio B. Neto
-31051:		 2016-03-01			 - 			 Kheder B. Chebli
+31051:		 *					 - 			 Kheder B. Chebli
 34071:		 2024-10-26			 - 			 Laila M. Ozono
 42586:		 2024-10-26			 - 			 Leonardo F. Da N.
 23301:		 0					 - 			 Lisiane B. Ribas
