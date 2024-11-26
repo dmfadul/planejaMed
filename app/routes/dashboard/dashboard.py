@@ -48,6 +48,10 @@ def resolve_vacations():
     start_date = datetime.strptime(request.form['start_date'], "%Y-%m-%d")
     end_date = datetime.strptime(request.form['end_date'], "%Y-%m-%d")
 
+    flag = Vacation.check_vacations_availability(start_date, end_date, current_user.id)
+    if isinstance(flag, str):
+        return flag  
+    
     new_vacation = Vacation.add_entry(start_date=start_date,
                                       end_date=end_date,
                                       user_id=current_user.id)

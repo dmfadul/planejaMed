@@ -337,13 +337,42 @@ class Month(db.Model):
             json.dump(original_dict, f, indent=2)
         
 
-    def get_users_total(self, user_id):
+    def get_users_realized_total(self, user_id):
         output = {"routine": 0, "plaintemps": 0}
         for app in [a for a in self.appointments if a.user_id == user_id]:
-            if app.day.date.weekday() in [5, 6] or app.is_night or app.is_holiday:
+            if app.is_holiday or app.is_night:
                 output["plaintemps"] += 1
             else:
                 output["routine"] += 1
 
         return output
+    
+    def get_users_original_total(self, user_crm):
+        from app.global_vars import NIGHT_HOURS 
+
+        original_dict = self.get_original_dict()
+        if not original_dict:
+            return -1
         
+        user_dict = original_dict['data'].get(str(user_crm))
+        if not user_dict:
+            return -2
+
+        holidays = original_dict['holidays']
+        if not holidays:
+            return -3
+
+        output = {"routine": 0, "plaintemps": 0}
+        for center, data in user_dict.items():
+            for day, apps in data.items():
+                day_date = self.get_day(day).date
+                if int(day) in holidays and not day_date.weekday() in [5, 6]:
+                    continue
+
+                for app in apps:
+                    if int(day) in holidays or app in NIGHT_HOURS:
+                        output["plaintemps"] += 1
+                    else:
+                        output["routine"] += 1
+
+        return output

@@ -23,6 +23,8 @@ class Vacation(db.Model):
     def year(self):
         return self.start_date.year
 
+
+#================================== HELPER METHODS ==================================#
     @classmethod
     def add_entry(cls, user_id, start_date, end_date):
         from app.global_vars import TOTAL_VACATION_DAYS
@@ -33,17 +35,7 @@ class Vacation(db.Model):
         user = User.query.filter_by(id=user_id).first()
         if not user:
             return f"Usuário com id {user_id} não encontrado"
-
-        if not user.pre_approved_vacation:
-            flag = cls.check(start_date, user.id)
-
-            if isinstance(flag, str):
-                return flag
-
-        flag = cls.check_past_vacations(start_date, end_date, user.id)
-        if isinstance(flag, str):
-            return flag       
-
+     
         existing_vacation = cls.query.filter(
                             cls.user_id == user_id,
                             cls.status.in_(["pending_approval", "approved"])
@@ -53,8 +45,8 @@ class Vacation(db.Model):
             return f"""Usuário tem férias pendentes.
                         Aguarde aprovação ou contacte o Administrador"""
 
-        if end_date - start_date > datetime.timedelta(TOTAL_VACATION_DAYS):
-            return f"Duração das férias ultrapassa o limite de {TOTAL_VACATION_DAYS} dias"
+        # if end_date - start_date > datetime.timedelta(TOTAL_VACATION_DAYS):
+        #     return f"Duração das férias ultrapassa o limite de {TOTAL_VACATION_DAYS} dias"
 
         new_vacation = cls(user_id=user_id,
                            start_date=start_date,
@@ -80,6 +72,21 @@ class Vacation(db.Model):
         self.status = "denied"
         db.session.commit()
         return 0
+    
+    def pay(self):
+        if self.status == "paid":
+            return "Férias já pagas"
+        
+        if self.status == "pending_approval":
+            return "Férias não podem ser pagas antes de aprovadas"
+
+        if self.status == "denied":
+            return "Férias negadas não podem ser pagas"
+
+        self.status = "paid"
+        db.session.commit()
+
+        return 0
 
     @classmethod
     def update_status(cls):
@@ -89,7 +96,7 @@ class Vacation(db.Model):
             # if (vacation.start_date < datetime.date.today()) and vacation.status == 'pending_approval':
             #     vacation.status = 'denied'
             #     db.session.commit()
-            if (vacation.end_date < datetime.date.today()) and vacation.status == 'ongoing':
+            if (vacation.end_date < datetime.date.today()) and vacation.status in ['ongoing', 'approved']:
                 vacation.status = 'completed'
                 db.session.commit()
             elif (vacation.start_date < datetime.date.today()) and vacation.status == 'approved':
@@ -103,9 +110,9 @@ class Vacation(db.Model):
                 db.session.commit()
 
 
-                
+#=============================== QUERY METHODS ================================================#    
     @classmethod
-    def check_past_vacations(cls, start_date, end_date, user_id):
+    def check_vacations_availability(cls, start_date, end_date, user_id):
         from app.global_vars import MAX_VACATION_SPLIT, MIN_VACATION_DURATION, TOTAL_VACATION_DAYS
 
         vacations = cls.query.filter_by(user_id=user_id).filter(~cls.status.in_(['pending_approval', 'denied', 'cancelled'])).all()
@@ -134,146 +141,69 @@ class Vacation(db.Model):
 
     @classmethod
     def check_concomitant_vacations(cls, start_date, end_date, user_id):
-        pass
+        no_check = ['pending_approval', 'approved']
+        vacs = cls.query.filter(cls.user_id != user_id).filter(~cls.status.in_(no_check)).all()
+
+        print(vacs)
 
 
     @classmethod
-    def check(cls, start_date, user_id):
-        # user = User.query.filter_by(id=user_id).first()
-        # vac_report = cls.get_vacation_report(start_date, user_id)
+    def check_vacation_entitlement(cls, user_id, start_date):
+        user = User.query.filter_by(id=user_id).first()
+        if not user:
+            return "Usuário não encontrado"
 
-        # originals = vac_report.get('original')
-        # realizeds = vac_report.get('realized')
+        if user.pre_approved_vacation:
+            return 0
 
-        # if not originals or not realizeds:
-        #     return "Erro ao buscar dados"
-        
-        # original_len = len([o for o in originals if o != -1])
-        # if original_len < 3:
-        #     return """Usuário não tem dados suficientes para solicitar férias.
-        #             Por favor, façao o pedido diretamente ao Administrador"""
+        # check if vacation date is six months after entitlment date
 
-        # original_routine_avg = sum([o['routine'] for o in originals if o != -1])/original_len
-        # original_plaintemps_avg = sum([o['plaintemps'] for o in originals if o != -1])/original_len
-
-        # realized_len = len([r for r in realizeds if r != -1])
-        # realized_routine_avg = sum([r['routine'] for r in realizeds])/realized_len
-        # realized_plaintemps_avg = sum([r['plaintemps'] for r in realizeds])/realized_len
-
-        # ora = math.ceil(original_routine_avg * 1.1)
-        # opa = math.ceil(original_plaintemps_avg * 1.1)
-        # rra = math.ceil(realized_routine_avg * 1.1)
-        # rpa = math.ceil(realized_plaintemps_avg * 1.1)
-        
-        # rules = user.get_vacation_rules()
-
-        # if rra < rules['routine'] or rpa < rules['plaintemps']:
-        #     return "Usuário não manteve horas nas escalas realizadas para ter direito à férias" 
-
-        # print(checked_all_months)
-        return 0
 
     @classmethod
-    def get_vacation_report(cls, start_date, user_id):
-        return 0
-        # user = User.query.filter_by(id=user_id).first()
-        # if not user:
-        #     return f"Usuário com id {user_id} não encontrado"
-
-        # if not user.is_active:
-        #     return "Usuário inativo. Não pode solicitar férias"
-
-        # target_date = start_date.replace(year=start_date.year - 1)
-        # if user.date_joined > target_date.date():
-        #     return f"""Usuário entrou no grupo menos de um ano antes do
-        #                 início das férias ({start_date.strftime('%d/%m/%Y')})"""
-    
-        # user_rules = user.get_vacation_rules()
-        # base_dict = BaseAppointment.get_users_total(user.id, split_the_fifth=True)
-
-        # if base_dict['routine'] < user_rules['routine'] or base_dict['plaintemps'] < user_rules['plaintemps']:
-        #     return "Usuário não tem direito Base à férias"
-
-        # str_month, str_year = int(start_date.strftime('%m')), int(start_date.strftime('%Y'))
-
-        # months_num = []
-        # for i in range(1, 13):
-        #     months_num.append((str_month + i) % 12)
-        
-        # months_to_check = []
-        # year = str_year
-        # for i, month in enumerate(months_num):
-        #     month = 12 if month == 0 else month
-            
-        #     if i == 0 and not month == 1:
-        #         year -= 1
-
-        #     if not year == str_year and month == 1:
-        #         year = str_year
-            
-        #     months_to_check.append((month, year))
-
-        # months_to_check = months_to_check[5:-1]
-
-        # original_results = []
-        # realized_results = []
-        # for month, year in months_to_check:
-        #     original_path = f"original_{month}_{year}.json"
-        #     original_results.append(cls.check_original(original_path, user.crm, user_rules))
-        #     realized_results.append(cls.check_realized(month, year, user.id))
-
-        # return {"original": original_results, "realized": realized_results}
-    
-    @classmethod
-    def check_realized(cls, month_num, month_year, user_id):  
-        from app.global_vars import NIGHT_HOURS
+    def check_vacation_entitlement_by_month(cls, user_id, month_number, year):
+        # if this function is static, move it to Month class
+        from app.models import User, BaseAppointment, Month
 
         user = User.query.filter_by(id=user_id).first()
         if not user:
-            return 0
+            return "Usuário não encontrado"
+       
+        user_delta = BaseAppointment.get_users_delta(user_id)
+        if user_delta == -1:
+            return "Erro ao calcular delta do usuário"
+        
+        if any([d < 0 for d in user_delta.values()]):
+            return "Usuário não tem direito Base a férias"
 
-        appointments = [a for a in user.appointments if a.day.month.number == month_num]
-        appointments = [a for a in appointments if a.day.month.year == month_year]
+        month = Month.query.filter_by(number=month_number, year=year).first()
+        if not month:
+            return f"Mês {month_number} não encontrado"
 
-        realized_dict = {"routine": 0, "plaintemps": 0}
-        for app in appointments:
-            if app.day.is_holiday or app.hour in NIGHT_HOURS:
-                realized_dict['plaintemps'] += 1
-            else:
-                realized_dict['routine'] += 1
+        original_hours = month.get_users_original_total(user.crm)
+        if original_hours in [-1, -2, -3]:
+            return "Erro ao calcular horas do original"
 
-        return realized_dict
+        realized_hours = month.get_users_realized_total(user.id)
 
+        is_short_plaintemps = original_hours.get('plaintemps') - realized_hours.get('plaintemps') > user_delta.get('plaintemps')
+        is_short_routine = original_hours.get('routine') - realized_hours.get('routine') > user_delta.get('routine')
+        user_rules = user.get_vacation_rules()
+
+        if is_short_plaintemps and realized_hours.get('plaintemps') < user_rules.get('plaintemps'):
+            return "Usuário não realizou horas suficientes de plantão"
+
+        if is_short_routine and realized_hours.get('routine') < user_rules.get('routine'):
+            return "Usuário não realizou horas suficientes de rotina"
+
+        return 0
+  
+
+# =============================== REPORT METHODS ================================================#
     @classmethod
-    def check_original(cls, original_path, user_crm, user_rules):
-        from app.global_vars import NIGHT_HOURS
-
-        try:
-            with open(f"instance/originals/{original_path}", 'r') as file:
-                original_file = json.load(file)
-            
-            data = original_file.get('data')
-            holidays = original_file.get('holidays')
-            doctor_dict = data.get(str(user_crm))
-                
-            orig_dict = {"routine": 0, "plaintemps": 0}
-            for center, days_dict in doctor_dict.items():
-                for day, hours in days_dict.items():
-                    for hour in hours:
-                        if int(day) in holidays or hour in NIGHT_HOURS:
-                            orig_dict['plaintemps'] += 1
-                        else:
-                            orig_dict['routine'] += 1
-            
-            return orig_dict
-                
-        except FileNotFoundError:
-            return -1
-
-    @classmethod
-    def report(cls):
+    def get_report(cls):
         translation_dict = {
             "pending_approval": "Pendente",
+            "defered": "Deferido",
             "approved": "Aprovado",
             "denied": "Negado",
             "completed": "Concluído",
@@ -346,21 +276,8 @@ class Vacation(db.Model):
 
         return output
 
-    def pay(self):
-        if self.status == "paid":
-            return "Férias já pagas"
-        
-        if self.status == "pending_approval":
-            return "Férias não podem ser pagas antes de aprovadas"
 
-        if self.status == "denied":
-            return "Férias negadas não podem ser pagas"
-
-        self.status = "paid"
-        db.session.commit()
-
-        return 0
-
+#=============================== UTILITY METHODS ================================================#
     def get_months_range(self):
         curr_year, curr_month = self.start_date.year, self.start_date.month
 

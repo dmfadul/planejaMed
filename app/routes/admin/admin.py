@@ -320,3 +320,44 @@ def toggle_maintenance():
     config.set('maintenance_mode', not maintenance_is_on)
 
     return redirect(url_for('admin.admin'))
+
+
+@admin_bp.route('/admin/calculate-vacation-pay', methods=['POST'])
+@login_required
+def calculate_vacation_pay():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    vacation_id = request.json['vacationID']
+    vacation = Vacation.query.get(vacation_id)
+
+    start_date = vacation.start_date
+    end_date = vacation.end_date
+    doctor = vacation.user   
+    
+    output = vacation.calculate_payment()
+
+    return jsonify(output)
+
+
+@admin_bp.route('/admin/get-vacation-report', methods=['POST'])
+@login_required
+def get_vacation_report():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    output = "output\noutput"
+    return jsonify(output)
+
+
+@admin_bp.route('/admin/force-aprove', methods=['POST'])
+@login_required
+def force_aprove():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    vacation_id = request.json['vacationID']
+    vacation = Vacation.query.get(vacation_id)
+    vacation.approve()
+
+    return jsonify("success")
