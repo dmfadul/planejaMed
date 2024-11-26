@@ -263,7 +263,24 @@ def vacations_report():
     Vacation.update_status()
     vacations = Vacation.report()
     return render_template('vacations-report.html', vacations=vacations)
+
+
+# @admin_bp.route('/admin/calculate-vacation-pay', methods=['POST'])
+# @login_required
+# def calculate_vacation_pay():
+#     if not current_user.is_admin:
+#         return "Unauthorized", 401
+
+#     vacation_id = request.json['vacationID']
+#     vacation = Vacation.query.get(vacation_id)
+
+#     start_date = vacation.start_date
+#     end_date = vacation.end_date
+#     doctor = vacation.user   
     
+#     output = vacation.calculate_payment()
+
+#     return jsonify(output)
 
 @admin_bp.route('/admin/calculate-vacation-pay', methods=['POST', 'GET'])
 @login_required
