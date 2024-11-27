@@ -185,14 +185,10 @@ class Vacation(db.Model):
 
         realized_hours = month.get_users_realized_total(user.id)
 
-        is_short_plaintemps = original_hours.get('plaintemps') - realized_hours.get('plaintemps') > user_delta.get('plaintemps')
-        is_short_routine = original_hours.get('routine') - realized_hours.get('routine') > user_delta.get('routine')
-        user_rules = user.get_vacation_rules()
-
-        if is_short_plaintemps and realized_hours.get('plaintemps') < user_rules.get('plaintemps'):
+        if original_hours.get('plaintemps') - realized_hours.get('plaintemps') > user_delta.get('plaintemps'):
             return "Usuário não realizou horas suficientes de plantão"
 
-        if is_short_routine and realized_hours.get('routine') < user_rules.get('routine'):
+        if original_hours.get('routine') - realized_hours.get('routine') > user_delta.get('routine'):
             return "Usuário não realizou horas suficientes de rotina"
 
         return 0
