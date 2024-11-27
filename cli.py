@@ -15,31 +15,31 @@ app = create_app()
 with app.app_context():
     user = User.query.filter_by(crm=42217).first()
     print(user.full_name)
-    v = Vacation.check_vacation_entitlement_by_month(user.id, 6, 2024)
+    v = Month.check_vacation_entitlement(user.id, 6, 2024)
     print(v)
 
-    user_dates = ""
-    users = sorted(User.query.all(), key=lambda x: x.full_name)
-    for user in users:
-        if not user.is_active or not user.is_visible:
-            continue
+    # user_dates = ""
+    # users = sorted(User.query.all(), key=lambda x: x.full_name)
+    # for user in users:
+    #     if not user.is_active or not user.is_visible:
+    #         continue
       
-        results = {}
-        for m in range(1, 13):
-            v = Vacation.check_vacation_entitlement_by_month(user.id, m, 2024)
-            if isinstance(v, str):
-                if 'rotina' in v:
-                    results[m] = 'ROT'
-                elif 'plantão' in v:
-                    results[m] = 'PLT'
-                elif 'Base' in v:
-                    continue
-                else:
-                    results[m] = v
-            else:
-                results[m] = v
+    #     results = {}
+    #     for m in range(1, 13):
+    #         v = Month.check_vacation_entitlement(user.id, m, 2024)
+    #         if isinstance(v, str):
+    #             if 'rotina' in v:
+    #                 results[m] = 'ROT'
+    #             elif 'plantão' in v:
+    #                 results[m] = 'PLT'
+    #             elif 'Base' in v:
+    #                 continue
+    #             else:
+    #                 results[m] = v
+    #         else:
+    #             results[m] = v
 
-        print(f"{user.abbreviated_name} - {results}")
+    #     print(f"{user.abbreviated_name} - {results}")
 
 
         # if all([v == 0 for v in results.values()]):
