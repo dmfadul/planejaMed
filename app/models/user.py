@@ -57,6 +57,52 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f'{self.first_name} {self.last_name}'
     
+    @property
+    def full_name(self):
+        name = f'{self.first_name} {self.middle_name} {self.last_name}'
+        return ' '.join(name.split())
+    
+    @property
+    def abbreviated_name(self):
+        non_abbr_words = {'de', 'da', 'do', 'dos', 'das', 'e', 'De', 'Da', 'Do', 'Dos', 'Das', 'E'}
+
+        first_name_parts = self.first_name.split()
+        middle_name_parts = self.middle_name.split()
+        last_name_parts = self.last_name.split()
+
+        abbr_name = first_name_parts[0] 
+
+        for part in middle_name_parts:
+            if part not in non_abbr_words:
+                abbr_name += f" {part[0]}."
+
+        if len(last_name_parts) == 1:
+            abbr_name += f" {last_name_parts[0]}"
+            return abbr_name
+        
+        for i, part in enumerate(last_name_parts):
+            if part not in non_abbr_words:
+                abbr_name += f" {part}"
+                return abbr_name
+            else:
+                abbr_name += f" {part}"
+                if len(last_name_parts[i+1]) > 5:
+                    abbr_name += f" {last_name_parts[i+1][0]}."
+                else:
+                    abbr_name += f" {last_name_parts[i+1]}"
+                    
+                return abbr_name
+            
+    @property
+    def is_waiting_for_approval(self):
+        open_requests = [req for req in self.requests_sent if req.is_open]
+        if any([req.action == 'include_user' for req in open_requests]):
+            return True
+
+        return False
+    
+
+#================================== HELPER METHODS ==================================#
     @classmethod
     def add_entry(cls, first_name, middle_name, last_name, crm, rqe, phone, email, password):
         from app.models import Message
@@ -115,6 +161,44 @@ class User(db.Model, UserMixin):
 
         return 0
 
+    def edit(self,
+             first_name=None,
+             middle_name=None,
+             last_name=None,
+             crm=None,
+             rqe=None,
+             phone=None,
+             email=None):
+        if first_name is not None:
+            self.first_name = first_name
+        if middle_name is not None:
+            self.middle_name = middle_name
+        if last_name is not None:
+            self.last_name = last_name
+        if crm is not None:
+            self.crm = crm
+        if rqe is not None:
+            self.rqe = rqe
+        if phone is not None:
+            self.phone = phone
+        if email is not None:
+            self.email = email
+
+        try:
+            db.session.commit()
+            return 0
+        except Exception as e:
+            db.session.rollback()
+            return e
+
+    def set_password(self, new_password):
+        hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+
+        self.password = hashed_password
+        db.session.commit()
+
+        return 0
+    
     @classmethod
     def create_system_user(cls):
         system_user = cls(
@@ -132,6 +216,42 @@ class User(db.Model, UserMixin):
 
         return system_user
 
+    def make_invisible(self):
+        self.is_visible = False
+        db.session.commit()
+    
+    def make_visible(self):
+        self.is_visible = True
+        db.session.commit()
+
+    def make_admin(self):
+        self.is_admin = True
+        db.session.commit()
+    
+    def make_sudo(self):
+        self.is_sudo = True
+        db.session.commit()
+
+    def make_root(self):
+        self.is_root = True
+        db.session.commit()
+
+    def remove_privileges(self):
+        self.is_admin = False
+        self.is_sudo = False
+        self.is_root = False
+        db.session.commit()
+    
+    def activate(self):
+        self.is_active = True
+        db.session.commit()
+
+    def deactivate(self):
+        self.is_active = False
+        db.session.commit()
+
+
+#=============================== QUERY METHODS ================================================#    
     @classmethod
     def get_by_name(cls, full_name):
         full_name_clean = unidecode(' '.join([part.strip().lower() for part in full_name.split()]))
@@ -147,42 +267,6 @@ class User(db.Model, UserMixin):
                     return user
                 
         return -2
-    
-    @property
-    def full_name(self):
-        name = f'{self.first_name} {self.middle_name} {self.last_name}'
-        return ' '.join(name.split())
-    
-    @property
-    def abbreviated_name(self):
-        non_abbr_words = {'de', 'da', 'do', 'dos', 'das', 'e', 'De', 'Da', 'Do', 'Dos', 'Das', 'E'}
-
-        first_name_parts = self.first_name.split()
-        middle_name_parts = self.middle_name.split()
-        last_name_parts = self.last_name.split()
-
-        abbr_name = first_name_parts[0] 
-
-        for part in middle_name_parts:
-            if part not in non_abbr_words:
-                abbr_name += f" {part[0]}."
-
-        if len(last_name_parts) == 1:
-            abbr_name += f" {last_name_parts[0]}"
-            return abbr_name
-        
-        for i, part in enumerate(last_name_parts):
-            if part not in non_abbr_words:
-                abbr_name += f" {part}"
-                return abbr_name
-            else:
-                abbr_name += f" {part}"
-                if len(last_name_parts[i+1]) > 5:
-                    abbr_name += f" {last_name_parts[i+1][0]}."
-                else:
-                    abbr_name += f" {last_name_parts[i+1]}"
-                    
-                return abbr_name
     
     @property
     def app_dict(self):
@@ -238,23 +322,6 @@ class User(db.Model, UserMixin):
                     schedule.append(f"{center} -- {date.strftime('%d/%m/%y')} -- {app}")
 
         return sorted(schedule)
-    
-    @property
-    def is_waiting_for_approval(self):
-        open_requests = [req for req in self.requests_sent if req.is_open]
-        if any([req.action == 'include_user' for req in open_requests]):
-            return True
-
-        return False
-
-    def get_vacation_rules(self):
-        from app.global_vars import VACATION_NEW_RULES, VACATION_OLD_RULES, VACATION_NEW_RULE_START
-
-        if self.date_joined < VACATION_NEW_RULE_START.date():
-            return VACATION_OLD_RULES
-
-        return VACATION_NEW_RULES
-
 
     def hours(self, month_id):
         appointments = [app for app in self.appointments if app.day.month_id == month_id]
@@ -270,7 +337,7 @@ class User(db.Model, UserMixin):
                 hours_dict[app.center.abbreviation][0] += 1
 
         return hours_dict
-            
+    
     def base_row(self, center_id):
         from app.hours_conversion import convert_to_letter
         base_appointments = [app for app in self.base_appointments if app.center_id == center_id]
@@ -295,7 +362,7 @@ class User(db.Model, UserMixin):
                     base_row.append('')
 
         return base_row
- 
+
     def filtered_appointments(self, center_id, day_id, unified=False):
         from app.hours_conversion import convert_to_letter
 
@@ -310,78 +377,6 @@ class User(db.Model, UserMixin):
         
         return apps
 
-    def make_invisible(self):
-        self.is_visible = False
-        db.session.commit()
-    
-    def make_visible(self):
-        self.is_visible = True
-        db.session.commit()
-
-    def make_admin(self):
-        self.is_admin = True
-        db.session.commit()
-    
-    def make_sudo(self):
-        self.is_sudo = True
-        db.session.commit()
-
-    def make_root(self):
-        self.is_root = True
-        db.session.commit()
-
-    def remove_privileges(self):
-        self.is_admin = False
-        self.is_sudo = False
-        self.is_root = False
-        db.session.commit()
-    
-    def activate(self):
-        self.is_active = True
-        db.session.commit()
-
-    def deactivate(self):
-        self.is_active = False
-        db.session.commit()
-
-    def edit(self,
-             first_name=None,
-             middle_name=None,
-             last_name=None,
-             crm=None,
-             rqe=None,
-             phone=None,
-             email=None):
-        if first_name is not None:
-            self.first_name = first_name
-        if middle_name is not None:
-            self.middle_name = middle_name
-        if last_name is not None:
-            self.last_name = last_name
-        if crm is not None:
-            self.crm = crm
-        if rqe is not None:
-            self.rqe = rqe
-        if phone is not None:
-            self.phone = phone
-        if email is not None:
-            self.email = email
-
-        try:
-            db.session.commit()
-            return 0
-        except Exception as e:
-            db.session.rollback()
-            return e
-
-    def set_password(self, new_password):
-        hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
-
-        self.password = hashed_password
-        db.session.commit()
-
-        return 0
-    
     def gen_center_dict(self, month_id=None):
         from app.models import Month
 
@@ -404,7 +399,17 @@ class User(db.Model, UserMixin):
             app_dict[center_abbr][app_day].append(app.hour)
 
         return app_dict
+    
 
+#=============================== UTILITY METHODS ================================================#
+    def get_vacation_rules(self):
+        from app.global_vars import VACATION_NEW_RULES, VACATION_OLD_RULES, VACATION_NEW_RULE_START
+
+        if self.date_joined < VACATION_NEW_RULE_START.date():
+            return VACATION_OLD_RULES
+
+        return VACATION_NEW_RULES
+        
     def has_vacations_rights(self):
         if not self.is_active or not self.is_visible:
             return False
