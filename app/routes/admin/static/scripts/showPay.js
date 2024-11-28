@@ -44,7 +44,7 @@ function showReport(button) {
 function showPay(button) {
     const vacationID = button.getAttribute('data-id');
     
-    fetch('/admin/calculate-vacation-pay', {
+    fetch('/admin/get-vacation-pay', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
