@@ -417,3 +417,5 @@ class User(db.Model, UserMixin):
         if self.pre_approved_vacation:
             return True
             
+    def get_vacation_entitlement_report(self):
+        pass
