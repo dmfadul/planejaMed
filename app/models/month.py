@@ -398,7 +398,7 @@ class Month(db.Model):
 
         original_hours = month.get_users_original_total(user.crm)
         if original_hours in [-1, -2, -3]:
-            return "Erro ao calcular horas do original"
+            return f"Erro {original_hours} ao calcular horas do original"
 
         realized_hours = month.get_users_realized_total(user.id)
 
