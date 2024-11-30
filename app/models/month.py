@@ -378,19 +378,16 @@ class Month(db.Model):
         return output
 
     @classmethod
-    def check_vacation_entitlement(cls, user_id, month_number, year):
+    def get_vacation_entitlement_report(cls, user_id, month_number, year):
         from app.models import User, BaseAppointment
 
         user = User.query.filter_by(id=user_id).first()
         if not user:
             return "Usuário não encontrado"
-       
+
         user_delta = BaseAppointment.get_users_delta(user_id)
         if user_delta == -1:
             return "Erro ao calcular delta do usuário"
-        
-        if any([d < 0 for d in user_delta.values()]):
-            return "Usuário não tem direito Base a férias"
 
         month = cls.query.filter_by(number=month_number, year=year).first()
         if not month:
@@ -401,6 +398,28 @@ class Month(db.Model):
             return f"Erro {original_hours} ao calcular horas do original"
 
         realized_hours = month.get_users_realized_total(user.id)
+
+        output = {
+            "original": original_hours,
+            "realized": realized_hours,
+            "delta": user_delta
+        }
+
+        return output
+
+    @classmethod
+    def check_vacation_entitlement(cls, user_id, month_number, year):
+        report = cls.get_vacation_entitlement_report(user_id, month_number, year)
+
+        if isinstance(report, str):
+            return report
+        
+        original_hours = report.get("original")
+        realized_hours = report.get("realized")
+        user_delta = report.get("delta")
+
+        if any([d < 0 for d in user_delta.values()]):
+            return "Usuário não tem direito Base a férias"
 
         if original_hours.get('plaintemps') - realized_hours.get('plaintemps') > user_delta.get('plaintemps'):
             return "Usuário não realizou horas suficientes de plantão"
