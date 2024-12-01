@@ -389,6 +389,9 @@ class Month(db.Model):
         if user_delta == -1:
             return "Erro ao calcular delta do usuário"
 
+        if any([d < 0 for d in user_delta.values()]):
+            return "Usuário não tem direito Base a férias"
+
         month = cls.query.filter_by(number=month_number, year=year).first()
         if not month:
             return f"Mês {month_number} não encontrado"
@@ -417,9 +420,6 @@ class Month(db.Model):
         original_hours = report.get("original")
         realized_hours = report.get("realized")
         user_delta = report.get("delta")
-
-        if any([d < 0 for d in user_delta.values()]):
-            return "Usuário não tem direito Base a férias"
 
         if original_hours.get('plaintemps') - realized_hours.get('plaintemps') > user_delta.get('plaintemps'):
             return "Usuário não realizou horas suficientes de plantão"
