@@ -12,7 +12,7 @@ import json
 
 
 # app = create_app()
-# with app.app_context():
+# with app.app_context():        
 #     crm = 40506
 #     user = User.query.filter_by(crm=crm).first()
 #     print(user.full_name)
@@ -140,5 +140,5 @@ def populate_compliance():
             
             # user_dates += f"{user} - {user.date_joined}\n"
 
-populate_compliance()
+# populate_compliance()
 # create_dates_txt()
