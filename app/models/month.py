@@ -19,6 +19,7 @@ class Month(db.Model):
     is_populated = db.Column(db.Boolean, default=False)
     is_locked = db.Column(db.Boolean, default=False)
     is_current = db.Column(db.Boolean, default=False)
+    is_checked = db.Column(db.Boolean, default=False)
 
     days = db.relationship('Day', back_populates='month', lazy=True)
     users = relationship(

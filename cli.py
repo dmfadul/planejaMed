@@ -11,14 +11,14 @@ from datetime import datetime
 import json
 
 
-app = create_app()
-with app.app_context():
-    crm = 40506
-    user = User.query.filter_by(crm=crm).first()
-    print(user.full_name)
+# app = create_app()
+# with app.app_context():
+#     crm = 40506
+#     user = User.query.filter_by(crm=crm).first()
+#     print(user.full_name)
 
-    v = Month.get_vacation_entitlement_report(user.id, 11, 2024)
-    print(v)
+#     v = Month.get_vacation_entitlement_report(user.id, 11, 2024)
+#     print(v)
 
 
 def create_dates_txt():
@@ -106,9 +106,9 @@ def populate_compliance():
             
             if user.pre_approved_vacation:
                 print(user.full_name, "admin")
-                # user.compliant_since = user.date_joined
-                # user.compliance_history = user.date_joined
-                # db.session.commit()
+                user.compliant_since = user.date_joined
+                user.compliance_history = user.date_joined
+                db.session.commit()
                 continue
 
             base_test = Month.check_vacation_entitlement(user.id, 11, 2024)
@@ -123,34 +123,22 @@ def populate_compliance():
                 if isinstance(v, str):
                     if ('rotina' in v) or ('plantão' in v):
                         break_flag = True
+                        print(user.full_name, f"{datetime(2024, m, 26).date().strftime('%d/%m/%Y')}")
+                        user.compliant_since = datetime(2024, m, 26)
+                        user.compliance_history = datetime(2024, m, 26)
+                        db.session.commit()
                         break
                     
             if break_flag:
                 continue
             
-            # user.compliant_since = user.date_joined
-            # user.compliance_history = user.date_joined
-            # db.session.commit()
             print(user.full_name, "6 meses")
+            user.compliant_since = user.date_joined
+            user.compliance_history = user.date_joined
+            db.session.commit()
             continue
-
-            break_flag = False
-            for m in range(11, 4, -1):
-                v = Month.check_vacation_entitlement(user.id, m, 2024)
-
-                if isinstance(v, str):
-                    if ('rotina' in v) or ('plantão' in v):
-                        break_flag = True
-                        # user.compliant_since = datetime(2024, m, 26)
-                        # user.compliance_history = datetime(2024, m, 26)
-                        # db.session.commit()
-                        print(user.full_name, f"{datetime(2024, m, 26).date().strftime('%d/%m/%Y')}")
-                        break
-                    
-            if break_flag:
-                continue
             
             # user_dates += f"{user} - {user.date_joined}\n"
 
-# populate_compliance()
+populate_compliance()
 # create_dates_txt()
