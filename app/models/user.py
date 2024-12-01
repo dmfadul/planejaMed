@@ -27,6 +27,9 @@ class User(db.Model, UserMixin):
     email = db.Column(db.Text, nullable=False)
 
     date_joined = db.Column(db.Date, default=datetime.now())
+    compliant_since = db.Column(db.Date, nullable=True)
+    compliance_history = db.Column(db.Date, nullable=True)
+
     is_admin = db.Column(db.Boolean, default=False)
     is_sudo = db.Column(db.Boolean, default=False)
     is_root = db.Column(db.Boolean, default=False)
