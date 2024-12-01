@@ -428,3 +428,16 @@ class Month(db.Model):
             return "Usuário não realizou horas suficientes de rotina"
 
         return 0
+
+    @classmethod
+    def check_for_vacation_entitlement_loss(cls, month_number, year):
+        # get users
+        # loop through users
+        # ignore inactive/invisible users and users who currently have no vacation entitlement
+        # check if user has lost vacation entitlement in base
+        # check if user has lost vacation entitlement in previous month
+
+        # send message to user if they have lost vacation entitlement?
+        # produce report to admin?
+
+        pass
