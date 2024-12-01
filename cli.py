@@ -11,23 +11,19 @@ from datetime import datetime
 import json
 
 
-app = create_app()
-with app.app_context():
-    crm = 38415
-    user = User.query.filter_by(crm=crm).first()
-    print(user.full_name)
+# app = create_app()
+# with app.app_context():
+#     crm = 38415
+#     user = User.query.filter_by(crm=crm).first()
+#     print(user.full_name)
 
-    v = Month.check_vacation_entitlement(user.id, 9, 2024)
-    print(v)
+#     v = Month.check_vacation_entitlement(user.id, 9, 2024)
+#     print(v)
 
 
 def create_dates_txt():
     app = create_app()
     with app.app_context():
-        user_dates = ""
-        done_users = []
-        # user_dates += "ADMINITRATIVO\n\n"
-
         users = sorted(User.query.all(), key=lambda x: x.full_name)
         for user in users:
             if not user.is_active or not user.is_visible:
@@ -96,4 +92,4 @@ def create_dates_txt():
             f.write(user_dates)
 
 
-# create_dates_txt()
+create_dates_txt()
