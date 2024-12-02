@@ -390,16 +390,21 @@ class Month(db.Model):
         if user_delta == -1:
             return "Erro ao calcular delta do usuário"
 
-        if any([d < 0 for d in user_delta.values()]):
-            return "Usuário não tem direito Base a férias"
-
         month = cls.query.filter_by(number=month_number, year=year).first()
         if not month:
             return f"Mês {month_number} não encontrado"
 
         original_hours = month.get_users_original_total(user.crm)
-        if original_hours in [-1, -2, -3]:
-            return f"Erro {original_hours} ao calcular horas do original"
+
+        if original_hours == -1:
+            msg = f"O mês {month_number}/{year} não tem original salvo"
+            original_hours = {-1: msg}
+        if original_hours == -2:
+            msg = f"Usuário {user.full_name} não tem horas originais salvas no mês {month_number}/{year}"
+            original_hours = {-1: msg}
+        if original_hours == -3:
+            msg = f"O mês {month_number}/{year} não tem feriados salvos"
+            original_hours = {-1: msg}
 
         realized_hours = month.get_users_realized_total(user.id)
 
@@ -422,6 +427,12 @@ class Month(db.Model):
         realized_hours = report.get("realized")
         user_delta = report.get("delta")
 
+        if -1 in original_hours:
+            return original_hours.get(-1)
+
+        if any([d < 0 for d in user_delta.values()]):
+            return "Usuário não tem direito Base a férias"
+
         if original_hours.get('plaintemps') - realized_hours.get('plaintemps') > user_delta.get('plaintemps'):
             return "Usuário não realizou horas suficientes de plantão"
 
@@ -432,13 +443,24 @@ class Month(db.Model):
 
     @classmethod
     def check_for_vacation_entitlement_loss(cls, month_number, year):
-        # get users
-        # loop through users
-        # ignore inactive/invisible users and users who currently have no vacation entitlement
-        # check if user has lost vacation entitlement in base
-        # check if user has lost vacation entitlement in previous month
+        from app.models import User
 
-        # send message to user if they have lost vacation entitlement?
-        # produce report to admin?
+        output_dict = {}
+        users = User.query.filter_by(is_active=True, is_visible=True).all()
+        for i, user in enumerate(users):
+            if user.pre_approved_vacation:
+                continue
 
-        pass
+            if not user.compliant_since:
+                continue
+            
+            flag = cls.check_vacation_entitlement(user.id, month_number, year)
+            if not flag:
+                continue
+
+            output_dict[user.crm] = (cls.get_vacation_entitlement_report(user.id, month_number, year), flag)
+
+            # send message to user if they have lost vacation entitlement?
+            # produce report to admin?
+
+        return output_dict
