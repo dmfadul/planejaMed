@@ -13,13 +13,16 @@ import json
 
 app = create_app()
 with app.app_context():        
-    month = Month.get_current()
-    o = Month.check_for_vacation_entitlement_loss(month.number, month.year)
-    print(o)
+    # month = Month.get_current()
+    # o = Month.check_for_vacation_entitlement_loss(month.number, month.year)
+    # print(o)
 
-    # crm = 40506
-    # user = User.query.filter_by(crm=crm).first()
-    # print(user.full_name)
+    crm = 40506
+    user = User.query.filter_by(crm=crm).first()
+    print(user.full_name)
+
+    start_date = datetime(2024, 11, 26)
+    Vacation.check_vacation_entitlement(user.id, start_date)
 
     # v = Month.get_vacation_entitlement_report(user.id, 11, 2024)
     # print(v)

@@ -153,8 +153,11 @@ class Vacation(db.Model):
         if not user:
             return "Usuário não encontrado"
 
-        if user.pre_approved_vacation:
-            return 0
+        diff_years = start_date.year - user.compliant_since.year
+        diff_months = start_date.month - user.compliant_since.month
+        diff_time = diff_years * 12 + diff_months
+
+        return diff_time
 
         # check if vacation date is six months after entitlment date
   
