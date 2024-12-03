@@ -16,6 +16,7 @@ class Vacation(db.Model):
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
     status = db.Column(db.String(100), nullable=False, default='pending_approval')
+    # is_sick_leave = db.Column(db.Boolean, nullable=False, default=False)
 
     user = db.relationship('User', back_populates='vacations', lazy=True)
 
