@@ -27,7 +27,7 @@ class Vacation(db.Model):
 
 #================================== HELPER METHODS ==================================#
     @classmethod
-    def add_entry(cls, user_id, start_date, end_date):
+    def add_entry(cls, user_id, start_date, end_date, is_sick_leave=False):
         from app.global_vars import TOTAL_VACATION_DAYS
 
         if start_date >= end_date:
@@ -52,6 +52,7 @@ class Vacation(db.Model):
         new_vacation = cls(user_id=user_id,
                            start_date=start_date,
                            end_date=end_date,
+                           is_sick_leave=is_sick_leave,
                            status="pending_approval")
 
         db.session.add(new_vacation)
