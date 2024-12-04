@@ -117,6 +117,7 @@ class Vacation(db.Model):
     def check_vacations_availability(cls, start_date, end_date, user_id):
         from app.global_vars import MAX_VACATION_SPLIT, MIN_VACATION_DURATION, TOTAL_VACATION_DAYS
 
+        # TODO: TODAY == add logic to deal with sick leaves (they cost 3 days of vacation and last 3 months max)
         vacations = cls.query.filter_by(user_id=user_id).filter(~cls.status.in_(['pending_approval', 'denied', 'cancelled'])).all()
         vacations = [vacation for vacation in vacations if vacation.year == start_date.year]
         

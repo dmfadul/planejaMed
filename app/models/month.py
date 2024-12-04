@@ -460,6 +460,7 @@ class Month(db.Model):
 
             output_dict[user.crm] = (cls.get_vacation_entitlement_report(user.id, month_number, year), flag)
 
+            # TODO: TODAY == exclude month if user is currently on vacation/sick leave
             # send message to user if they have lost vacation entitlement?
             # produce report to admin?
 
