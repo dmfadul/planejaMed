@@ -18,16 +18,20 @@
     </section>
     {% endif %}
 
-    <section>
-        <form style="display: none;" method="post" action="{{ url_for('dashboard.resolve_vacations') }}">
-            <label for="create-center">Solicitar Férias:</label>
+    <section style="display: none;">
+        <form method="post" action="{{ url_for('dashboard.resolve_privilege') }}">
+            <label for="request-privilege">Solicitar Benefício:</label>
+            <select id="privilege-type" name="privilege_type">
+                <option value="0">Férias</option>
+                <option value="1">Licença Médica</option>
+            </select>
             <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 30px; margin-top: 20px;">
                 <div style="margin-right: 10px;">
-                    <input type="date" id="start-date" name="start_date" required>
+                    <input type="date" id="vacation-start-date" name="start_date" required>
                 </div>
     
                 <div style="margin-right: 10px;">
-                    <input type="date" id="end-date" name="end_date" required>
+                    <input type="date" id="vacation-end-date" name="end_date" required>
                 </div>
             </div>
     

@@ -16,7 +16,7 @@ class Vacation(db.Model):
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
     status = db.Column(db.String(100), nullable=False, default='pending_approval')
-    # is_sick_leave = db.Column(db.Boolean, nullable=False, default=False)
+    is_sick_leave = db.Column(db.Boolean, nullable=False, default=False)
 
     user = db.relationship('User', back_populates='vacations', lazy=True)
 
@@ -27,7 +27,7 @@ class Vacation(db.Model):
 
 #================================== HELPER METHODS ==================================#
     @classmethod
-    def add_entry(cls, user_id, start_date, end_date):
+    def add_entry(cls, user_id, start_date, end_date, is_sick_leave=False):
         from app.global_vars import TOTAL_VACATION_DAYS
 
         if start_date >= end_date:
@@ -52,6 +52,7 @@ class Vacation(db.Model):
         new_vacation = cls(user_id=user_id,
                            start_date=start_date,
                            end_date=end_date,
+                           is_sick_leave=is_sick_leave,
                            status="pending_approval")
 
         db.session.add(new_vacation)
@@ -116,6 +117,7 @@ class Vacation(db.Model):
     def check_vacations_availability(cls, start_date, end_date, user_id):
         from app.global_vars import MAX_VACATION_SPLIT, MIN_VACATION_DURATION, TOTAL_VACATION_DAYS
 
+        # TODO: TODAY == add logic to deal with sick leaves (they cost 3 days of vacation and last 3 months max)
         vacations = cls.query.filter_by(user_id=user_id).filter(~cls.status.in_(['pending_approval', 'denied', 'cancelled'])).all()
         vacations = [vacation for vacation in vacations if vacation.year == start_date.year]
         

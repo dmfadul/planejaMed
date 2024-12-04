@@ -225,9 +225,9 @@ def request_report():
     return render_template('request-report.html', reqs=reqs)
 
 
-@admin_bp.route('/admin/add-vacation', methods=['POST'])
+@admin_bp.route('/admin/register_privilege', methods=['POST'])
 @login_required
-def add_vacation():
+def register_privilege():
     if not current_user.is_admin:
         return "Unauthorized", 401
 
@@ -238,10 +238,12 @@ def add_vacation():
 
     start_date = datetime.strptime(request.form['start_date'], "%Y-%m-%d")
     end_date = datetime.strptime(request.form['end_date'], "%Y-%m-%d")
+    is_sick_leave = bool(int(request.form['privilege_type']))
 
     new_vacation = Vacation.add_entry(start_date=start_date,
                                       end_date=end_date,
-                                      user_id=user.id)    
+                                      user_id=user.id,
+                                      is_sick_leave=is_sick_leave)    
 
     if isinstance(new_vacation, str):
         flash(new_vacation, "danger")
