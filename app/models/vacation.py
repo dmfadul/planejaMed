@@ -43,7 +43,7 @@ class Vacation(db.Model):
                             ).all()
         
         if existing_vacation:
-            return f"""Usuário tem férias pendentes.
+            return f"""Usuário tem férias pendentes ou não aprovadas.
                         Aguarde aprovação ou contacte o Administrador"""
 
         # if end_date - start_date > datetime.timedelta(TOTAL_VACATION_DAYS):
