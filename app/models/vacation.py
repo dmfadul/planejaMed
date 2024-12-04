@@ -31,32 +31,16 @@ class Vacation(db.Model):
         from app.global_vars import TOTAL_VACATION_DAYS
 
         if start_date >= end_date:
-            return "Data de início não pode ser posterior a data final", "danger"
+            return "Data de início não pode ser posterior a data final"
 
         user = User.query.filter_by(id=user_id).first()
         if not user:
             return f"Usuário com id {user_id} não encontrado"
      
-        unnaproved_vacations = cls.query.filter(
-                               cls.user_id == user_id,
-                               cls.status == "pending_approval"
-                               ).all()
-        
-        if unnaproved_vacations:
-            return f"""Usuário tem férias não aprovadas.
-                        Aguarde aprovação ou contacte o Administrador"""
-
-        pending_vacations = cls.query.filter(
-                            cls.user_id == user_id,
-                            cls.status == "approved"
-                            ).all()
-
-        if pending_vacations:
-            return f"""Usuário tem férias pendentes.
-                        Aguarde a conclusão ou contacte o Administrador"""
-
-        # if end_date - start_date > datetime.timedelta(TOTAL_VACATION_DAYS):
-        #     return f"Duração das férias ultrapassa o limite de {TOTAL_VACATION_DAYS} dias"
+        existing_vacations = cls(user_id=user_id, status_in=['approved', 'ongoing']).all()
+        for vac in existing_vacations:
+            if (start_date <= vac.start_date <= end_date) or (start_date <= vac.end_date <= end_date):
+                return "Férias conflitantes"
 
         new_vacation = cls(user_id=user_id,
                            start_date=start_date,
