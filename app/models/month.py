@@ -385,6 +385,10 @@ class Month(db.Model):
         user = User.query.filter_by(id=user_id).first()
         if not user:
             return "Usuário não encontrado"
+        
+        print(year, month_number, user.get_vacation_months())
+        if (year, month_number) in user.get_vacation_months():
+            return f"Usuário de férias no mês {month_number}/{year}"
 
         user_delta = BaseAppointment.get_users_delta(user_id)
         if user_delta == -1:

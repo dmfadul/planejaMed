@@ -419,6 +419,14 @@ class User(db.Model, UserMixin):
 
         if self.pre_approved_vacation:
             return True
-            
+
+    def get_vacation_months(self):
+        vacs = [vac for vac in self.vacations if vac.status not in ['pending_approval', 'denied']]
+        months = []
+        for vac in vacs:
+            months += vac.get_months_range()
+
+        return months
+
     def get_vacation_entitlement_report(self):
         pass
