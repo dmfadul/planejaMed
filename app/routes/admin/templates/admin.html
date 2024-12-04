@@ -52,19 +52,19 @@
 
     <section>
         <form method="post" action="{{ url_for('admin.calculate_vacation_pay') }}" target="_blank">
-            <label for="create-center">Calcular Pagamento Férias:</label>
-            <select id="excluded-doctor-month" name="crm">
+            <label for="calc-payment">Calcular Pagamento Férias:</label>
+            <select id="doctor-to-pay-select" name="crm">
                 {% for doctor in doctors_list %}
                     <option value="{{ doctor[0] }}">{{ doctor[1] }}</option>
                 {% endfor %}
             </select>   
             <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 30px; margin-top: 20px;">
                 <div style="margin-right: 10px;">
-                    <input type="date" id="start-date" name="start_date" required>
+                    <input type="date" id="payment-start-date" name="start_date" required>
                 </div>
             
                 <div style="margin-right: 10px;">
-                    <input type="date" id="end-date" name="end_date" required>
+                    <input type="date" id="payment-end-date" name="end_date" required>
                 </div>
             </div>
         
@@ -74,26 +74,26 @@
 
     <section>
         <form method="post" action="{{ url_for('admin.add_vacation') }}">
-            <label for="create-center">Registrar Benefício:</label>
+            <label for="privilege">Registrar Benefício:</label>
             <div>
-            <select id="excluded-doctor-month" name="crm">
+            <select id="doctor-to-receive-privilege" name="crm">
                 {% for doctor in doctors_list %}
                     <option value="{{ doctor[0] }}">{{ doctor[1] }}</option>
                 {% endfor %}
             </select>  
-            <label for ="privilege_type">Tipo de Benefício:</label> 
-            <select id="privilege_type" name="privilege_type">
+            <label for ="privilege-type">Tipo de Benefício:</label> 
+            <select id="privilege-type" name="privilege_type">
                 <option value="1">Férias</option>
                 <option value="2">Licença Médica</option>
             </select>
             </div>
             <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 30px; margin-top: 20px;">
                 <div style="margin-right: 10px;">
-                    <input type="date" id="start-date" name="start_date" required>
+                    <input type="date" id="privilege-start-date" name="start_date" required>
                 </div>
             
                 <div style="margin-right: 10px;">
-                    <input type="date" id="end-date" name="end_date" required>
+                    <input type="date" id="privilege-end-date" name="end_date" required>
                 </div>
             </div>
         
@@ -103,7 +103,7 @@
 
     <section>
         <form method="get" action="{{ url_for('admin.vacations_report') }}">
-            <label for="create-center">Relatório de Férias:</label>
+            <label for="vacations-report">Relatório de Férias:</label>
             <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 30px; margin-top: 20px;"></div>
     
             <button type="submit">Entrar</button>
@@ -160,7 +160,7 @@
               </select>
 
               <select id="excluded-doctor-month" name="crm">
-                {% for doctor in doctors_list %}
+                {% for doctor in doctors_list %}excluded-doctor-month
                     <option value="{{ doctor[0] }}">{{ doctor[1] }}</option>
                 {% endfor %}
               </select>
