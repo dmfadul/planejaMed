@@ -74,12 +74,19 @@
 
     <section>
         <form method="post" action="{{ url_for('admin.add_vacation') }}">
-            <label for="create-center">Criar Férias:</label>
+            <label for="create-center">Registrar Benefício:</label>
+            <div>
             <select id="excluded-doctor-month" name="crm">
                 {% for doctor in doctors_list %}
                     <option value="{{ doctor[0] }}">{{ doctor[1] }}</option>
                 {% endfor %}
-            </select>   
+            </select>  
+            <label for ="privilege_type">Tipo de Benefício:</label> 
+            <select id="privilege_type" name="privilege_type">
+                <option value="1">Férias</option>
+                <option value="2">Licença Médica</option>
+            </select>
+            </div>
             <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 30px; margin-top: 20px;">
                 <div style="margin-right: 10px;">
                     <input type="date" id="start-date" name="start_date" required>
@@ -90,7 +97,7 @@
                 </div>
             </div>
         
-            <button type="submit">Criar</button>
+            <button type="submit">Registrar</button>
         </form>
     </section>
 
