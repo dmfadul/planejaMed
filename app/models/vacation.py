@@ -37,7 +37,8 @@ class Vacation(db.Model):
         if not user:
             return f"Usuário com id {user_id} não encontrado"
      
-        existing_vacations = cls(user_id=user_id, status_in=['approved', 'ongoing']).all()
+        existing_vacations = cls.query.filter(cls.user_id==user_id,
+                                              cls.status.in_(['approved', 'ongoing'])).all()
         for vac in existing_vacations:
             if (start_date <= vac.start_date <= end_date) or (start_date <= vac.end_date <= end_date):
                 return "Férias conflitantes"
