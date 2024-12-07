@@ -54,18 +54,18 @@ def resolve_privilege():
         if isinstance(flag, str):
             return flag  
     
-    unnaproved_vacations = cls.query.filter(
-                           cls.user_id == user_id,
-                           cls.status == "pending_approval"
+    unnaproved_vacations = Vacation.query.filter(
+                           Vacation.user_id == current_user.id,
+                           Vacation.status == "pending_approval"
                            ).all()
     
     if unnaproved_vacations:
         return f"""Usuário tem férias não aprovadas.
                     Aguarde aprovação ou contacte o Administrador"""
                     
-    pending_vacations = cls.query.filter(
-                        cls.user_id == user_id,
-                        cls.status == "approved"
+    pending_vacations = Vacation.query.filter(
+                        Vacation.user_id == current_user.id,
+                        Vacation.status == "approved"
                         ).all()
 
     if pending_vacations:
