@@ -413,13 +413,6 @@ class User(db.Model, UserMixin):
 
         return VACATION_NEW_RULES
         
-    def has_vacations_rights(self):
-        if not self.is_active or not self.is_visible:
-            return False
-
-        if self.pre_approved_vacation:
-            return True
-
     def get_vacation_months(self):
         vacs = [vac for vac in self.vacations if vac.status not in ['pending_approval', 'denied']]
         months = []
