@@ -44,10 +44,19 @@ def dashboard():
 @login_required
 def resolve_privilege():
     Vacation.update_status()
-    
+   
     start_date = datetime.strptime(request.form['start_date'], "%Y-%m-%d")
     end_date = datetime.strptime(request.form['end_date'], "%Y-%m-%d")
     is_sick_leave = bool(int(request.form['privilege_type']))
+
+    if not current_user.is_visible or not current_user.is_active:
+        return "Usuário não está ativo"
+
+    # check if user has privileges rights
+    if not current_user.pre_approved_vacation:
+        flag = Vacation.check_vacation_entitlement(current_user.id, start_date)
+        if isinstance(flag, str):
+            return flag
 
     if not is_sick_leave:
         flag = Vacation.check_vacations_availability(start_date, end_date, current_user.id)

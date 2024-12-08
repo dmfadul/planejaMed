@@ -111,6 +111,8 @@ class Vacation(db.Model):
 #=============================== QUERY METHODS ================================================#    
     @classmethod
     def check_vacations_availability(cls, start_date, end_date, user_id):
+        """Check if user has used all vacation days or if the total requested days exceed the limit"""
+
         from app.global_vars import MAX_VACATION_SPLIT, MIN_VACATION_DURATION, TOTAL_VACATION_DAYS
 
         vacations = cls.query.filter_by(user_id=user_id).filter(~cls.status.in_(['pending_approval', 'denied', 'cancelled'])).all()
@@ -141,6 +143,8 @@ class Vacation(db.Model):
 
     @classmethod
     def check_concomitant_vacations(cls, start_date, end_date, user_id):
+        """check if user's vacation requests that overlap with other users vacation requests"""
+
         no_check = ['pending_approval', 'approved']
         vacs = cls.query.filter(cls.user_id != user_id).filter(~cls.status.in_(no_check)).all()
 
@@ -149,19 +153,26 @@ class Vacation(db.Model):
 
     @classmethod
     def check_vacation_entitlement(cls, user_id, start_date):
+        """Check if user has been compliant with the rules for at least 6 months"""
+        from app.global_vars import MINIMUM_MONTHS_COMPLIENCE_FOR_VACATION
+        
         user = User.query.filter_by(id=user_id).first()
         if not user:
             return "Usuário não encontrado"
+
+        if user.compliant_since is None:
+            return "Usuário não tem direito base à férias"
 
         diff_years = start_date.year - user.compliant_since.year
         diff_months = start_date.month - user.compliant_since.month
         diff_time = diff_years * 12 + diff_months
 
-        return diff_time
-
-        # check if vacation date is six months after entitlment date
-  
-  
+        if diff_time < MINIMUM_MONTHS_COMPLIENCE_FOR_VACATION:
+            return f"""Não foi atingido o tempo mínimo de 6 meses para férias.
+                     O usuário está em conformidade desde {user.compliant_since.strftime('%m/%Y')}"""
+        
+        return 0
+ 
 
 # =============================== REPORT METHODS ================================================#
     @classmethod

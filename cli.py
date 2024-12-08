@@ -13,9 +13,17 @@ import json
 
 app = create_app()
 with app.app_context():
-    month = Month.get_current()
-    user = User.query.filter_by(crm=26704).first()
-    print(month.check_vacation_entitlement(user.id, month.number, month.year))
+    users = User.query.all()
+    start_date = datetime(2024, 12, 15)
+    for user in users:
+        f = Vacation.check_vacation_entitlement(user.id, start_date)
+        if f == 0 or 'base' in f:
+            continue
+        print(user.full_name, f)
+
+    # month = Month.get_current()
+    # user = User.query.filter_by(crm=26704).first()
+    # print(month.check_vacation_entitlement(user.id, month.number, month.year))
 
     # month = Month.get_current()
     # o = Month.check_for_vacation_entitlement_loss(month.number, month.year)
