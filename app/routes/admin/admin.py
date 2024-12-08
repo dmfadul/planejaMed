@@ -231,6 +231,8 @@ def register_privilege():
     if not current_user.is_admin:
         return "Unauthorized", 401
 
+    Vacation.update_status()
+    
     crm = request.form['crm']
     user = User.query.filter_by(crm=crm).first()
     if not user:
