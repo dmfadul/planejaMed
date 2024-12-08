@@ -23,3 +23,12 @@ function getVacationRights() {
     }
     xhr.send();
 }
+
+
+function closeMainModal() {
+    const modal = document.getElementById('Modal');
+    const overlay = document.getElementById('overlay');
+
+    modal.classList.add('hidden');
+    overlay.classList.add('hidden');
+}
