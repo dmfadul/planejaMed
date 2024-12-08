@@ -455,13 +455,13 @@ class Month(db.Model):
             if user.pre_approved_vacation:
                 continue
 
-            if not user.compliant_since:
-                continue
-            
             flag = cls.check_vacation_entitlement(user.id, month_number, year)
             if not flag:
                 continue
 
+            if not user.compliant_since:
+                continue
+            
             output_dict[user.crm] = (cls.get_vacation_entitlement_report(user.id, month_number, year), flag)
 
             # TODO: TODAY == exclude month if user is currently on vacation/sick leave

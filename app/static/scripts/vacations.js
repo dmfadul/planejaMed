@@ -5,7 +5,6 @@ function getVacationRights() {
     xhr.onload = function() {
         if (this.status === 200) {
             let vacationRights = JSON.parse(this.responseText);
-            console.log(vacationRights);
 
             const modal = document.getElementById('Modal');
             const overlay = document.getElementById('overlay');
@@ -13,6 +12,7 @@ function getVacationRights() {
             // Set the modal position based on the current scroll position
             modal.style.top = `${window.scrollY + window.innerHeight / 2 - modal.offsetHeight / 2}px`;
             modal.style.left = `${window.innerWidth / 2 - modal.offsetWidth / 2}px`;
+            document.getElementById('modalBody').innerHTML = vacationRights;
 
             modal.classList.remove('hidden');
             overlay.classList.remove('hidden');

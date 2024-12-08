@@ -58,9 +58,8 @@ def check_vacation_rights():
         return "Unauthorized", 401
 
     current_month = Month.get_current()
-    print(current_month)
 
-    vacations_rights = []
+    vacations_rights = "teste"
     return jsonify(vacations_rights)
 
 
