@@ -234,7 +234,7 @@ class Request(db.Model):
         return new_request
     
     @classmethod
-    def vacation(cls, doctor, start_date, end_date):
+    def vacation(cls, doctor, start_date, end_date, is_sick_leave=False):
         new_request = cls(
             requester_id=doctor.id,
             receivers_code="*",
@@ -245,7 +245,8 @@ class Request(db.Model):
         db.session.add(new_request)
         db.session.commit()
 
-        new_request.info=f"""*{doctor.full_name}* +solicitou+ férias de
+        privilege_type = "licença médica" if is_sick_leave else "férias"
+        new_request.info=f"""*{doctor.full_name}* +solicitou+ {privilege_type} de
                             {start_date.strftime("%d/%m/%y")} a {end_date.strftime("%d/%m/%y")}"""
         
         db.session.commit()

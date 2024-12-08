@@ -65,6 +65,10 @@ class Message(db.Model):
         
         if new_message.request.action == "include_user":
             new_message.content = "Sua solicitação de entrada no aplicativo"
+        elif new_message.request.action == "approve_vacation":
+            new_message.content = f"""{new_message.request.info} foi autorizada. No entanto,
+                                    você precisa continuar seguindo as regras do grupo
+                                    até a data de início para receber o benefício."""
         else:
             new_message.content = new_message.request.info
         db.session.commit()

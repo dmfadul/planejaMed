@@ -90,7 +90,11 @@ def resolve_privilege():
         flash(new_vacation, "danger")
         return redirect(url_for('dashboard.dashboard'))
 
-    new_request = Request.vacation(current_user, new_vacation.start_date, new_vacation.end_date)
+    new_request = Request.vacation(current_user,
+                                   new_vacation.start_date,
+                                   new_vacation.end_date,
+                                   is_sick_leave)
+                                   
     if isinstance(new_request, str):
         new_vacation.remove_entry()
         flash(new_request, "danger")
