@@ -59,10 +59,20 @@ def check_vacation_rights():
 
     current_month = Month.get_current()
 
-    v = Month.check_for_vacation_entitlement_loss(current_month.number, current_month.year)
+    vac_dict = Month.check_for_vacation_entitlement_loss(current_month.number, current_month.year)
+    no_base = vac_dict['no_base_rights']
+    no_realized = vac_dict['no_realized_rights']
 
-    vacations_rights = "teste"
-    return jsonify(vacations_rights)
+    vac_report = ""
+
+    for user in no_base:
+        if user.compliant_since is None:
+            print(user)
+
+
+    # send message to user if they have lost vacation entitlement?
+
+    return jsonify(vac_report)
 
 
 @admin_bp.route('/admin/create-month', methods=['GET', 'POST'])

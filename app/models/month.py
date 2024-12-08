@@ -447,23 +447,36 @@ class Month(db.Model):
     @classmethod
     def check_for_vacation_entitlement_loss(cls, month_number, year):
         from app.models import User
-
-        output_dict = {}
+        
+        no_base_rights, losing_base_rights, no_realized_rights, losing_realized_rights = [], [], [], []
         users = User.query.filter_by(is_active=True, is_visible=True).all()
         for i, user in enumerate(users):
             if user.pre_approved_vacation:
                 continue
 
-            flag = cls.check_vacation_entitlement(user.id, month_number, year)
-            if not flag:
+            if user.in_vacation(month_number, year):
                 continue
-            
-            print(f"User {user.full_name}, {user.compliant_since}, {flag}")
-            
-            output_dict[user.crm] = (cls.get_vacation_entitlement_report(user.id, month_number, year), flag)
 
-            # TODO: TODAY == exclude month if user is currently on vacation/sick leave
-            # send message to user if they have lost vacation entitlement?
-            # produce report to admin?
+            flag = cls.check_vacation_entitlement(user.id, month_number, year)
+            if flag == 0:
+                continue
+            if 'Base' in flag and user.compliant_since is None:
+                no_base_rights.append(user)
+                continue
+            if 'Base' in flag and user.compliant_since is not None:
+                losing_base_rights.append(user)
+                continue
+            if 'não realizou horas suficientes' in flag and user.compliant_since is None:
+                no_realized_rights.append(user)
+                continue
+            if 'não realizou horas suficientes' and user.compliant_since is not None:
+                losing_realized_rights.append(user)
+                continue
 
-        return "output_dict"
+        no_base_rights = sorted(no_base_rights, key=lambda x: x.full_name)
+        no_realized_rights = sorted(no_realized_rights, key=lambda x: x.full_name)
+
+        return {"no_base_rights": no_base_rights,
+                "losing_base_rights": losing_base_rights,
+                "no_realized_rights": no_realized_rights,
+                "losing_realized_rights": losing_realized_rights}
