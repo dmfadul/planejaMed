@@ -83,21 +83,21 @@ class Vacation(db.Model):
         approved_vacations = cls.query.filter(cls.status.notin_(['denied', 'paid', 'completed'])).all()
 
         for vacation in approved_vacations:
-            # if (vacation.start_date < datetime.date.today()) and vacation.status == 'pending_approval':
-            #     vacation.status = 'denied'
-            #     db.session.commit()
-            if (vacation.end_date < datetime.date.today()) and vacation.status in ['ongoing', 'approved']:
+            if (vacation.status == 'pending_approval') and (vacation.start_date < datetime.date.today()):
+                vacation.status = 'denied'
+                db.session.commit()
+            if (vacation.status in ['ongoing', 'approved']) and (vacation.end_date < datetime.date.today()):
                 vacation.status = 'completed'
                 db.session.commit()
-            elif (vacation.start_date < datetime.date.today()) and vacation.status == 'approved':
+            elif (vacation.status == 'approved') and (vacation.start_date < datetime.date.today()):
                 vacation.status = 'ongoing'
                 db.session.commit()
 
-            # vacation_start = datetime.datetime.combine(vacation.start_date, datetime.datetime.min.time())
-            # flag = cls.check_vacation_entitlement(vacation_start, vacation.user_id)
-            # if isinstance(flag, str):
-            #     vacation.status = 'unapproved'
-            #     db.session.commit()
+            vacation_start = datetime.datetime.combine(vacation.start_date, datetime.datetime.min.time())
+            flag = cls.check_vacation_entitlement(vacation_start, vacation.user_id)
+            if isinstance(flag, str):
+                vacation.status = 'unapproved'
+                db.session.commit()
 
 
 #=============================== QUERY METHODS ================================================#    
