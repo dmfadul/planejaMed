@@ -52,6 +52,9 @@ def resolve_privilege():
     if not current_user.is_visible or not current_user.is_active:
         return "Usuário não está ativo"
 
+    if start_date < datetime.now():
+        return "Data de início inválida"
+
     # check if user has privileges rights
     if not current_user.pre_approved_vacation:
         flag = Vacation.check_vacation_entitlement(current_user.id, start_date)
@@ -94,7 +97,7 @@ def resolve_privilege():
                                    new_vacation.start_date,
                                    new_vacation.end_date,
                                    is_sick_leave)
-                                   
+
     if isinstance(new_request, str):
         new_vacation.remove_entry()
         flash(new_request, "danger")
