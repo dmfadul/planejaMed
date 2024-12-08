@@ -65,10 +65,6 @@ class Message(db.Model):
         
         if new_message.request.action == "include_user":
             new_message.content = "Sua solicitação de entrada no aplicativo"
-        elif new_message.request.action == "approve_vacation":
-            new_message.content = f"""{new_message.request.info} foi autorizada. No entanto,
-                                    você precisa continuar seguindo as regras do grupo
-                                    até a data de início para receber o benefício."""
         else:
             new_message.content = new_message.request.info
         db.session.commit()
@@ -98,6 +94,11 @@ class Message(db.Model):
     
     @property
     def payload(self):
+        if self.request.action == "approve_vacation" and self.request.response == "authorized":
+            extra_message = """ No entanto, você precisa continuar seguindo
+                                as regras do grupo até a data de início para receber o benefício."""
+        else:
+            extra_message = ""
         try:
             if self.action == "cancel":
                 message = re.sub(r'\*.*?\*', 'Você tem uma SOLICITAÇÃO PENDENTE de ', self.content)
@@ -113,7 +114,7 @@ class Message(db.Model):
             message = f"""Uma mensagem apresentou erro.
             Por favor, informe ao administrador o código m-{self.id},
             para que este erro seja corrijido.{e}"""
-        return message
+        return message + extra_message
 
     @property
     def is_open(self):
