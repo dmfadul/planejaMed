@@ -386,7 +386,6 @@ class Month(db.Model):
         if not user:
             return "Usuário não encontrado"
         
-        print(year, month_number, user.get_vacation_months())
         if (year, month_number) in user.get_vacation_months():
             return f"Usuário de férias no mês {month_number}/{year}"
 
@@ -458,9 +457,8 @@ class Month(db.Model):
             flag = cls.check_vacation_entitlement(user.id, month_number, year)
             if not flag:
                 continue
-
-            if not user.compliant_since:
-                continue
+            
+            print(f"User {user.full_name}, {user.compliant_since}, {flag}")
             
             output_dict[user.crm] = (cls.get_vacation_entitlement_report(user.id, month_number, year), flag)
 
@@ -468,4 +466,4 @@ class Month(db.Model):
             # send message to user if they have lost vacation entitlement?
             # produce report to admin?
 
-        return output_dict
+        return "output_dict"

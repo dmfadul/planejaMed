@@ -59,6 +59,8 @@ def check_vacation_rights():
 
     current_month = Month.get_current()
 
+    v = Month.check_for_vacation_entitlement_loss(current_month.number, current_month.year)
+
     vacations_rights = "teste"
     return jsonify(vacations_rights)
 
