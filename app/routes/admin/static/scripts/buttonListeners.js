@@ -12,6 +12,21 @@ function handleCreateButtonClick() {
 }
 
 
+function getVacationRights() {
+    xhr = new XMLHttpRequest();
+    xhr.open('GET', `/admin/get-vacation-rights`, true);
+
+    xhr.onload = function() {
+        if (this.status === 200) {
+            let vacationRights = JSON.parse(this.responseText);
+            console.log(vacationRights);
+        } else {
+            console.log("Error: Could not get Vacations Rights");
+        }
+    }
+    xhr.send();
+}
+
 function handleNextButtonClick() {
     // Show confirmation dialog
     const userConfirmed = confirm("Confirmar a Liberação de um Novo Mês. Tem a certeza que deseja continuar?");

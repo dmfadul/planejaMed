@@ -4,7 +4,11 @@
 {% endblock %}
 
 {% block mainContent %}
-    {% if curr_is_latest %}
+    {% if not curr_is_checked %}
+        <section style="text-align: center;">
+            <button onclick="getVacationRights();" class="common-button">Checar Férias</button>
+        </section>
+    {% elif curr_is_latest %}
         <section style="text-align: center;">
             <button onclick="handleCreateButtonClick();" class="common-button">Criar {{ next_month_name }} {{ next_month_year }}</button>
         </section>

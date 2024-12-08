@@ -46,8 +46,22 @@ def admin():
                            open_months=open_months,
                            open_doctors_list=open_doctors_list,
                            user_is_root=current_user.is_root,
-                           maintenance_is_on=maintenance_is_on
+                           maintenance_is_on=maintenance_is_on,
+                           curr_is_checked=current_month.is_checked
                            )
+
+
+@admin_bp.route('/admin/get-vacation-rights', methods=['GET'])
+@login_required
+def check_vacation_rights():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    current_month = Month.get_current()
+    print(current_month)
+
+    vacations_rights = []
+    return jsonify(vacations_rights)
 
 
 @admin_bp.route('/admin/create-month', methods=['GET', 'POST'])
