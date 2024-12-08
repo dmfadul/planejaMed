@@ -40,8 +40,14 @@ class Vacation(db.Model):
         existing_vacations = cls.query.filter(cls.user_id==user_id,
                                               cls.status.in_(['approved', 'ongoing'])).all()
         for vac in existing_vacations:
-            start_date_check = start_date.date() <= vac.start_date <= end_date.date()
-            end_date_check = start_date.date() <= vac.end_date <= end_date.date()
+            existing_start_date_check = start_date.date() <= vac.start_date <= end_date.date()
+            new_start_date_check = vac.start_date <= start_date.date() <= vac.end_date
+            existing_end_date_check = start_date.date() <= vac.end_date <= end_date.date()
+            new_end_date_check = vac.start_date <= end_date.date() <= vac.end_date
+
+            start_date_check = existing_start_date_check or new_start_date_check
+            end_date_check = existing_end_date_check or new_end_date_check
+
             if start_date_check or end_date_check:
                 return "Férias conflitantes"
 
