@@ -455,6 +455,7 @@ class Month(db.Model):
                 continue
 
             if user.in_vacation(month_number, year):
+                print(f"{user.full_name} está de férias")
                 continue
 
             flag = cls.check_vacation_entitlement(user.id, month_number, year)

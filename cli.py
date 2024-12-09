@@ -13,7 +13,8 @@ import json
 
 # app = create_app()
 # with app.app_context():
-#     user = User.query.filter_by(crm=42217).first()
+#     user = User.query.filter_by(crm=44392).first()
+#     print(user.vacations)
 #     print(Month.check_vacation_entitlement(user.id, 12, 2024))
 #     print(Month.get_vacation_entitlement_report(user.id, 12, 2024))
 

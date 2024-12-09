@@ -61,13 +61,35 @@ def check_vacation_rights():
 
     vac_dict = Month.check_for_vacation_entitlement_loss(current_month.number, current_month.year)
     no_base = vac_dict['no_base_rights']
+    losing_base = vac_dict['losing_base_rights']
     no_realized = vac_dict['no_realized_rights']
+    losing_realized = vac_dict['losing_realized_rights']
 
     vac_report = ""
 
-    for user in no_base:
-        if user.compliant_since is None:
-            print(user)
+    for user in losing_base:
+        report = Month.get_vacation_entitlement_report(user.id, current_month.number, current_month.year)
+        print(user, report, user.get_vacation_rules())
+
+    for user in losing_realized:
+        report = Month.get_vacation_entitlement_report(user.id, current_month.number, current_month.year)
+        print(user, user.crm, report)
+
+    if no_base:
+        vac_report += "Os seguintes Médicos CONTINUARÃO SEM direito Base:</br></br>"
+        for user in no_base:
+            vac_report += f"{user.full_name} - {user.crm}</br>"
+    else:
+        vac_report += ""
+
+    vac_report += "</br></br>"
+    if no_realized:
+        vac_report += "Os seguintes Médicos ... realizado:</br>"
+        for user in no_realized:
+            vac_report += f"{user.full_name} - {user.crm}</br>"
+    else:
+        vac_report += ""
+    
 
 
     # send message to user if they have lost vacation entitlement?
