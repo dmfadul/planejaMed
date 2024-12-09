@@ -67,6 +67,9 @@ def check_vacation_rights():
 
     vac_report = ""
 
+    # send message to user if they have lost vacation entitlement
+    # unaprove vacation if user loses rights
+
     for user in losing_base:
         report = Month.get_vacation_entitlement_report(user.id, current_month.number, current_month.year)
         print(user, report, user.get_vacation_rules())
@@ -90,10 +93,6 @@ def check_vacation_rights():
     else:
         vac_report += ""
     
-
-
-    # send message to user if they have lost vacation entitlement?
-
     return jsonify(vac_report)
 
 
