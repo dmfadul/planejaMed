@@ -93,12 +93,6 @@ class Vacation(db.Model):
                 vacation.status = 'ongoing'
                 db.session.commit()
 
-            vacation_start = datetime.datetime.combine(vacation.start_date, datetime.datetime.min.time())
-            flag = cls.check_vacation_entitlement(vacation_start, vacation.user_id)
-            if isinstance(flag, str):
-                vacation.status = 'unapproved'
-                db.session.commit()
-
 
 #=============================== QUERY METHODS ================================================#    
     @classmethod

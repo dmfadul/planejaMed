@@ -403,6 +403,15 @@ class User(db.Model, UserMixin):
 
         return app_dict
     
+    def in_vacation(self, month_number, year):
+        vacations = [vac for vac in self.vacations if vac.status in ['approved', 'ongoing', 'paid', 'completed']]
+        for vac in vacations:
+            if vac.start_date.month == month_number and vac.start_date.year == year:
+                return True
+            if vac.end_date.month == month_number and vac.end_date.year == year:
+                return True
+            
+            return False
 
 #=============================== UTILITY METHODS ================================================#
     def get_vacation_rules(self):

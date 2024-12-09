@@ -11,15 +11,12 @@ from datetime import datetime
 import json
 
 
-app = create_app()
-with app.app_context():
-    users = User.query.all()
-    start_date = datetime(2024, 12, 15)
-    for user in users:
-        f = Vacation.check_vacation_entitlement(user.id, start_date)
-        if f == 0 or 'base' in f:
-            continue
-        print(user.full_name, f)
+# app = create_app()
+# with app.app_context():
+#     user = User.query.filter_by(crm=44392).first()
+#     print(user.vacations)
+#     print(Month.check_vacation_entitlement(user.id, 12, 2024))
+#     print(Month.get_vacation_entitlement_report(user.id, 12, 2024))
 
     # month = Month.get_current()
     # user = User.query.filter_by(crm=26704).first()
