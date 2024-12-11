@@ -13,11 +13,15 @@ import json
 
 app = create_app()
 with app.app_context():
-    user = User.query.filter_by(crm=31342).first()
-    print(user)
+    leo = User.query.filter_by(crm=42586).first()
+    renato = User.query.filter_by(crm=31342).first()
 
-    for r in user.requests_received:
-        print(r)
+
+    for r in renato.requests_received:
+        if '09/12/24' in r.info or '23/12/24' in r.info:
+            print(r.info)
+
+            
     # req1 = Request.query.filter_by(id=556).first()
     # req2 = Request.query.filter_by(id=561).first()
 
