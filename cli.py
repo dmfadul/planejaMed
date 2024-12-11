@@ -11,9 +11,24 @@ from datetime import datetime
 import json
 
 
-# app = create_app()
-# with app.app_context():
-#     user = User.query.filter_by(crm=44392).first()
+app = create_app()
+with app.app_context():
+    user = User.query.filter_by(crm=31342).first()
+    print(user)
+
+    for r in user.requests_received:
+        print(r)
+    # req1 = Request.query.filter_by(id=556).first()
+    # req2 = Request.query.filter_by(id=561).first()
+
+    # print(req1)
+    # for a in req1.appointments:
+    #     print(a, a.center.abbreviation, a.day, a.hour, a.user)
+    # print('---'*10)
+    # print(req2)
+    # for a in req2.appointments:
+    #     print(a, a.center.abbreviation, a.day, a.hour, a.user)
+
 #     print(user.vacations)
 #     print(Month.check_vacation_entitlement(user.id, 12, 2024))
 #     print(Month.get_vacation_entitlement_report(user.id, 12, 2024))
