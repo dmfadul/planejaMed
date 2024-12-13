@@ -16,12 +16,32 @@ with app.app_context():
     leo = User.query.filter_by(crm=42586).first()
     renato = User.query.filter_by(crm=31342).first()
 
+    reqs = Request.query.all()
+    # for r in renato.requests_received:
+    #     if '09/12/24' in r.info or '23/12/24' in r.info:
+    #         reqs.append(r)
 
-    for r in renato.requests_received:
-        if '09/12/24' in r.info or '23/12/24' in r.info:
-            print(r.info)
+    # for r in leo.requests_received:
+    #     if '09/12/24' in r.info or '23/12/24' in r.info:
+    #         reqs.append(r)
 
+    # for r in renato.requests_sent:
+    #     if '09/12/24' in r.info or '23/12/24' in r.info:
+    #         reqs.append(r)
             
+    # for r in leo.requests_sent:
+    #     if '09/12/24' in r.info or '23/12/24' in r.info:
+    #         reqs.append(r)
+
+
+    reqs = list(set(reqs))
+    reqs = [r for r in reqs if '09/12/24' in r.info or '23/12/24' in r.info]
+    reqs = sorted(reqs, key=lambda x: x.creation_date)
+
+
+    for r in reqs:
+        print(r.creation_date, r.info, r.response, r.response_date)
+
     # req1 = Request.query.filter_by(id=556).first()
     # req2 = Request.query.filter_by(id=561).first()
 

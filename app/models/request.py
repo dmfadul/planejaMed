@@ -670,6 +670,31 @@ class Request(db.Model):
         if self.action == "exchange":
             # the requester is doctor_1, the one who initiated the exchange
             # the responder is doctor_2, the one who accepts the exchange
+
+            for app in self.appointments:
+                if app.user_id == self.requester_id:
+                    test_app = Appointment.query.filter_by(
+                        user_id=int(self.receivers_code),
+                        day_id=app.day_id,
+                        hour=app.hour,
+                        is_confirmed=True
+                    ).first()
+
+                    test_user = User.query.filter_by(id=int(self.receivers_code)).first()
+                else:
+                    test_app = Appointment.query.filter_by(
+                        user_id=self.requester_id,
+                        day_id=app.day_id,
+                        hour=app.hour,
+                        is_confirmed=True
+                    ).first()
+                    test_user = User.query.filter_by(id=self.requester_id).first()
+
+                if test_app:
+                    self.delete()
+                    return f"""Conflito - {test_user.full_name} já tem esse horário (ou parte dele)
+                             no centro {test_app.center.abbreviation}""", 'danger'
+
             for app in self.appointments:
                 if app.user_id == self.requester_id:
                     app.change_doctor(int(self.receivers_code))
