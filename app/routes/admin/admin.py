@@ -66,33 +66,49 @@ def check_vacation_rights():
     losing_realized = vac_dict['losing_realized_rights']
 
     vac_report = ""
+    if losing_base:
+        vac_report = "Os seguintes Médicos PERDERÃO direito (base) a férias:</br></br>"
+        for user in losing_base:
+            report = Month.get_vacation_entitlement_report(user.id, current_month.number, current_month.year)
+            vac_report += f"{user} - {user.crm} - {report}.</br>"
+            # send message to user
 
-    # send message to user if they have lost vacation entitlement
-    # unaprove vacation if user loses rights
+    if losing_realized:
+        vac_report += "</br></br>"
+        vac_report = "Os seguintes Médicos PERDERÃO direito (realizado) a férias:</br></br>"
+        for user in losing_realized:
+            routine, plaintemps = Month.get_vacation_entitlement_balance(user.id,
+                                                                        current_month.number,
+                                                                        current_month.year)    
 
-    for user in losing_base:
-        report = Month.get_vacation_entitlement_report(user.id, current_month.number, current_month.year)
-        print(user, report, user.get_vacation_rules())
+            if routine < 0:
+                vac_report += f"""O médico {user.full_name} - {user.crm} cumpriu {abs(routine)}
+                                    horas de rotina a menos que o necessário.</br>"""
+            elif plaintemps < 0:
+                vac_report += f"""O médico {user.full_name} - {user.crm} cumpriu {abs(plaintemps)}
+                                    horas de plantão a menos que o necessário.</br>"""
+            else:
+                vac_report += ""
 
-    for user in losing_realized:
-        report = Month.get_vacation_entitlement_report(user.id, current_month.number, current_month.year)
-        print(user, user.crm, report)
+            # send message to user
 
     if no_base:
-        vac_report += "Os seguintes Médicos CONTINUARÃO SEM direito Base:</br></br>"
+        vac_report += "</br></br>"
+        vac_report += "Os seguintes Médicos CONTINUARÃO SEM direito (base) a férias:</br></br>"
         for user in no_base:
             vac_report += f"{user.full_name} - {user.crm}</br>"
     else:
         vac_report += ""
 
-    vac_report += "</br></br>"
     if no_realized:
-        vac_report += "Os seguintes Médicos ... realizado:</br>"
+        vac_report += "</br></br>"
+        vac_report += "Os seguintes Médicos CONTINUARÃO SEM direito (realizado) a férias:</br></br>"
         for user in no_realized:
             vac_report += f"{user.full_name} - {user.crm}</br>"
     else:
         vac_report += ""
     
+    vac_report += "</br></br>"
     return jsonify(vac_report)
 
 
@@ -133,6 +149,7 @@ def create_month():
         flash(f"O original do mês {next_month_number}/{next_month_year} não foi salvo", 'danger')
         return redirect(url_for('admin.admin'))
     flash(f"O original do mês {next_month_number}/{next_month_year} foi salvo", 'success')
+    # unaprove vacation if user loses Base rights
 
     return redirect(url_for('admin.admin'))
 
@@ -154,6 +171,7 @@ def next_month():
     if not flag:
         flash(f"O mês corrente foi avançado para {next_month.name}/{next_month.year} ", 'success')
 
+    # unaprove vacation if user loses realized rights
     return redirect(url_for('admin.admin'))
 
 
@@ -426,3 +444,22 @@ def force_aprove():
     vacation.approve()
 
     return jsonify("success")
+
+@admin_bp.route('/admin/privilege-rights', methods=['GET'])
+@login_required
+def check_privilege_rights():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    users = User.query.filter_by(is_active=True, is_visible=True).all()
+    users = sorted(users, key=lambda x: x.full_name)
+
+    
+    output = ""
+    for user in users:
+        response = Vacation.check_vacation_entitlement(user.id, datetime.now())
+        if response == 0:
+            continue
+        output += f"{user} - {user.crm} - {response}</br>"
+
+    return output

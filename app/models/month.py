@@ -420,6 +420,19 @@ class Month(db.Model):
         return output
 
     @classmethod
+    def get_vacation_entitlement_balance(cls, user_id, month_number, year):
+            report = Month.get_vacation_entitlement_report(user_id, month_number, year)
+
+            original = report.get('original')
+            realized = report.get('realized')
+            delta = report.get('delta')
+
+            routine_total = realized.get('routine') + delta.get('routine') - original.get('routine')
+            plaintemps_total = realized.get('plaintemps') + delta.get('plaintemps') - original.get('plaintemps')
+
+            return routine_total, plaintemps_total
+            
+    @classmethod
     def check_vacation_entitlement(cls, user_id, month_number, year):
         report = cls.get_vacation_entitlement_report(user_id, month_number, year)
 

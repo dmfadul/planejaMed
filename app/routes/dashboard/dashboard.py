@@ -50,21 +50,26 @@ def resolve_privilege():
     is_sick_leave = bool(int(request.form['privilege_type']))
 
     if not current_user.is_visible or not current_user.is_active:
-        return "Usuário não está ativo"
+        flash("Usuário não está ativo", "danger")
+        return redirect(url_for('dashboard.dashboard'))
 
     if start_date < datetime.now():
-        return "Data de início inválida"
+        flash("Data de início inválida", "danger")
+        return redirect(url_for('dashboard.dashboard'))
+    
 
     # check if user has privileges rights
     if not current_user.pre_approved_vacation:
         flag = Vacation.check_vacation_entitlement(current_user.id, start_date)
         if isinstance(flag, str):
-            return flag
+            flash(flag, "danger")
+            return redirect(url_for('dashboard.dashboard'))
 
     if not is_sick_leave:
         flag = Vacation.check_vacations_availability(start_date, end_date, current_user.id)
         if isinstance(flag, str):
-            return flag  
+            flash(flag, "danger")
+            return redirect(url_for('dashboard.dashboard'))
     
     unnaproved_vacations = Vacation.query.filter(
                            Vacation.user_id == current_user.id,
@@ -72,8 +77,9 @@ def resolve_privilege():
                            ).all()
     
     if unnaproved_vacations:
-        return f"""Usuário tem férias não aprovadas.
-                    Aguarde aprovação ou contacte o Administrador"""
+        msg = f"""Usuário tem férias não aprovadas. Aguarde aprovação ou contacte o Administrador"""
+        flash(msg, "danger")
+        return redirect(url_for('dashboard.dashboard'))
                     
     pending_vacations = Vacation.query.filter(
                         Vacation.user_id == current_user.id,
@@ -81,8 +87,9 @@ def resolve_privilege():
                         ).all()
 
     if pending_vacations:
-        return f"""Usuário tem férias pendentes.
-                    Aguarde a conclusão ou contacte o Administrador"""
+        msg = f"""Usuário tem férias pendentes. Aguarde a conclusão ou contacte o Administrador"""
+        flash(msg, "danger")
+        return redirect(url_for('dashboard.dashboard'))
 
     new_vacation = Vacation.add_entry(start_date=start_date,
                                       end_date=end_date,
