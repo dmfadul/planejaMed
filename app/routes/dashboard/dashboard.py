@@ -62,12 +62,14 @@ def resolve_privilege():
     if not current_user.pre_approved_vacation:
         flag = Vacation.check_vacation_entitlement(current_user.id, start_date)
         if isinstance(flag, str):
-            return flag
+            flash(flag, "danger")
+            return redirect(url_for('dashboard.dashboard'))
 
     if not is_sick_leave:
         flag = Vacation.check_vacations_availability(start_date, end_date, current_user.id)
         if isinstance(flag, str):
-            return flag  
+            flash(flag, "danger")
+            return redirect(url_for('dashboard.dashboard'))
     
     unnaproved_vacations = Vacation.query.filter(
                            Vacation.user_id == current_user.id,
