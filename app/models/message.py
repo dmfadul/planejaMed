@@ -94,7 +94,7 @@ class Message(db.Model):
     
     @property
     def payload(self):
-        if self.request.action == "approve_vacation" and self.request.response == "authorized":
+        if self.request is not None and self.request.action == "approve_vacation" and self.request.response == "authorized":
             extra_message = """ No entanto, você precisa continuar seguindo
                                 as regras do grupo até a data de início para receber o benefício."""
         else:
