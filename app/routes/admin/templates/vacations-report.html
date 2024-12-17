@@ -52,21 +52,21 @@
                             <td>{{ vacation.start_date }}</td>
                             <td>{{ vacation.end_date }}</td>
                             <td>{{ vacation.status }}</td>
+                            <td><button class="submit-button save-button" onclick="showPay(this)" data-id="{{ vacation.id }}">$</button></td>
+                            <td><button class="submit-button save-button" onclick="showReport(this)" data-id="{{ vacation.id }}">Relatório</button></td>
                             <td>
                                 <button 
                                     class="submit-button save-button {% if vacation.status in ["Em andamento", "Concluído", "Pago", "Aprovado"] %}disabled-button{% endif %}" 
                                     onclick="forceAprove(this)" 
                                     data-id="{{ vacation.id }}"
-                                    {% if vacation.status == "Pago" %}disabled{% endif %}
+                                    {% if vacation.status in ["Em andamento", "Concluído", "Pago", "Aprovado"] %}disabled{% endif %}
                                 >
                                     Aprovar
                                 </button>
                             </td>
-                            <td><button class="submit-button save-button" onclick="showReport(this)" data-id="{{ vacation.id }}">Relatório</button></td>
-                            <td><button class="submit-button save-button" onclick="showPay(this)" data-id="{{ vacation.id }}">$</button></td>
                             <td>
                                 <button 
-                                    class="submit-button save-button {% if vacation.status not in ["Aprovado"] %}disabled-button{% endif %}" 
+                                    class="submit-button save-button {% if vacation.status == "Pago" %}disabled-button{% endif %}" 
                                     onclick="payVacation(this)" 
                                     data-id="{{ vacation.id }}"
                                     {% if vacation.status == "Pago" %}disabled{% endif %}
@@ -74,7 +74,7 @@
                                     Pagar
                                 </button>
                             </td>
-                            <td><button class="submit-button save-button" onclick="" data-id="{{ vacation.id }}">Apagar</button></td>
+                            <td><button class="submit-button save-button" onclick="" data-id="{{ vacation.id }}">Arquivar</button></td>
                         </tr>
                     {% endfor %}              
                 </tbody>
