@@ -181,6 +181,7 @@ class Vacation(db.Model):
                 "id": vacation.id,
                 "name": vacation.user.full_name,
                 "crm": vacation.user.crm,
+                "type": "Licença Médica" if vacation.is_sick_leave else "Férias",
                 "start_date": vacation.start_date.strftime('%d/%m/%Y'),
                 "end_date": vacation.end_date.strftime('%d/%m/%Y'),
                 "status": translation_dict.get(vacation.status)
