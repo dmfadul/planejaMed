@@ -423,6 +423,11 @@ class Month(db.Model):
     def get_vacation_entitlement_balance(cls, user_id, month_number, year):
             report = Month.get_vacation_entitlement_report(user_id, month_number, year)
 
+            if isinstance(report, str):
+                if 'Usuário de férias' in report:
+                    return 0, 0
+                return "Erro ao calcular saldo de férias"
+
             original = report.get('original')
             realized = report.get('realized')
             delta = report.get('delta')

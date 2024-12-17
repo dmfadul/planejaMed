@@ -83,10 +83,10 @@ def check_vacation_rights():
 
             if routine < 0:
                 vac_report += f"""O médico {user.full_name} - {user.crm} cumpriu {abs(routine)}
-                                    horas de rotina a menos que o necessário.</br>"""
+                                    horas de rotina A MENOS que o necessário.</br>"""
             elif plaintemps < 0:
                 vac_report += f"""O médico {user.full_name} - {user.crm} cumpriu {abs(plaintemps)}
-                                    horas de plantão a menos que o necessário.</br>"""
+                                    horas de plantão A MENOS que o necessário.</br>"""
             else:
                 vac_report += ""
 
