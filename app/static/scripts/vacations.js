@@ -6,13 +6,13 @@ function getVacationRights() {
         if (this.status === 200) {
             let vacationRights = JSON.parse(this.responseText);
 
-            const modal = document.getElementById('Modal');
-            const overlay = document.getElementById('overlay');
+            const modal = document.getElementById('mainModal');
+            const overlay = document.getElementById('mainoverlay');
 
             // Set the modal position based on the current scroll position
             modal.style.top = `${window.scrollY + window.innerHeight / 2 - modal.offsetHeight / 2}px`;
             modal.style.left = `${window.innerWidth / 2 - modal.offsetWidth / 2}px`;
-            document.getElementById('modalBody').innerHTML = vacationRights;
+            document.getElementById('mainModalBody').innerHTML = vacationRights;
 
             modal.classList.remove('hidden');
             overlay.classList.remove('hidden');
@@ -26,8 +26,8 @@ function getVacationRights() {
 
 
 function closeMainModal() {
-    const modal = document.getElementById('Modal');
-    const overlay = document.getElementById('overlay');
+    const modal = document.getElementById('mainModal');
+    const overlay = document.getElementById('mainOverlay');
 
     modal.classList.add('hidden');
     overlay.classList.add('hidden');
