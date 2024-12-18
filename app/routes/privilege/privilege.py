@@ -12,6 +12,53 @@ privilege_bp = Blueprint('privilege',
                          )
 
 
+@privilege_bp.route('/admin/calculate-vacation-pay', methods=['POST', 'GET'])
+@login_required
+def calculate_vacation_pay():
+    """calculate hypothetical payment for a vacation period.
+    Should be deleted after mode is implemented"""
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    data = request.form.to_dict()
+    
+    user = User.query.filter_by(crm=data['crm']).first()
+    start_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
+    end_date = datetime.strptime(data['end_date'], "%Y-%m-%d")
+
+    vacation = Vacation.add_entry(start_date=start_date,
+                                  end_date=end_date,
+                                  user_id=user.id)
+
+    if isinstance(vacation, str):
+        flash(vacation, "danger")
+        return vacation
+                                
+    output = vacation.calculate_payment()
+    vacation.remove_entry()
+
+    return output
+
+
+@privilege_bp.route('/get-vacation-pay', methods=['POST'])
+@login_required
+def get_vacation_pay():
+    """Provide payment information to be displayed on the privilege report"""
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    vacation_id = request.json['vacationID']
+    vacation = Vacation.query.get(vacation_id)
+
+    start_date = vacation.start_date
+    end_date = vacation.end_date
+    doctor = vacation.user   
+    
+    output = vacation.calculate_payment()
+
+    return jsonify(output)
+
+
 @privilege_bp.route('/vacations-report', methods=['GET'])
 @login_required
 def vacations_report():
