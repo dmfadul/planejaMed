@@ -463,3 +463,20 @@ def check_privilege_rights():
         output += f"{user} - {user.crm} - {response}</br>"
 
     return output
+
+
+@admin_bp.route('/admin/change-privilege-status', methods=['POST'])
+@login_required
+def change_privilege_status():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    vacation_id = request.json['vacationID']
+    new_status = request.json['newStatus']
+    vacation = Vacation.query.filter_by(id=vacation_id).first()
+    if not vacation:
+        return "Vacation not found", 404
+
+    print(new_status)
+
+    return jsonify("success")

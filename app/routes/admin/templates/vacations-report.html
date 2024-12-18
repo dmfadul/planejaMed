@@ -56,10 +56,10 @@
                             <td><button class="submit-button save-button" onclick="showReport(this)" data-id="{{ vacation.id }}">Relatório</button></td>
                             <td>
                                 <button 
-                                    class="submit-button save-button {% if vacation.status in ["Em andamento", "Concluído", "Pago", "Aprovado"] %}disabled-button{% endif %}" 
-                                    onclick="forceAprove(this)" 
+                                    class="submit-button save-button {% if vacation.status in ["Em andamento", "Concluído", "Pago", "Aprovado", "deferido"] %}disabled-button{% endif %}" 
+                                    onclick="changeStatus(this, 'defered')" 
                                     data-id="{{ vacation.id }}"
-                                    {% if vacation.status in ["Em andamento", "Concluído", "Pago", "Aprovado"] %}disabled{% endif %}
+                                    {% if vacation.status in ["Em andamento", "Concluído", "Pago", "Aprovado", "deferido"] %}disabled{% endif %}
                                 >
                                     Aprovar
                                 </button>
@@ -67,14 +67,14 @@
                             <td>
                                 <button 
                                     class="submit-button save-button {% if vacation.status == "Pago" %}disabled-button{% endif %}" 
-                                    onclick="payVacation(this)" 
+                                    onclick="changeStatus(this, 'paid')" 
                                     data-id="{{ vacation.id }}"
                                     {% if vacation.status == "Pago" %}disabled{% endif %}
                                 >
                                     Pagar
                                 </button>
                             </td>
-                            <td><button class="submit-button save-button" onclick="" data-id="{{ vacation.id }}">Arquivar</button></td>
+                            <td><button class="submit-button save-button" onclick="changeStatus(this, 'delete')" data-id="{{ vacation.id }}">Apagar</button></td>
                         </tr>
                     {% endfor %}              
                 </tbody>

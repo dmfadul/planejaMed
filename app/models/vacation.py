@@ -171,7 +171,9 @@ class Vacation(db.Model):
             "completed": "Concluído",
             "ongoing": "Em andamento",
             "paid": "Pago",
-            "unapproved": "Aprovação Retirada"
+            "unapproved": "Aprovação Retirada",
+            "archived": "Arquivado",
+            "deleted": "Apagado",
         }
         
         vacations = cls.query.order_by(desc(cls.id)).all()
