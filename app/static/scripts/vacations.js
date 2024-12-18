@@ -1,6 +1,6 @@
-function getVacationRights() {
+function getPrivilegeRights() {
     xhr = new XMLHttpRequest();
-    xhr.open('GET', `/admin/get-vacation-rights`, true);
+    xhr.open('GET', `/get-privilege-rights`, true);
 
     xhr.onload = function() {
         if (this.status === 200) {
