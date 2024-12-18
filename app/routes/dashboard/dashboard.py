@@ -54,7 +54,7 @@ def resolve_privilege():
         return redirect(url_for('dashboard.dashboard'))
 
     if start_date < datetime.now():
-        flash("Data de início inválida", "danger")
+        flash("Não é possível pedir férias em datas passadas", "danger")
         return redirect(url_for('dashboard.dashboard'))
     
 
