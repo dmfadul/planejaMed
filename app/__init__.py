@@ -29,12 +29,14 @@ def create_app(config_filename=None):
     from app.routes.calendar.calendar import calendar_bp
     from app.routes.admin.admin import admin_bp
     from app.routes.login.login import login_bp
+    from app.routes.privilege.privilege import privilege_bp
     from app.routes.report.report import report_bp
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(dataview_bp)
     app.register_blueprint(calendar_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(login_bp)
+    app.register_blueprint(privilege_bp)
     app.register_blueprint(report_bp)
 
     @app.context_processor
