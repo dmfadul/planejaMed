@@ -62,6 +62,11 @@ class Vacation(db.Model):
         self.status = "denied"
         db.session.commit()
         return 0
+
+    def delete(self):
+        self.status = "deleted"
+        db.session.commit()
+        return 0
     
     def pay(self):
         if self.status == "paid":

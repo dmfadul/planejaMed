@@ -477,6 +477,16 @@ def change_privilege_status():
     if not vacation:
         return "Vacation not found", 404
 
-    print(new_status)
+    if new_status == 'paid':
+        flag = vacation.pay()
+        if isinstance(flag, str):
+            flash(flag, "danger")
+            return jsonify(flag)
+    elif new_status == 'defered':
+        vacation.approve()
+    elif new_status == 'deleted':
+        vacation.delete()
+    else:
+        return "Invalid status", 400
 
     return jsonify("success")
