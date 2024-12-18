@@ -448,13 +448,13 @@ def force_aprove():
 @admin_bp.route('/admin/privilege-rights', methods=['GET'])
 @login_required
 def check_privilege_rights():
+    """direct access route. Only for admin to check privilege rights"""
     if not current_user.is_admin:
         return "Unauthorized", 401
 
     users = User.query.filter_by(is_active=True, is_visible=True).all()
     users = sorted(users, key=lambda x: x.full_name)
 
-    
     output = ""
     for user in users:
         response = Vacation.check_vacation_entitlement(user.id, datetime.now())
