@@ -12,6 +12,16 @@ privilege_bp = Blueprint('privilege',
                          )
 
 
+@privilege_bp.route('/get-privilege-report', methods=['POST'])
+@login_required
+def get_vacation_report():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    output = "output\noutput"
+    return jsonify(output)
+
+
 @privilege_bp.route('/admin/calculate-vacation-pay', methods=['POST', 'GET'])
 @login_required
 def calculate_vacation_pay():
@@ -176,3 +186,49 @@ def check_vacation_rights():
     
     vac_report += "</br></br>"
     return jsonify(vac_report)
+
+
+@privilege_bp.route('/change-privilege-status', methods=['POST'])
+@login_required
+def change_privilege_status():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    vacation_id = request.json['vacationID']
+    new_status = request.json['newStatus']
+    vacation = Vacation.query.filter_by(id=vacation_id).first()
+    if not vacation:
+        return "Vacation not found", 404
+
+    if new_status == 'paid':
+        flag = vacation.pay()
+        if isinstance(flag, str):
+            flash(flag, "danger")
+            return jsonify(flag)
+    elif new_status == 'defered':
+        vacation.approve()
+    elif new_status == 'deleted':
+        vacation.delete()
+    else:
+        return "Invalid status", 400
+
+    return jsonify("success")
+
+@privilege_bp.route('/privilege-rights', methods=['GET'])
+@login_required
+def check_privilege_rights():
+    """direct access route. Only for admin to check privilege rights"""
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    users = User.query.filter_by(is_active=True, is_visible=True).all()
+    users = sorted(users, key=lambda x: x.full_name)
+
+    output = ""
+    for user in users:
+        response = Vacation.check_vacation_entitlement(user.id, datetime.now())
+        if response == 0:
+            continue
+        output += f"{user} - {user.crm} - {response}</br>"
+
+    return output
