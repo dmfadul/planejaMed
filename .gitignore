@@ -14,4 +14,5 @@ app/routes/calendar/__pycache__/
 app/routes/dashboard/__pycache__/
 app/routes/dataview/__pycache__/
 app/routes/login/__pycache__/
+app/routes/privilege/__pycache__/
 app/routes/report/__pycache__/
