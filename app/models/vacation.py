@@ -104,9 +104,13 @@ class Vacation(db.Model):
     def check_vacations_availability(cls, start_date, end_date, user_id):
         """Check if user has used all vacation days or if the total requested days exceed the limit"""
 
-        from app.global_vars import MAX_VACATION_SPLIT, MIN_VACATION_DURATION, TOTAL_VACATION_DAYS
+        from app.global_vars import MAX_VACATION_SPLIT, MIN_VACATION_DURATION, TOTAL_VACATION_DAYS, SICK_LEAVE_TO_VACATION
 
-        vacations = cls.query.filter_by(user_id=user_id).filter(~cls.status.in_(['pending_approval', 'denied', 'cancelled'])).all()
+        vacations = cls.query.filter_by(user_id=user_id).filter(cls.status.in_(['defered',
+                                                                                'approved',
+                                                                                'ongoing',
+                                                                                'completed',
+                                                                                'paid'])).all()
         vacations = [vacation for vacation in vacations if vacation.year == start_date.year]
         
         if len(vacations) == 0:
@@ -118,13 +122,14 @@ class Vacation(db.Model):
         old_vacation = vacations[0]
         old_vac_duration = old_vacation.end_date - old_vacation.start_date
         if old_vacation.is_sick_leave and old_vac_duration.days > 3:
-            old_vac_duration = datetime.timedelta(3)
+            old_vac_duration = datetime.timedelta(SICK_LEAVE_TO_VACATION)
         new_vac_duration = end_date - start_date
 
-        if old_vac_duration.days > TOTAL_VACATION_DAYS - MIN_VACATION_DURATION:
+        max_remainder = TOTAL_VACATION_DAYS - MIN_VACATION_DURATION
+        if old_vac_duration.days > max_remainder:
             return "Usuário já utilizou todas as férias este ano este ano"
 
-        if old_vac_duration.days < MIN_VACATION_DURATION:
+        if not old_vacation.is_sick_leave and old_vac_duration.days < MIN_VACATION_DURATION:
             old_vac_duration = datetime.timedelta(MIN_VACATION_DURATION)
 
         if old_vac_duration.days + new_vac_duration.days > TOTAL_VACATION_DAYS:
