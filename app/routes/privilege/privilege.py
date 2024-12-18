@@ -1,7 +1,8 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request, flash, redirect, url_for, render_template
 from flask_login import login_required, current_user
 
-from app.models import Month
+from app.models import Month, Vacation, User
+from datetime import datetime
 
 privilege_bp = Blueprint('privilege',
                          __name__,
@@ -10,6 +11,64 @@ privilege_bp = Blueprint('privilege',
                          static_url_path='/static/privilege'
                          )
 
+
+@privilege_bp.route('/vacations-report', methods=['GET'])
+@login_required
+def vacations_report():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    Vacation.update_status()
+    vacations = Vacation.get_report()
+    return render_template('vacations-report.html', vacations=vacations)
+
+
+@privilege_bp.route('/register-privilege', methods=['POST'])
+@login_required
+def register_privilege():
+    """For admin to register privilege directly and bypass the request system"""
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    Vacation.update_status()
+    
+    crm = request.form['crm']
+    user = User.query.filter_by(crm=crm).first()
+    if not user:
+        return "User not found", 404
+
+    start_date = datetime.strptime(request.form['start_date'], "%Y-%m-%d")
+    end_date = datetime.strptime(request.form['end_date'], "%Y-%m-%d")
+    is_sick_leave = bool(int(request.form['privilege_type']))
+
+    existing_vacations = Vacation.query.filter(Vacation.user_id==user.id,
+                                               Vacation.status.in_(['approved', 'ongoing'])).all()
+    for vac in existing_vacations:
+        existing_start_date_check = start_date.date() <= vac.start_date <= end_date.date()
+        new_start_date_check = vac.start_date <= start_date.date() <= vac.end_date
+        existing_end_date_check = start_date.date() <= vac.end_date <= end_date.date()
+        new_end_date_check = vac.start_date <= end_date.date() <= vac.end_date
+
+        start_date_check = existing_start_date_check or new_start_date_check
+        end_date_check = existing_end_date_check or new_end_date_check
+        
+        if start_date_check or end_date_check:
+            flash("Férias conflitantes", "danger")
+            return redirect(url_for('admin.admin'))
+
+    new_vacation = Vacation.add_entry(start_date=start_date,
+                                      end_date=end_date,
+                                      user_id=user.id,
+                                      is_sick_leave=is_sick_leave)    
+
+    if isinstance(new_vacation, str):
+        flash(new_vacation, "danger")
+        return redirect(url_for('admin.admin'))
+
+    new_vacation.approve()
+
+    flash("Férias criadas", "success")
+    return redirect(url_for('admin.admin'))
 
 @privilege_bp.route('/get-privilege-rights', methods=['GET'])
 @login_required

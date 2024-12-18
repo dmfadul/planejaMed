@@ -51,67 +51,6 @@ def admin():
                            )
 
 
-@admin_bp.route('/admin/get-vacation-rights', methods=['GET'])
-@login_required
-def check_vacation_rights():
-    if not current_user.is_admin:
-        return "Unauthorized", 401
-
-    current_month = Month.get_current()
-
-    vac_dict = Month.check_for_vacation_entitlement_loss(current_month.number, current_month.year)
-    no_base = vac_dict['no_base_rights']
-    losing_base = vac_dict['losing_base_rights']
-    no_realized = vac_dict['no_realized_rights']
-    losing_realized = vac_dict['losing_realized_rights']
-
-    vac_report = ""
-    if losing_base:
-        vac_report = "Os seguintes Médicos PERDERÃO direito (base) a férias:</br></br>"
-        for user in losing_base:
-            report = Month.get_vacation_entitlement_report(user.id, current_month.number, current_month.year)
-            vac_report += f"{user} - {user.crm} - {report}.</br>"
-            # send message to user
-
-    if losing_realized:
-        vac_report += "</br></br>"
-        vac_report = "Os seguintes Médicos PERDERÃO direito (realizado) a férias:</br></br>"
-        for user in losing_realized:
-            routine, plaintemps = Month.get_vacation_entitlement_balance(user.id,
-                                                                        current_month.number,
-                                                                        current_month.year)    
-
-            if routine < 0:
-                vac_report += f"""O médico {user.full_name} - {user.crm} cumpriu {abs(routine)}
-                                    horas de rotina A MENOS que o necessário.</br>"""
-            elif plaintemps < 0:
-                vac_report += f"""O médico {user.full_name} - {user.crm} cumpriu {abs(plaintemps)}
-                                    horas de plantão A MENOS que o necessário.</br>"""
-            else:
-                vac_report += ""
-
-            # send message to user
-
-    if no_base:
-        vac_report += "</br></br>"
-        vac_report += "Os seguintes Médicos CONTINUARÃO SEM direito (base) a férias:</br></br>"
-        for user in no_base:
-            vac_report += f"{user.full_name} - {user.crm}</br>"
-    else:
-        vac_report += ""
-
-    if no_realized:
-        vac_report += "</br></br>"
-        vac_report += "Os seguintes Médicos CONTINUARÃO SEM direito (realizado) a férias:</br></br>"
-        for user in no_realized:
-            vac_report += f"{user.full_name} - {user.crm}</br>"
-    else:
-        vac_report += ""
-    
-    vac_report += "</br></br>"
-    return jsonify(vac_report)
-
-
 @admin_bp.route('/admin/create-month', methods=['GET', 'POST'])
 @login_required
 def create_month():
@@ -289,63 +228,11 @@ def request_report():
     return render_template('request-report.html', reqs=reqs)
 
 
-@admin_bp.route('/admin/register_privilege', methods=['POST'])
-@login_required
-def register_privilege():
-    if not current_user.is_admin:
-        return "Unauthorized", 401
 
-    Vacation.update_status()
-    
-    crm = request.form['crm']
-    user = User.query.filter_by(crm=crm).first()
-    if not user:
-        return "User not found", 404
-
-    start_date = datetime.strptime(request.form['start_date'], "%Y-%m-%d")
-    end_date = datetime.strptime(request.form['end_date'], "%Y-%m-%d")
-    is_sick_leave = bool(int(request.form['privilege_type']))
-
-    existing_vacations = Vacation.query.filter(Vacation.user_id==user.id,
-                                               Vacation.status.in_(['approved', 'ongoing'])).all()
-    for vac in existing_vacations:
-        existing_start_date_check = start_date.date() <= vac.start_date <= end_date.date()
-        new_start_date_check = vac.start_date <= start_date.date() <= vac.end_date
-        existing_end_date_check = start_date.date() <= vac.end_date <= end_date.date()
-        new_end_date_check = vac.start_date <= end_date.date() <= vac.end_date
-
-        start_date_check = existing_start_date_check or new_start_date_check
-        end_date_check = existing_end_date_check or new_end_date_check
-        
-        if start_date_check or end_date_check:
-            flash("Férias conflitantes", "danger")
-            return redirect(url_for('admin.admin'))
-
-    new_vacation = Vacation.add_entry(start_date=start_date,
-                                      end_date=end_date,
-                                      user_id=user.id,
-                                      is_sick_leave=is_sick_leave)    
-
-    if isinstance(new_vacation, str):
-        flash(new_vacation, "danger")
-        return redirect(url_for('admin.admin'))
-
-    new_vacation.approve()
-
-    flash("Férias criadas", "success")
-    return redirect(url_for('admin.admin'))
       
 
 
-@admin_bp.route('/admin/vacations-report', methods=['GET'])
-@login_required
-def vacations_report():
-    if not current_user.is_admin:
-        return "Unauthorized", 401
 
-    Vacation.update_status()
-    vacations = Vacation.get_report()
-    return render_template('vacations-report.html', vacations=vacations)
 
 
 @admin_bp.route('/admin/get-vacation-pay', methods=['POST'])
