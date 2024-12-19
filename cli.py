@@ -13,10 +13,15 @@ import json
 
 app = create_app()
 with app.app_context():
-    leo = User.query.filter_by(crm=42586).first()
-    renato = User.query.filter_by(crm=31342).first()
+    user = User.query.filter_by(crm=40022).first()
+    print(user.full_name)
+    print(Month.get_vacation_entitlement_report(user.id, 10, 2024))
+    print(Month.get_vacation_entitlement_balance(user.id, 10, 2024))
 
-    reqs = Request.query.all()
+    # leo = User.query.filter_by(crm=42586).first()
+    # renato = User.query.filter_by(crm=31342).first()
+
+    # reqs = Request.query.all()
     # for r in renato.requests_received:
     #     if '09/12/24' in r.info or '23/12/24' in r.info:
     #         reqs.append(r)
@@ -34,13 +39,13 @@ with app.app_context():
     #         reqs.append(r)
 
 
-    reqs = list(set(reqs))
-    reqs = [r for r in reqs if '09/12/24' in r.info or '23/12/24' in r.info]
-    reqs = sorted(reqs, key=lambda x: x.creation_date)
+    # reqs = list(set(reqs))
+    # reqs = [r for r in reqs if '09/12/24' in r.info or '23/12/24' in r.info]
+    # reqs = sorted(reqs, key=lambda x: x.creation_date)
 
 
-    for r in reqs:
-        print(r.creation_date, r.info, r.response, r.response_date)
+    # for r in reqs:
+    #     print(r.creation_date, r.info, r.response, r.response_date)
 
     # req1 = Request.query.filter_by(id=556).first()
     # req2 = Request.query.filter_by(id=561).first()
