@@ -85,9 +85,11 @@ class Vacation(db.Model):
 
     @classmethod
     def update_status(cls):
-        approved_vacations = cls.query.filter(cls.status.notin_(['denied', 'paid', 'completed'])).all()
+        shifting_vacations = cls.query.filter(cls.status.in_(['pending_approval',
+                                                              'approved',
+                                                              'ongoing'])).all()
 
-        for vacation in approved_vacations:
+        for vacation in shifting_vacations:
             if (vacation.status == 'pending_approval') and (vacation.start_date < datetime.date.today()):
                 vacation.status = 'denied'
                 db.session.commit()
@@ -186,7 +188,7 @@ class Vacation(db.Model):
             "deleted": "Apagado",
         }
         
-        vacations = cls.query.order_by(desc(cls.id)).all()
+        vacations = cls.query.filter(~cls.status.in_(['deleted'])).order_by(desc(cls.id)).all()
         output = []
         for vacation in vacations:
             output.append({

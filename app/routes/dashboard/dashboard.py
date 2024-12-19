@@ -71,6 +71,7 @@ def resolve_privilege():
             flash(flag, "danger")
             return redirect(url_for('dashboard.dashboard'))
     
+    # no need to exclude deleted, as query only looks for pending approvals
     unnaproved_vacations = Vacation.query.filter(
                            Vacation.user_id == current_user.id,
                            Vacation.status == "pending_approval"
@@ -80,7 +81,8 @@ def resolve_privilege():
         msg = f"""Usuário tem férias não aprovadas. Aguarde aprovação ou contacte o Administrador"""
         flash(msg, "danger")
         return redirect(url_for('dashboard.dashboard'))
-                    
+
+    # no need to exclude deleted, as query only looks for approved vacations      
     pending_vacations = Vacation.query.filter(
                         Vacation.user_id == current_user.id,
                         Vacation.status == "approved"

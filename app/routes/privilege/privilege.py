@@ -58,7 +58,7 @@ def get_vacation_pay():
         return "Unauthorized", 401
 
     vacation_id = request.json['vacationID']
-    vacation = Vacation.query.get(vacation_id)
+    vacation = Vacation.query.filter_by(id=vacation_id).first()
 
     start_date = vacation.start_date
     end_date = vacation.end_date
