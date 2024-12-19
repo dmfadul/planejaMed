@@ -118,7 +118,7 @@ class Vacation(db.Model):
         if len(vacations) == 0:
             return 0
 
-        if len(vacations) == MAX_VACATION_SPLIT:
+        if len(vacations) >= MAX_VACATION_SPLIT:
             return "Usuário já utilizou todas as férias este ano este ano"
         
         old_vacation = vacations[0]

@@ -127,6 +127,7 @@ def register_privilege():
     flash("Férias criadas", "success")
     return redirect(url_for('admin.admin'))
 
+
 @privilege_bp.route('/get-privilege-rights', methods=['GET'])
 @login_required
 def check_vacation_rights():
