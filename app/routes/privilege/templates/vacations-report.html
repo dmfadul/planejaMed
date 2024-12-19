@@ -56,7 +56,7 @@
                             <td><button class="submit-button save-button" onclick="showReport(this)" data-id="{{ vacation.id }}">Relatório</button></td>
                             <td>
                                 <button 
-                                    class="submit-button save-button {% if vacation.status in ["Em andamento", "Concluído", "Pago", "Aprovado", "deferido"] %}disabled-button{% endif %}" 
+                                    class="submit-button save-button {% if vacation.status in ["Em andamento", "Concluído", "Pago", "deferido"] %}disabled-button{% endif %}" 
                                     onclick="changeStatus(this, 'defered')" 
                                     data-id="{{ vacation.id }}"
                                     {% if vacation.status in ["Em andamento", "Concluído", "Pago", "deferido"] %}disabled{% endif %}
