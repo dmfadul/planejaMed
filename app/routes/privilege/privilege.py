@@ -207,8 +207,15 @@ def change_privilege_status():
             flash(flag, "danger")
             return jsonify(flag)
     elif new_status == 'defered':
-        vacation.approve()
+        req = vacation.request
+        if not req == -1:
+            req.resolve(current_user.id, authorized=True)
+
+        vacation.defer()
     elif new_status == 'deleted':
+        req = vacation.request
+        if not req == -1:
+            req.delete()
         vacation.delete()
     else:
         return "Invalid status", 400

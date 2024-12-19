@@ -23,6 +23,22 @@ class Vacation(db.Model):
     @property
     def year(self):
         return self.start_date.year
+    
+    @property
+    def request(self):
+        str_date = self.start_date.strftime('%d/%m/%y')
+        end_date = self.end_date.strftime('%d/%m/%y')
+
+        requests = [r for r in self.user.requests_sent if r.action == 'approve_vacation']
+        requests = [r for r in requests if str_date in r.message]
+        requests = [r for r in requests if end_date in r.message]
+
+        if not len(requests) == 1:
+            return -1
+        
+        request = requests[0]
+
+        return request
 
 
 #================================== HELPER METHODS ==================================#
@@ -55,6 +71,11 @@ class Vacation(db.Model):
 
     def approve(self):
         self.status = "approved"
+        db.session.commit()
+        return 0
+    
+    def defer(self):
+        self.status = "defered"
         db.session.commit()
         return 0
 
