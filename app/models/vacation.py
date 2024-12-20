@@ -129,11 +129,9 @@ class Vacation(db.Model):
 
         from app.global_vars import MAX_VACATION_SPLIT, MIN_VACATION_DURATION, TOTAL_VACATION_DAYS, SICK_LEAVE_TO_VACATION
 
-        vacations = cls.query.filter_by(user_id=user_id).filter(cls.status.in_(['defered',
-                                                                                'approved',
-                                                                                'ongoing',
-                                                                                'completed',
-                                                                                'paid'])).all()
+        vacations = cls.query.filter_by(user_id=user_id).filter(~cls.status.in_(['denied',
+                                                                                 'unnapproved',
+                                                                                 'deleted'])).all()
         vacations = [vacation for vacation in vacations if vacation.year == start_date.year]
         
         if len(vacations) == 0:
@@ -142,6 +140,7 @@ class Vacation(db.Model):
         if len(vacations) >= MAX_VACATION_SPLIT:
             return "Usuário já utilizou todas as férias este ano este ano"
         
+        # if MAX_VACATION_SPLIT changes, this code needs to be updated
         old_vacation = vacations[0]
         old_vac_duration = old_vacation.end_date - old_vacation.start_date
         if old_vacation.is_sick_leave and old_vac_duration.days > 3:
@@ -150,13 +149,13 @@ class Vacation(db.Model):
 
         max_remainder = TOTAL_VACATION_DAYS - MIN_VACATION_DURATION
         if old_vac_duration.days > max_remainder:
-            return "Usuário já utilizou todas as férias este ano este ano"
+            return f"A soma dos dias de férias solicitados ultrapassa {TOTAL_VACATION_DAYS} dias"
 
         if not old_vacation.is_sick_leave and old_vac_duration.days < MIN_VACATION_DURATION:
             old_vac_duration = datetime.timedelta(MIN_VACATION_DURATION)
 
         if old_vac_duration.days + new_vac_duration.days > TOTAL_VACATION_DAYS:
-            return "O total de férias ultrapassa o limite"
+            return f"A soma dos dias de férias solicitados ultrapassa {TOTAL_VACATION_DAYS} dias"
     
         return 0
 

@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, request, jsonify, flash,
 from flask_login import login_required, current_user
 import app.global_vars as global_vars
 from app.models import Center, Month, Request, Message, Vacation, User
-from datetime import datetime
+from datetime import datetime, timedelta
 
 dashboard_bp = Blueprint(
                         'dashboard',
@@ -43,6 +43,7 @@ def dashboard():
 @dashboard_bp.route('/resolve-privilege', methods=['POST'])
 @login_required
 def resolve_privilege():
+    from app.global_vars import MAX_VACATION_SPLIT, TOTAL_VACATION_DAYS
     Vacation.update_status()
    
     start_date = datetime.strptime(request.form['start_date'], "%Y-%m-%d")
@@ -57,6 +58,9 @@ def resolve_privilege():
         flash("Não é possível pedir férias em datas passadas", "danger")
         return redirect(url_for('dashboard.dashboard'))
     
+    if end_date - start_date > timedelta(days=TOTAL_VACATION_DAYS):
+        flash(f"Férias não podem exceder {TOTAL_VACATION_DAYS} dias", "danger")
+        return redirect(url_for('dashboard.dashboard'))
 
     # check if user has privileges rights
     if not current_user.pre_approved_vacation:
@@ -77,8 +81,10 @@ def resolve_privilege():
                            Vacation.status == "pending_approval"
                            ).all()
     
-    if unnaproved_vacations:
-        msg = f"""Usuário tem férias não aprovadas. Aguarde aprovação ou contacte o Administrador"""
+    unnaproved_vac_len = len(unnaproved_vacations) if isinstance(unnaproved_vacations, list) else 0 
+    if unnaproved_vac_len >= MAX_VACATION_SPLIT:
+        msg = f"""Usuário tem o número máximo de férias não aprovadas.
+                    Aguarde aprovação ou contacte o Administrador"""
         flash(msg, "danger")
         return redirect(url_for('dashboard.dashboard'))
 
@@ -88,11 +94,19 @@ def resolve_privilege():
                         Vacation.status == "approved"
                         ).all()
 
-    if pending_vacations:
-        msg = f"""Usuário tem férias pendentes. Aguarde a conclusão ou contacte o Administrador"""
+    pending_vac_len = len(pending_vacations) if isinstance(pending_vacations, list) else 0
+    if pending_vac_len >= MAX_VACATION_SPLIT:
+        msg = f"""Usuário já tem o número máximo de férias programadas.
+                    Aguarde a conclusão ou contacte o Administrador"""
         flash(msg, "danger")
         return redirect(url_for('dashboard.dashboard'))
-
+    
+    if pending_vac_len + unnaproved_vac_len >= MAX_VACATION_SPLIT:
+        msg = f"""Usuário já tem o número máximo de férias programadas ou não aprovadas.
+                    Aguarde a conclusão/aprovação ou contacte o Administrador"""
+        flash(msg, "danger")
+        return redirect(url_for('dashboard.dashboard'))
+    
     new_vacation = Vacation.add_entry(start_date=start_date,
                                       end_date=end_date,
                                       user_id=current_user.id,
