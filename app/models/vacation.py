@@ -226,8 +226,12 @@ class Vacation(db.Model):
     def calculate_payment(self):
         from app.hours_conversion import convert_hours_to_line, sum_hours
         months_range = self.get_months_range()
-        months = self.get_months_in_range(months_range)
         
+        months = []
+        for year_month in months_range:
+            month = Month.query.filter_by(number=year_month[1], year=year_month[0]).first()
+            months.append(month)
+         
         output = ""
         for i, month in enumerate(months):
             if not month:
@@ -242,7 +246,7 @@ class Vacation(db.Model):
             doctors_dict = original_dict.get('data').get(str(self.user.crm))
 
             if not doctors_dict:
-                output += f"O médico {self.doctor.full_name} não tem horas no original do mês {month[1]}/{month[0]}\n"
+                output += f"""O médico {self.user.full_name} não tem horas no original do mês {months_range[i][1]}/{months_range[i][0]}\n"""
                 continue
 
             output_lst = []
@@ -301,10 +305,3 @@ class Vacation(db.Model):
 
         return months
 
-    def get_months_in_range(self, months_range):
-        months_obj = []
-        for year_month in months_range:
-            month = Month.query.filter_by(number=year_month[1], year=year_month[0]).first()
-            months_obj.append(month)
-
-        return months_obj
