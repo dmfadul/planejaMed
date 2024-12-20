@@ -386,7 +386,12 @@ class Month(db.Model):
         if not user:
             return "Usuário não encontrado"
         
-        if (year, month_number) in user.get_vacation_months():
+        vacs = [vac for vac in user.vacations if vac.status not in ['pending_approval', 'denied']]
+        months = []
+        for vac in vacs:
+            months += vac.get_months_range()
+
+        if (year, month_number) in months:
             return f"Usuário de férias no mês {month_number}/{year}"
 
         user_delta = BaseAppointment.get_users_delta(user_id)
@@ -473,7 +478,6 @@ class Month(db.Model):
                 continue
 
             if user.in_vacation(month_number, year):
-                print(f"{user.full_name} está de férias")
                 continue
 
             flag = cls.check_vacation_entitlement(user.id, month_number, year)
