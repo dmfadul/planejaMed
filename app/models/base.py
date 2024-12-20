@@ -137,8 +137,8 @@ class BaseAppointment(db.Model):
             else:
                 output["routine"] += count
 
-        output["plaintemps"] = math.ceil(output["plaintemps"])
-        output["routine"] = math.ceil(output["routine"])
+        output["plaintemps"] = math.ceil(round(output["plaintemps"]))
+        output["routine"] = math.ceil(round(output["routine"]))
 
         return output
 
