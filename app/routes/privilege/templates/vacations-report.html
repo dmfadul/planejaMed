@@ -74,7 +74,15 @@
                                     Pagar
                                 </button>
                             </td>
-                            <td><button class="submit-button save-button" onclick="changeStatus(this, 'deleted')" data-id="{{ vacation.id }}">Apagar</button></td>
+                            <td>
+                                <button
+                                    class="submit-button save-button"
+                                    onclick="changeStatus(this, 'deleted')"
+                                    data-id="{{ vacation.id }}"
+                                >
+                                    Cancelar
+                                </button>
+                            </td>
                         </tr>
                     {% endfor %}              
                 </tbody>
