@@ -76,8 +76,8 @@ def vacations_list():
 
     return render_template(
         'vacations-report.html',
-        user_is_admin=current_user.is_admin,
-        user_is_root=current_user.is_root,
+        user_is_admin=False,
+        user_is_root=False,
         vacations=vacations
         )
 
