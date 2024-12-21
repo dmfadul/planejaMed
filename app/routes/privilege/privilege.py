@@ -74,7 +74,7 @@ def vacations_report():
     Vacation.update_status()
 
     if current_user.is_admin:
-        vacations = Vacation.get_report(split_by_month=True)
+        vacations = Vacation.get_report(split_by_month=True, filters=["future_only"])
     else:
         vacations = Vacation.get_report(split_by_month=False, filters=["future_only"])
 
