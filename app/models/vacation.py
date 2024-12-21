@@ -86,7 +86,7 @@ class Vacation(db.Model):
         db.session.commit()
         return 0
     
-    def pay(self):
+    def pay(self, year_month=None):
         if self.status == "paid":
             return "Férias já pagas"
         
@@ -96,11 +96,18 @@ class Vacation(db.Model):
         if self.status == "denied":
             return "Férias negadas não podem ser pagas"
 
-        self.status = "paid"
+        if self.status == "deleted":
+            return "Férias deletadas não podem ser pagas"
+
+        if year_month is None or len(self.get_months_range()) == 1 or "paid" in self.status:
+            self.status = "paid"
+            db.session.commit()
+            return 0
+
+        self.status = f"paid-{year_month}"
         db.session.commit()
-
         return 0
-
+    
     @classmethod
     def update_status(cls):
         shifting_vacations = cls.query.filter(cls.status.in_(['pending_approval',
@@ -214,6 +221,18 @@ class Vacation(db.Model):
                     
                     f_month_txt = f"{m[1]:02d}-{str(m[0])[2:]}*"
 
+                    if "-" in vacation.status:
+                        year_month = vacation.status.split("-")[1].replace("(", "").replace(")", "")
+                        year, month = year_month.split(",")
+                        
+                        if m == (int(year), int(month)):
+                            vac_status = "Pago"
+                        else:
+                            vac_status = "Não Pago"
+
+                    else:
+                        vac_status = translation_dict.get(vacation.status)
+                        
                     output.append({
                         "id": vacation.id,
                         "name": vacation.user.full_name,
@@ -223,7 +242,7 @@ class Vacation(db.Model):
                         "end_date": end_date.strftime('%d/%m/%y'),
                         "fiscal_month": m,
                         "fiscal_month_txt": f_month_txt,
-                        "status": translation_dict.get(vacation.status)
+                        "status": vac_status
                         })
                     
                 continue

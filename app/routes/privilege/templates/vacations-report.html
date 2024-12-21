@@ -75,10 +75,10 @@
                             </td>
                             <td>
                                 <button 
-                                    class="submit-button save-button {% if vacation.status in ["Em andamento", "Concluído", "Pago", "deferido"] %}disabled-button{% endif %}" 
+                                    class="submit-button save-button {% if vacation.status in ["Em andamento", "Concluído", "Pago", "Não Pago", "deferido"] %}disabled-button{% endif %}" 
                                     onclick="changeStatus(this, 'defered')" 
                                     data-id="{{ vacation.id }}"
-                                    {% if vacation.status in ["Em andamento", "Concluído", "Pago", "deferido"] %}disabled{% endif %}
+                                    {% if vacation.status in ["Em andamento", "Concluído", "Pago", "Não Pago", "deferido"] %}disabled{% endif %}
                                 >
                                     Deferir
                                 </button>
