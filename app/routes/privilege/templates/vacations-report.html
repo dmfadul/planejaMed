@@ -54,8 +54,25 @@
                             <td>{{ vacation.end_date }}</td>
                             <td>{{ vacation.fiscal_month_txt }}</td>
                             <td>{{ vacation.status }}</td>
-                            <td><button class="submit-button save-button" onclick="showPay(this)" data-id="{{ vacation.id }}">$</button></td>
-                            <td><button class="submit-button save-button" onclick="showReport(this)" data-id="{{ vacation.id }}">Relatório</button></td>
+                            <td>
+                                <button 
+                                    class="submit-button save-button"
+                                    onclick="showPay(this)"
+                                    data-id="{{ vacation.id }}"
+                                    data-month="{{ vacation.fiscal_month }}"
+                                >
+                                    $
+                                </button>
+                            </td>
+                            <td>
+                                <button
+                                    class="submit-button save-button"
+                                    onclick="showReport(this)"
+                                    data-id="{{ vacation.id }}"
+                                >
+                                    Relatório
+                                </button>
+                            </td>
                             <td>
                                 <button 
                                     class="submit-button save-button {% if vacation.status in ["Em andamento", "Concluído", "Pago", "deferido"] %}disabled-button{% endif %}" 
@@ -78,7 +95,7 @@
                             </td>
                             <td>
                                 <button
-                                    class="submit-button save-button"
+                                    class="submit-button delete-button"
                                     onclick="changeStatus(this, 'deleted')"
                                     data-id="{{ vacation.id }}"
                                 >

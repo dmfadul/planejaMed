@@ -50,13 +50,14 @@ function showReport(button) {
 
 function showPay(button) {
     const vacationID = button.getAttribute('data-id');
+    const vacationMonth = button.getAttribute('data-month');
     
     fetch('/get-vacation-pay', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ vacationID: vacationID }),
+        body: JSON.stringify({ vacationID: vacationID, vacationMonth: vacationMonth}),
     })
     .then(response => response.json())
     .then(data => {
