@@ -486,7 +486,7 @@ class Month(db.Model):
         
         no_base_rights, losing_base_rights, no_realized_rights, losing_realized_rights = [], [], [], []
         users = User.query.filter_by(is_active=True, is_visible=True).all()
-        for i, user in enumerate(users):
+        for user in users:
             if user.pre_approved_vacation:
                 continue
 
