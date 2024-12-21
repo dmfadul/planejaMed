@@ -252,9 +252,11 @@ class Vacation(db.Model):
         output = sorted(output, key=lambda x: x['fiscal_month'], reverse=True)
         return output
 
-    def calculate_payment(self):
+    def calculate_payment(self, year_month=None):
         from app.hours_conversion import convert_hours_to_line, sum_hours
         months_range = self.get_months_range()
+        if year_month:
+            months_range = [year_month]
         
         months = []
         for year_month in months_range:
