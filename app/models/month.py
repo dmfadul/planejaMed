@@ -505,7 +505,7 @@ class Month(db.Model):
             if 'não realizou horas suficientes' in flag and user.compliant_since is None:
                 no_realized_rights.append(user)
                 continue
-            if 'não realizou horas suficientes' and user.compliant_since is not None:
+            if 'não realizou horas suficientes' in flag and user.compliant_since is not None:
                 losing_realized_rights.append(user)
                 continue
 

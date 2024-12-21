@@ -152,9 +152,26 @@ def check_vacation_rights():
     if losing_base:
         vac_report = "Os seguintes Médicos PERDERÃO direito (base) a férias:</br></br>"
         for user in losing_base:
-            report = Month.get_vacation_entitlement_report(user.id, current_month.number, current_month.year)
-            vac_report += f"{user} - {user.crm} - {report}.</br>"
+            report = Month.get_vacation_entitlement_report(user.id,
+                                                           current_month.number,
+                                                           current_month.year)
+            
+            user_delta = report.get('delta')
+            routine = user_delta.get('routine')
+            plaintemps = user_delta.get('plaintemps')
+
+            if routine < 0:
+                vac_report += f"""O médico {user.full_name} ({user.crm}) cumpriu {abs(routine)}
+                                    horas de rotina A MENOS que o necessário.</br>"""
+            elif plaintemps < 0:
+                vac_report += f"""O médico {user.full_name} ({user.crm}) cumpriu {abs(plaintemps)}
+                                    horas de plantão A MENOS que o necessário.</br>"""
+            else:
+                vac_report += ""
+            
             # send message to user
+
+        vac_report += "</br></br>"
     else:
         vac_report += "Nenhum médico perderá direito (base) a férias.</br></br>"
 
@@ -163,14 +180,13 @@ def check_vacation_rights():
         vac_report += "Os seguintes Médicos PERDERÃO direito (realizado) a férias:</br></br>"
         for user in losing_realized:
             routine, plaintemps = Month.get_vacation_entitlement_balance(user.id,
-                                                                        current_month.number,
-                                                                        current_month.year)    
-
+                                                                         current_month.number,
+                                                                         current_month.year)    
             if routine < 0:
-                vac_report += f"""O médico {user.full_name} - {user.crm} cumpriu {abs(routine)}
+                vac_report += f"""O médico {user.full_name} ({user.crm}) cumpriu {abs(routine)}
                                     horas de rotina A MENOS que o necessário.</br>"""
             elif plaintemps < 0:
-                vac_report += f"""O médico {user.full_name} - {user.crm} cumpriu {abs(plaintemps)}
+                vac_report += f"""O médico {user.full_name} ({user.crm}) cumpriu {abs(plaintemps)}
                                     horas de plantão A MENOS que o necessário.</br>"""
             else:
                 vac_report += ""
