@@ -1,5 +1,6 @@
 function changeStatus(button, newStatus) {
     const vacationID = button.getAttribute('data-id');
+    const vacationMonth = button.getAttribute('data-month');
 
     // Add a confirmation dialog
     if(newStatus === 'deleted') {
@@ -14,7 +15,9 @@ function changeStatus(button, newStatus) {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ vacationID: vacationID, newStatus: newStatus }),
+        body: JSON.stringify({ vacationID: vacationID,
+                               vacationMonth: vacationMonth,
+                               newStatus: newStatus }),
     })
     .then(response => response.json())
     .then(data => {

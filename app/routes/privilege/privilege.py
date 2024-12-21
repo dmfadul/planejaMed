@@ -206,6 +206,12 @@ def change_privilege_status():
 
     vacation_id = request.json['vacationID']
     new_status = request.json['newStatus']
+    year_month = request.json['vacationMonth']
+
+    if year_month is not None:
+        year,  month = year_month.replace("(", "").replace(")", "").split(", ")
+        vacation_year_month = (int(year), int(month))
+
     vacation = Vacation.query.filter_by(id=vacation_id).first()
     if not vacation:
         return "Vacation not found", 404

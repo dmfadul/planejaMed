@@ -88,6 +88,7 @@
                                     class="submit-button save-button {% if vacation.status == "Pago" %}disabled-button{% endif %}" 
                                     onclick="changeStatus(this, 'paid')" 
                                     data-id="{{ vacation.id }}"
+                                    data-month="{{ vacation.fiscal_month }}"
                                     {% if vacation.status == "Pago" %}disabled{% endif %}
                                 >
                                     Pagar
