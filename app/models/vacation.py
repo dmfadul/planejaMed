@@ -1,5 +1,6 @@
 import json
 import math
+import calendar
 import datetime
 from app import db
 from sqlalchemy import desc
@@ -194,33 +195,65 @@ class Vacation(db.Model):
 
 # =============================== REPORT METHODS ================================================#
     @classmethod
-    def get_report(cls):
-        translation_dict = {
-            "pending_approval": "Pendente",
-            "defered": "Deferido",
-            "approved": "Aprovado",
-            "denied": "Negado",
-            "completed": "Concluído",
-            "ongoing": "Em andamento",
-            "paid": "Pago",
-            "unapproved": "Aprovação Retirada",
-            "archived": "Arquivado",
-            "deleted": "Apagado",
-        }
+    def get_report(cls, split_by_month=False):
+        from app.global_vars import TRANSLATION_DICT as translation_dict
         
         vacations = cls.query.filter(~cls.status.in_(['deleted'])).order_by(desc(cls.id)).all()
+
         output = []
         for vacation in vacations:
+            fiscal_months = vacation.get_months_range()
+
+            if len(fiscal_months) >= 2 and split_by_month:
+                for i, m in enumerate(fiscal_months):
+                    if i == 0:
+                        str_date = vacation.start_date
+                        end_date = datetime.date(m[0], m[1], calendar.monthrange(m[0], m[1])[1])
+                    elif i == len(fiscal_months) - 1:
+                        str_date = datetime.date(m[0], m[1], 1)
+                        end_date = vacation.end_date
+                    else:
+                        str_date = datetime.date(m[0], m[1], 1)
+                        end_date = datetime.date(m[0], m[1], calendar.monthrange(m[0], m[1])[1])
+                    
+                    f_month_txt = f"{m[1]:02d}-{str(m[0])[2:]}"
+
+                    output.append({
+                        "id": vacation.id,
+                        "name": vacation.user.full_name,
+                        "crm": vacation.user.crm,
+                        "type": "Licença Médica" if vacation.is_sick_leave else "Férias",
+                        "start_date": str_date.strftime('%d/%m/%y'),
+                        "end_date": end_date.strftime('%d/%m/%y'),
+                        "fiscal_month": m,
+                        "fiscal_month_txt": f_month_txt,
+                        "status": translation_dict.get(vacation.status)
+                        })
+                    
+                continue
+
+            if len(fiscal_months) >= 2:
+                f_month_txt = ""
+                for m in fiscal_months:
+                    f_month_txt += f"{m[1]:02d}-{str(m[0])[2:]}\n"
+
+            elif len(fiscal_months) == 1:
+                f_year, f_month = fiscal_months[0]
+                f_month_txt = f"{f_month:02d}-{str(f_year)[2:]}"          
+
             output.append({
                 "id": vacation.id,
                 "name": vacation.user.full_name,
                 "crm": vacation.user.crm,
                 "type": "Licença Médica" if vacation.is_sick_leave else "Férias",
-                "start_date": vacation.start_date.strftime('%d/%m/%Y'),
-                "end_date": vacation.end_date.strftime('%d/%m/%Y'),
+                "start_date": vacation.start_date.strftime('%d/%m/%y'),
+                "end_date": vacation.end_date.strftime('%d/%m/%y'),
+                "fiscal_month": fiscal_months[0],
+                "fiscal_month_txt": f_month_txt,
                 "status": translation_dict.get(vacation.status)
         })
         
+        output = sorted(output, key=lambda x: x['fiscal_month'], reverse=True)
         return output
 
     def calculate_payment(self):

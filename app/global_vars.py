@@ -58,3 +58,16 @@ TOTAL_VACATION_DAYS = 15
 SICK_LEAVE_TO_VACATION = 3
 
 MINIMUM_MONTHS_COMPLIENCE_FOR_VACATION = 6
+
+TRANSLATION_DICT = {
+    "pending_approval": "Pendente",
+    "defered": "Deferido",
+    "approved": "Aprovado",
+    "denied": "Negado",
+    "completed": "Concluído",
+    "ongoing": "Em andamento",
+    "paid": "Pago",
+    "unapproved": "Aprovação Retirada",
+    "archived": "Arquivado",
+    "deleted": "Apagado",
+}

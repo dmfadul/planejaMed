@@ -77,7 +77,7 @@ def vacations_report():
 
     Vacation.update_status()
 
-    vacations = Vacation.get_report()
+    vacations = Vacation.get_report(split_by_month=True)
     return render_template(
         'vacations-report.html',
         user_is_admin=True,

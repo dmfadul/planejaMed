@@ -35,6 +35,7 @@
                         <th>Benefício</th>
                         <th>Início</th>
                         <th>Fim</th>
+                        <th>Mês Contábil</th>
                         <th>Status</th>
                         <th></th>
                         <th></th>
@@ -51,6 +52,7 @@
                             <td>{{ vacation.type }}</td>
                             <td>{{ vacation.start_date }}</td>
                             <td>{{ vacation.end_date }}</td>
+                            <td>{{ vacation.fiscal_month_txt }}</td>
                             <td>{{ vacation.status }}</td>
                             <td><button class="submit-button save-button" onclick="showPay(this)" data-id="{{ vacation.id }}">$</button></td>
                             <td><button class="submit-button save-button" onclick="showReport(this)" data-id="{{ vacation.id }}">Relatório</button></td>
