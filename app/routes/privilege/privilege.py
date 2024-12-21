@@ -68,15 +68,28 @@ def get_vacation_pay():
     return jsonify(output)
 
 
+@privilege_bp.route('/vacations-list', methods=['GET'])
+@login_required
+def vacations_list():
+    Vacation.update_status()
+    vacations = Vacation.get_report(split_by_month=False, filters=["future_only"])
+
+    return render_template(
+        'vacations-report.html',
+        user_is_admin=current_user.is_admin,
+        user_is_root=current_user.is_root,
+        vacations=vacations
+        )
+
+
 @privilege_bp.route('/vacations-report', methods=['GET'])
 @login_required
 def vacations_report():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+    
     Vacation.update_status()
-
-    if current_user.is_admin:
-        vacations = Vacation.get_report(split_by_month=True, filters=["future_only"])
-    else:
-        vacations = Vacation.get_report(split_by_month=False, filters=["future_only"])
+    vacations = Vacation.get_report(split_by_month=True, filters=["future_only"])
 
     return render_template(
         'vacations-report.html',
