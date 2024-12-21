@@ -1,11 +1,7 @@
-import json
-import math
-import calendar
 import datetime
 from app import db
 from sqlalchemy import desc
 import app.global_vars as global_vars
-# from dateutil.relativedelta import relativedelta
 from app.models import User, BaseAppointment, Month
 
 
@@ -208,15 +204,15 @@ class Vacation(db.Model):
                 for i, m in enumerate(fiscal_months):
                     if i == 0:
                         str_date = vacation.start_date
-                        end_date = datetime.date(m[0], m[1], calendar.monthrange(m[0], m[1])[1])
+                        end_date = Month.get_actual_date(global_vars.END_DAY, m[1], m[0])
                     elif i == len(fiscal_months) - 1:
-                        str_date = datetime.date(m[0], m[1], 1)
+                        str_date = Month.get_actual_date(global_vars.STR_DAY, m[1], m[0])
                         end_date = vacation.end_date
                     else:
-                        str_date = datetime.date(m[0], m[1], 1)
-                        end_date = datetime.date(m[0], m[1], calendar.monthrange(m[0], m[1])[1])
+                        str_date = Month.get_actual_date(global_vars.STR_DAY, m[1], m[0])
+                        end_date = Month.get_actual_date(global_vars.END_DAY, m[1], m[0])
                     
-                    f_month_txt = f"{m[1]:02d}-{str(m[0])[2:]}"
+                    f_month_txt = f"{m[1]:02d}-{str(m[0])[2:]}*"
 
                     output.append({
                         "id": vacation.id,

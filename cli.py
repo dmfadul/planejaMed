@@ -13,12 +13,7 @@ import json
 
 app = create_app()
 with app.app_context():
-    vacs = Vacation.query.all()
-    vac = vacs[-1]
-
-    print(vac.user)
-    print(vac.start_date, vac.end_date)
-    print(vac.get_months_range())
+    print(Month.get_actual_date(26, 12, 2024))
 #     user = User.query.filter_by(crm=40022).first()
 #     print(user.full_name)
 #     print(Month.get_vacation_entitlement_report(user.id, 10, 2024))

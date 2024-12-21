@@ -2,6 +2,7 @@ from datetime import datetime
 
 
 STR_DAY = 26
+END_DAY = STR_DAY - 1
 
 LEADER = "DR. VICTOR HUGO MARCASSA"
 

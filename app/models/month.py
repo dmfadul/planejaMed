@@ -154,6 +154,19 @@ class Month(db.Model):
         day_num = int(day_num)
         return [day for day in self.days if day.date.day == day_num][0]
 
+    @staticmethod
+    def get_actual_date(day, month, year):
+        from app.global_vars import STR_DAY
+
+        if STR_DAY <= day <= 31:
+            actual_month = month - 1 if month != 1 else 12
+            actual_year = year if actual_month != 12 else year - 1
+        else:
+            actual_month = month
+            actual_year = year           
+            
+        return datetime(actual_year, actual_month, day)
+    
     def populate(self):
         from app.models.day import Day
         from app.global_vars import SYSTEM_CRM
