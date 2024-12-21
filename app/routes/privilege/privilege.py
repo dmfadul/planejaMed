@@ -154,10 +154,12 @@ def check_vacation_rights():
             report = Month.get_vacation_entitlement_report(user.id, current_month.number, current_month.year)
             vac_report += f"{user} - {user.crm} - {report}.</br>"
             # send message to user
+    else:
+        vac_report += "Nenhum médico perderá direito (base) a férias.</br></br>"
 
     if losing_realized:
         vac_report += "</br></br>"
-        vac_report = "Os seguintes Médicos PERDERÃO direito (realizado) a férias:</br></br>"
+        vac_report += "Os seguintes Médicos PERDERÃO direito (realizado) a férias:</br></br>"
         for user in losing_realized:
             routine, plaintemps = Month.get_vacation_entitlement_balance(user.id,
                                                                         current_month.number,
@@ -173,14 +175,17 @@ def check_vacation_rights():
                 vac_report += ""
 
             # send message to user
-
-    if no_base:
-        vac_report += "</br></br>"
-        vac_report += "Os seguintes Médicos CONTINUARÃO SEM direito (base) a férias:</br></br>"
-        for user in no_base:
-            vac_report += f"{user.full_name} - {user.crm}</br>"
     else:
-        vac_report += ""
+        vac_report += "Nenhum médico perderá direito (realizado) a férias.</br></br>"
+        
+    if no_base:
+        # vac_report += "</br></br>"
+        # vac_report += "Os seguintes Médicos CONTINUARÃO SEM direito (base) a férias:</br></br>"
+        # for user in no_base:
+        #     vac_report += f"{user.full_name} - {user.crm}</br>"
+        vac_report += "</br></br>"
+    else:
+        vac_report += "</br></br>"
 
     if no_realized:
         vac_report += "</br></br>"
