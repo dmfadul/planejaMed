@@ -73,7 +73,11 @@ def get_vacation_pay():
 def vacations_report():
     Vacation.update_status()
 
-    vacations = Vacation.get_report(split_by_month=True)
+    if current_user.is_admin:
+        vacations = Vacation.get_report(split_by_month=True)
+    else:
+        vacations = Vacation.get_report(split_by_month=False, filters=["future_only"])
+
     return render_template(
         'vacations-report.html',
         user_is_admin=current_user.is_admin,

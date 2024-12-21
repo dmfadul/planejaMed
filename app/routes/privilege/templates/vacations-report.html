@@ -55,7 +55,7 @@
                             <td>{{ vacation.type }}</td>
                             <td>{{ vacation.start_date }}</td>
                             <td>{{ vacation.end_date }}</td>
-                            <td>{{ vacation.fiscal_month_txt }}</td>
+                            <td>{{ vacation.fiscal_month_txt | replace('\n', '<br>') | safe }}</td>
                             {% if user_is_root %}
                                 <td>{{ vacation.status }}</td>
                                 <td>
