@@ -71,9 +71,6 @@ def get_vacation_pay():
 @privilege_bp.route('/vacations-report', methods=['GET'])
 @login_required
 def vacations_report():
-    if not current_user.is_admin:
-        return "Unauthorized", 401
-
     Vacation.update_status()
 
     vacations = Vacation.get_report(split_by_month=True)
