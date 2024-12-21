@@ -76,7 +76,8 @@ def vacations_report():
     vacations = Vacation.get_report(split_by_month=True)
     return render_template(
         'vacations-report.html',
-        user_is_admin=True,
+        user_is_admin=current_user.is_admin,
+        user_is_root=current_user.is_root,
         vacations=vacations
         )
 

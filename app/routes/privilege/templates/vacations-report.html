@@ -22,9 +22,11 @@
         </div>
         <div id="overlay" class="overlay hidden"></div>
 
-        <section style="text-align: center;">
-            <button onclick="getPrivilegeRights();" class="common-button">Checar Férias</button>
-        </section>
+        {% if user_is_admin %}
+            <section style="text-align: center;">
+                <button onclick="getPrivilegeRights();" class="common-button">Checar Férias</button>
+            </section>
+        {% endif %}
 
         <div id="vacations-report-table">
             <table>
@@ -36,11 +38,13 @@
                         <th>Início</th>
                         <th>Fim</th>
                         <th>Mês Contábil</th>
-                        <th>Status</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
+                        {% if user_is_root %}
+                            <th>Status</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        {% endif %}
                     </tr>
                 </head>
                 <tbody>
@@ -52,47 +56,49 @@
                             <td>{{ vacation.start_date }}</td>
                             <td>{{ vacation.end_date }}</td>
                             <td>{{ vacation.fiscal_month_txt }}</td>
-                            <td>{{ vacation.status }}</td>
-                            <td>
-                                <button 
-                                    class="submit-button save-button"
-                                    onclick="showPay(this)"
-                                    data-id="{{ vacation.id }}"
-                                    data-month="{{ vacation.fiscal_month }}"
-                                >
-                                    $
-                                </button>
-                            </td>
-                            <td>
-                                <button 
-                                    class="submit-button save-button {% if vacation.status in ["Em andamento", "Concluído", "Pago", "Não Pago", "deferido"] %}disabled-button{% endif %}" 
-                                    onclick="changeStatus(this, 'defered')" 
-                                    data-id="{{ vacation.id }}"
-                                    {% if vacation.status in ["Em andamento", "Concluído", "Pago", "Não Pago", "deferido"] %}disabled{% endif %}
-                                >
-                                    Deferir
-                                </button>
-                            </td>
-                            <td>
-                                <button 
-                                    class="submit-button save-button {% if vacation.status == "Pago" %}disabled-button{% endif %}" 
-                                    onclick="changeStatus(this, 'paid')" 
-                                    data-id="{{ vacation.id }}"
-                                    data-month="{{ vacation.fiscal_month }}"
-                                    {% if vacation.status == "Pago" %}disabled{% endif %}
-                                >
-                                    Pagar
-                                </button>
-                            </td>
-                            <td>
-                                <button
-                                    class="submit-button delete-button"
-                                    onclick="changeStatus(this, 'deleted')"
-                                    data-id="{{ vacation.id }}"
-                                >
-                                    Cancelar
-                                </button>
-                            </td>
+                            {% if user_is_root %}
+                                <td>{{ vacation.status }}</td>
+                                <td>
+                                    <button 
+                                        class="submit-button save-button"
+                                        onclick="showPay(this)"
+                                        data-id="{{ vacation.id }}"
+                                        data-month="{{ vacation.fiscal_month }}"
+                                    >
+                                        $
+                                    </button>
+                                </td>
+                                <td>
+                                    <button 
+                                        class="submit-button save-button {% if vacation.status in ["Em andamento", "Concluído", "Pago", "Não Pago", "deferido"] %}disabled-button{% endif %}" 
+                                        onclick="changeStatus(this, 'defered')" 
+                                        data-id="{{ vacation.id }}"
+                                        {% if vacation.status in ["Em andamento", "Concluído", "Pago", "Não Pago", "deferido"] %}disabled{% endif %}
+                                    >
+                                        Deferir
+                                    </button>
+                                </td>
+                                <td>
+                                    <button 
+                                        class="submit-button save-button {% if vacation.status == "Pago" %}disabled-button{% endif %}" 
+                                        onclick="changeStatus(this, 'paid')" 
+                                        data-id="{{ vacation.id }}"
+                                        data-month="{{ vacation.fiscal_month }}"
+                                        {% if vacation.status == "Pago" %}disabled{% endif %}
+                                    >
+                                        Pagar
+                                    </button>
+                                </td>
+                                <td>
+                                    <button
+                                        class="submit-button delete-button"
+                                        onclick="changeStatus(this, 'deleted')"
+                                        data-id="{{ vacation.id }}"
+                                    >
+                                        Cancelar
+                                    </button>
+                                </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}              
                 </tbody>
