@@ -93,6 +93,10 @@
   /* Other styles for active button can be added here */
 }
 
+.delete-button {
+  background-color: #d9534f; /* Red background for delete button */
+}
+
 /* Inactive Button Style */
 .disabled-button {
   opacity: 0.5; /* Makes the button look faded */
