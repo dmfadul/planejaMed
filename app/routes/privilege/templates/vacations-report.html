@@ -40,9 +40,9 @@
                         <th>Mês Contábil</th>
                         {% if user_is_admin %}
                             <th>Status</th>
+                            <th></th>
                         {% endif %}
                         {% if user_is_root %}
-                            <th></th>
                             <th></th>
                             <th></th>
                             <th></th>
@@ -60,8 +60,6 @@
                             <td>{{ vacation.fiscal_month_txt | replace('\n', '<br>') | safe }}</td>
                             {% if user_is_admin %}
                                 <td>{{ vacation.status }}</td>
-                            {% endif %}
-                            {% if user_is_root %}
                                 <td>
                                     <button 
                                         class="submit-button save-button"
@@ -72,6 +70,8 @@
                                         $
                                     </button>
                                 </td>
+                            {% endif %}
+                            {% if user_is_root %}
                                 <td>
                                     <button 
                                         class="submit-button save-button {% if vacation.status in ["Em andamento", "Concluído", "Pago", "Não Pago", "deferido"] %}disabled-button{% endif %}" 
