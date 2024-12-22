@@ -72,7 +72,7 @@ def get_vacation_pay():
 @login_required
 def vacations_list():
     Vacation.update_status()
-    vacations = Vacation.get_report(split_by_month=False, filters=["future_only"])
+    vacations = Vacation.get_report(split_by_month=False, filters={'year': 2025})
 
     return render_template(
         'vacations-report.html',
@@ -89,7 +89,7 @@ def vacations_report():
         return "Unauthorized", 401
     
     Vacation.update_status()
-    vacations = Vacation.get_report(split_by_month=True, filters=["future_only"])
+    vacations = Vacation.get_report(split_by_month=True, filters={'year': 2025})
 
     return render_template(
         'vacations-report.html',

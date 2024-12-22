@@ -204,9 +204,10 @@ class Vacation(db.Model):
         
         vacations = cls.query.filter(~cls.status.in_(['deleted'])).order_by(desc(cls.id)).all()
 
-        for filter in filters:
-            if filter == "future_only":
-                vacations = [v for v in vacations if v.start_date >= datetime.date.today()]
+        for filter, value in filters.items():
+            if filter == "year":
+                # TODO: change this to fiscal year (create properties fiscal_year and fiscal_month)
+                vacations = [v for v in vacations if v.start_date.year == value]
 
         output = []
         for vacation in vacations:
