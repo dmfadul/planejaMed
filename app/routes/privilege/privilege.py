@@ -72,7 +72,8 @@ def get_vacation_pay():
 @login_required
 def vacations_list():
     Vacation.update_status()
-    vacations = Vacation.get_report(split_by_month=False, filters={'year': 2025})
+    vacations = Vacation.get_report(split_by_month=False, filters={'year': 2025,
+                                                                   'hide_denied': True})
 
     return render_template(
         'vacations-report.html',

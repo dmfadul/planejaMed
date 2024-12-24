@@ -208,6 +208,8 @@ class Vacation(db.Model):
             if filter == "year":
                 # TODO: change this to fiscal year (create properties fiscal_year and fiscal_month)
                 vacations = [v for v in vacations if v.start_date.year == value]
+            if filter == "hide_denied":
+                vacations = [v for v in vacations if not v.status == 'denied']
 
         output = []
         for vacation in vacations:

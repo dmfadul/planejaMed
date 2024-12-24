@@ -38,8 +38,8 @@
                         <th>Início</th>
                         <th>Fim</th>
                         <th>Mês Contábil</th>
+                        <th>Status</th>
                         {% if user_is_admin %}
-                            <th>Status</th>
                             <th></th>
                         {% endif %}
                         {% if user_is_root %}
@@ -58,8 +58,8 @@
                             <td>{{ vacation.start_date }}</td>
                             <td>{{ vacation.end_date }}</td>
                             <td>{{ vacation.fiscal_month_txt | replace('\n', '<br>') | safe }}</td>
+                            <td>{{ vacation.status }}</td>
                             {% if user_is_admin %}
-                                <td>{{ vacation.status }}</td>
                                 <td>
                                     <button 
                                         class="submit-button save-button"
