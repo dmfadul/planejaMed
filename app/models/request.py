@@ -611,7 +611,13 @@ class Request(db.Model):
             return f"O usuário {new_user.full_name} foi incluído com sucesso", 'success'
 
         if self.action == 'approve_vacation':
-            vacation = self.requester.vacations[-1]
+            vacations = [v for v in self.requester.vacations if v.status == 'pending_approval']
+            vacations = [v for v in vacations if v.start_date.strftime("%d/%m/%y") in self.message]
+            
+            if not len(vacations) == 1:
+                return "Erro ao localizar Férias.", 'danger'
+
+            vacation = vacations[0]
             vacation.approve()
 
             self.respond(responder_id=responder_id, response='authorized')
