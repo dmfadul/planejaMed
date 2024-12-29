@@ -84,9 +84,9 @@ def print_table(center_abbr, month_name, year):
         month = Month.get_current()
 
         data_table = gen_base_table(center_abbr=center_abbr, names_only=True, abbr_names=True)
-    else:    
+    else:
         month_num = global_vars.MESES.index(month_name) + 1
-        month = Month.query.filter_by(number=month_num).first()
+        month = Month.query.filter_by(number=month_num, year=year).first()
         if month is None:
             raise Exception(f"{month_name} not found")
         
