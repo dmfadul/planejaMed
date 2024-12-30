@@ -63,44 +63,40 @@ def create_app(config_filename=None):
 
 create_app()
 
-# TODO: apply the bug fix from donation to exchange
-# TODO: create vacation testing function 
-# test if inactive users are being removed from existing months
-
-# make calendar faster
-# add check for users id on requests
 
 # TODO: CSS
-# TODO: ADD LOGS
+# TODO: fix aesthetics/simplify css and js
 
-# FOR LATER
+# TODO: add visible password button
+# TODO: Replace popup by modal
+# TODO: CLEAN UP MODALS.JS
 
 # TODO: change (example) mt4 to d4
 # TODO: https - do nginx course
-# TODO: fill reports
-# TODO: add payment calculation
-# TODO: add logic to user add a new center
 
 # TODO: fix lists for add/remove doctor to month
 # TODO: add flash messages to doctor add to month
 
+# TODO: move setting to settings file.
+
+
+# FOR LATER
+
+# TODO: fill reports
+# TODO: add logic to user add a new center
+
 # TODO: list of months in db (only show months with data in lists)
 
-# TODO: add visible password button
-# TODO: add home button
+# TODO: add home button/return button to all pages
 
-# TODO: use profile name to gen abbreviated names (recreate user table)
 
-# TODO: move setting to settings file.
-# TODO: Replace popup by modal
 
 # POSSIBILITIES:
-# TODO: improve variables names on messages and requests
-
+# TODO: ADD LOGS
 # TODO: start using crm instead of id for users
-# TODO: reset password function
-# TODO: fix aesthetics/simplify css and js
-# TODO: CLEAN UP MODALS.JS
-# TODO: change admin table interaction and clean up its js
 
-# TODO: Allow multiple requests/remove other requests (and their cancel messages) if request is resolved
+# TODO: improve variables names on messages and requests
+# add check for users id on requests
+
+# TODO: reset password function
+# TODO: change admin table interaction and clean up its js
