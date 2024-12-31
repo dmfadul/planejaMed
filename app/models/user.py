@@ -368,17 +368,29 @@ class User(db.Model, UserMixin):
 
     def filtered_appointments(self, center_id, day_id, unified=False):
         from app.hours_conversion import convert_to_letter
+        from app.models import Appointment
 
-        apps = [a.hour for a in self.appointments if a.is_confirmed and a.center_id == center_id and a.day_id == day_id]
-        if not apps and not unified:
-            return []
-        if not apps and unified:
-            return ''
+        # filtered = (
+        #     a.hour
+        #     for a in self.appointments
+        #     if a.is_confirmed and a.center_id == center_id and a.day_id == day_id
+        # )
+
+        # # Convert the generator to a list only if needed
+        # apps = list(filtered)
+
+        appointments = Appointment.query.filter_by(user_id=self.id,
+                                                   is_confirmed=True,
+                                                   center_id=center_id,
+                                                   day_id=day_id).all()
         
-        if unified:
-            return convert_to_letter(apps)
+        apps = [app.hour for app in appointments]
+
+        if not apps:
+            return '' if unified else []
         
-        return apps
+        return convert_to_letter(apps) if unified else apps
+    
 
     def gen_center_dict(self, month_id=None):
         from app.models import Month

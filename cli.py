@@ -5,15 +5,45 @@ from app.routes.dataview.resolve_data import convert_hours
 from app.hours_conversion import appointments_letters_key, gen_redudant_hour_list
 from app.hours_conversion import convert_letter_to_hours
 from app.routes.calendar.gen_data import gen_days_dict
-from app.config import Config
 import app.hours_conversion as hc
+from app.config import Config
 from datetime import datetime
+from timeit import timeit
 import json
 
 
+user_id = 34
+center_id = 1
+
 app = create_app()
 with app.app_context():
-    print(Month.get_actual_date(26, 12, 2024))
+    user = User.query.filter_by(id=user_id).first()
+
+    for day_id in range(300, 397):
+        # Define a wrapper for the filtered_appointments method
+        def test_filtered_appointments():
+            return user.filtered_appointments(center_id=center_id, day_id=day_id, unified=False)
+
+        # Define a wrapper for the filtered_appointments_ method
+        def test_filtered_appointments_():
+            return user.filtered_appointments_(center_id=center_id, day_id=day_id, unified=False)
+
+        # Run timeit for both methods
+        time_filtered_appointments = timeit(test_filtered_appointments, number=1000)
+        time_filtered_appointments_ = timeit(test_filtered_appointments_, number=1000)
+
+        print(f"Time for filtered_appointments: {time_filtered_appointments} seconds")
+        print(f"Time for filtered_appointments_: {time_filtered_appointments_} seconds")
+
+        app = test_filtered_appointments()
+        app_ = test_filtered_appointments_()
+
+        print(app == app_)
+
+
+# app = create_app()
+# with app.app_context():
+#     print(Month.get_actual_date(26, 12, 2024))
 #     user = User.query.filter_by(crm=40022).first()
 #     print(user.full_name)
 #     print(Month.get_vacation_entitlement_report(user.id, 10, 2024))
