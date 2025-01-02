@@ -5,9 +5,16 @@
         {{ form.hidden_tag() }}
 
         <h2>Login</h2>
-        {{ form.crm_number(id="crm", placeholder="CRM", autofocus=True) }}
+        <div style="width: 630px;">
+            {{ form.crm_number(id="crm", placeholder="CRM", autofocus=True) }}
+        </div>
 
-        {{ form.password(id="password", placeholder="SENHA") }}
+        <div style="position: relative; width: 600px;">
+            {{ form.password(id="password", placeholder="SENHA", style="padding-right: 40px;") }}
+            <button type="button" id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer;">
+                <i id="passwordIcon" class="fas fa-eye" style="color: gray;"></i>
+            </button>
+        </div>
 
         {{ form.submit(class="button") }}
     </form>
@@ -16,5 +23,24 @@
             <a href="{{ url_for('login.register') }}"> Inscreva-se </a>
         </small>
     </div>
+
+    <!-- Add FontAwesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <script>
+        const togglePassword = document.querySelector("#togglePassword");
+        const passwordField = document.querySelector("#password");
+        const passwordIcon = document.querySelector("#passwordIcon");
+
+        togglePassword.addEventListener("click", () => {
+            // Toggle the password field's type attribute
+            const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+            passwordField.setAttribute("type", type);
+
+            // Toggle the icon
+            passwordIcon.classList.toggle("fa-eye");
+            passwordIcon.classList.toggle("fa-eye-slash");
+        });
+    </script>
 
 {% endblock %}
