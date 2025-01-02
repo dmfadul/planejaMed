@@ -67,7 +67,6 @@ create_app()
 # TODO: CSS
 # TODO: fix aesthetics/simplify css and js
 
-# TODO: add visible password button
 # TODO: Replace popup by modal
 # TODO: CLEAN UP MODALS.JS
 
