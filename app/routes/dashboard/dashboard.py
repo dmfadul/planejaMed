@@ -32,6 +32,7 @@ def dashboard():
                             "dashboard.html",
                             title="Dashboard",
                             user_is_admin=current_user.is_admin,
+                            user_is_root=current_user.is_root,
                             centers=centers,
                             months=months,
                             current_month=current_month,

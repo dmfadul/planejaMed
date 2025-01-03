@@ -87,7 +87,9 @@
 
     <section style="text-align: center; margin-top: 20px;">
         <a href="{{ url_for('admin.admin') }}"><button class="common-button">Funções Admin</button></a>
+        {% if user_is_root %}
+            <a href="{{ url_for('admin.root_dashboard') }}"><button class="common-button">Funções Root</button></a>
+        {% endif %}
     </section>
 {% endif %}
-
 {% endblock %}

@@ -47,6 +47,11 @@ def admin():
                            curr_is_checked=current_month.is_checked
                            )
 
+@admin_bp.route('/admin/root', methods=['GET', 'POST'])
+@login_required
+def root_dashboard():
+    return "Root"
+
 
 @admin_bp.route('/admin/create-month', methods=['GET', 'POST'])
 @login_required
