@@ -33,14 +33,15 @@ def admin():
     return render_template(
                            "admin.html",
                            title="Admin",
+                           curr_is_latest=current_month.is_latest,
                            months=months,
                            current_month_name=current_month_name,
                            current_year=current_year,
+                           doctors_list=doctors_list,
+                           
+                           open_months=open_months,
                            next_month_name=next_month_name,
                            next_month_year=current_month.next_month[1],
-                           curr_is_latest=current_month.is_latest,
-                           doctors_list=doctors_list,
-                           open_months=open_months,
                            open_doctors_list=open_doctors_list,
                            user_is_root=current_user.is_root,
                            maintenance_is_on=maintenance_is_on,
