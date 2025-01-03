@@ -5,6 +5,11 @@
 {% endblock %}
 
 {% block mainContent %}
+    <!-- Add a hidden div for the waiting message -->
+    <div id="waitingMessage" style="display:none; text-align: center;">
+        <p>Processing your request, please wait...</p>
+    </div>
+
     <section>
         <form method="post" action="{{ url_for('admin.exclude_doctor') }}" onsubmit="return confirmExclusion()">
             <label for="exclude-doctor">Excluir Médico do Sistema:</label>
@@ -75,9 +80,9 @@
     </section>
     
         {% if maintenance_is_on %}
-        <section style="text-align: center;">
-            <button onclick="toggleMaintenance();" class="common-button">OPEN SYSTEM</button>
-        </section>
+            <section style="text-align: center;">
+                <button onclick="toggleMaintenance();" class="common-button">OPEN SYSTEM</button>
+            </section>
         {% else %}
             <section style="text-align: center;">
                 <button onclick="toggleMaintenance();" class="common-button">BLOCK SYSTEM</button>

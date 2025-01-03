@@ -19,39 +19,42 @@ admin_bp = Blueprint(
 def admin():
     if not current_user.is_admin:
         return "Unauthorized", 401
-    config = Config()
-    maintenance_is_on = config.get('maintenance_mode')
-    months = global_vars.MESES
+    
     current_month = Month.get_current()
-    current_year = current_month.year
-    current_month_name = current_month.name
-    next_month_name = current_month.next_month_name
-    _, doctors_list = gen_doctors_dict(exclude_invisible=True)
-    open_months = [current_month_name] if current_month.is_latest else [current_month_name, next_month_name]
-    open_doctors_list = [d for d in doctors_list if d[0] not in [d.crm for d in current_month.users]]
-
-    return render_template(
-                           "admin.html",
-                           title="Admin",
+    doctors_list = sorted([(d.crm, d.full_name) for d in current_month.users], key=lambda x: x[1])
+    print(doctors_list)
+    return render_template('admin.html',
+                           title='Admin',
                            curr_is_latest=current_month.is_latest,
-                           months=months,
-                           current_month_name=current_month_name,
-                           current_year=current_year,
+                           months= global_vars.MESES,
+                           current_month_name=current_month.name,
+                           current_year=current_month.year,
                            doctors_list=doctors_list,
-                           
-                           open_months=open_months,
-                           next_month_name=next_month_name,
-                           next_month_year=current_month.next_month[1],
-                           open_doctors_list=open_doctors_list,
-                           user_is_root=current_user.is_root,
-                           maintenance_is_on=maintenance_is_on,
-                           curr_is_checked=current_month.is_checked
-                           )
+                           next_month_name=current_month.next_month_name,
+                           next_month_year=current_month.next_month[1])
 
 @admin_bp.route('/admin/root', methods=['GET', 'POST'])
 @login_required
 def root_dashboard():
-    return "Root"
+    if not current_user.is_admin or not current_user.is_root:
+        return "Unauthorized", 401
+    
+    current_month = Month.get_current()
+    doctors_list = sorted([(d.crm, d.full_name) for d in current_month.users], key=lambda x: x[1])
+
+    all_doctors = User.query.filter_by(is_active=True, is_visible=True).all()
+    open_doctors_list = [d for d in all_doctors if d not in current_month.users] or [(0, "Nenhum médico disponível")]
+    open_months = [current_month.name] if current_month.is_latest else [current_month.name, current_month.next_month_name]
+
+    config = Config()
+    maintenance_is_on = config.get('maintenance_mode')
+
+    return render_template('root-dashboard.html',
+                           title='Root',
+                           doctors_list=doctors_list,
+                           open_months=open_months,
+                           open_doctors_list=open_doctors_list,
+                           maintenance_is_on=maintenance_is_on)
 
 
 @admin_bp.route('/admin/create-month', methods=['GET', 'POST'])
@@ -130,7 +133,7 @@ def delete_month():
         # flag = Month.delete(center, month, year)
         flash(f"Foi deletado o mês {month} de {year} para o centro {center.abbreviation}")
 
-    return redirect(url_for('admin.admin'))
+    return redirect(url_for('admin.root_dashboard'))
 
 
 @admin_bp.route('/admin/exclude-doctor', methods=['GET', 'POST'])
@@ -149,7 +152,7 @@ def exclude_doctor():
     doctor.make_invisible()
 
     flash(f"Foi excluído o médico {doctor.full_name} - {doctor.crm}", 'success')
-    return redirect(url_for('admin.admin'))
+    return redirect(url_for('admin.root_dashboard'))
 
 
 @admin_bp.route('/admin/include-doctor-month', methods=['POST'])
@@ -174,7 +177,7 @@ def include_doctor_month():
         return "Month not found", 404
 
     month.add_user(doctor)
-    return redirect(url_for('admin.admin'))
+    return redirect(url_for('admin.root_dashboard'))
 
 
 @admin_bp.route('/admin/exclude-doctor-month', methods=['POST'])
@@ -203,7 +206,7 @@ def exclude_doctor_month():
         flash(f"O médico {doctor.full_name} - {doctor.crm} não foi excluído do mês {month.name}/{month.year}", 'danger')
         return redirect(url_for('admin.admin'))
     flash(f"O médico {doctor.full_name} - {doctor.crm} foi excluído do mês {month.name}/{month.year}", 'success')
-    return redirect(url_for('admin.admin'))
+    return redirect(url_for('admin.root_dashboard'))
 
 
 @admin_bp.route('/admin/create-center', methods=['POST'])
@@ -218,7 +221,7 @@ def create_center():
     # flag = Center.create(abbreviation, name)
     flash(f"Foi criado o centro {abbreviation} - {name}")
 
-    return redirect(url_for('admin.admin'))
+    return redirect(url_for('admin.root_dashboard'))
 
 
 @admin_bp.route('/admin/request-report', methods=['GET'])
@@ -241,4 +244,4 @@ def toggle_maintenance():
     maintenance_is_on = config.get('maintenance_mode')
     config.set('maintenance_mode', not maintenance_is_on)
 
-    return redirect(url_for('admin.admin'))
+    return redirect(url_for('admin.root_dashboard'))
