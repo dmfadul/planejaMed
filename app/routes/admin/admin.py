@@ -5,9 +5,6 @@ import app.global_vars as global_vars
 from app.models import Center, Month, User, Vacation, Request
 from app.routes.calendar.gen_data import gen_doctors_dict
 from app.config import Config
-from datetime import datetime
-import json
-import os
 
 admin_bp = Blueprint(
                     'admin',
