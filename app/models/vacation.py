@@ -200,7 +200,7 @@ class Vacation(db.Model):
     @classmethod
     def get_report(cls, split_by_month=False, filters=None):
         from app.global_vars import TRANSLATION_DICT as translation_dict
-        filters = filters or []
+        filters = filters or {}
         
         vacations = cls.query.filter(~cls.status.in_(['deleted'])).order_by(desc(cls.id)).all()
 
