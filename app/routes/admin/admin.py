@@ -5,6 +5,7 @@ import app.global_vars as global_vars
 from app.models import Center, Month, User, Request
 from app.routes.calendar.gen_data import gen_doctors_dict
 from app.config import Config
+import os
 
 admin_bp = Blueprint(
                     'admin',
@@ -22,7 +23,7 @@ def admin():
     
     current_month = Month.get_current()
     doctors_list = sorted([(d.crm, d.full_name) for d in current_month.users], key=lambda x: x[1])
-    print(doctors_list)
+
     return render_template('admin.html',
                            title='Admin',
                            curr_is_latest=current_month.is_latest,
@@ -244,4 +245,30 @@ def toggle_maintenance():
     maintenance_is_on = config.get('maintenance_mode')
     config.set('maintenance_mode', not maintenance_is_on)
 
+    return redirect(url_for('admin.root_dashboard'))
+
+
+@admin_bp.route('/upload', methods=['POST'])
+def upload_file():
+    from instance.config import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+    
+    if 'file' not in request.files:
+        flash("Erro no Upload", 'danger')
+        return redirect(url_for('admin.root_dashboard'))
+    
+    file = request.files['file']
+    if file.filename == '':
+        flash("Nenhum arquivo selecionado", 'danger')
+        return redirect(url_for('admin.root_dashboard'))
+    
+    if '.' not in file.filename or file.filename.rsplit('.', 1)[1].lower() not in ALLOWED_EXTENSIONS:
+        flash("Extensão de arquivo inválida", 'danger')
+        return redirect(url_for('admin.root_dashboard'))
+    
+    filepath = os.path.join(UPLOAD_FOLDER, file.filename)
+    file.save(filepath)
+    
+    flash(f"Arquivo {file.filename} foi salvo", 'success')
     return redirect(url_for('admin.root_dashboard'))

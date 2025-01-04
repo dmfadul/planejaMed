@@ -78,6 +78,14 @@
               <button type="submit">Criar</button>
         </form>
     </section>
+
+    <section>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <label for="file">Upload:</label>
+            <input style="padding: 20px;" type="file" name="file" id="file">
+            <button type="submit">Enviar</button>
+        </form>
+    </section>
     
         {% if maintenance_is_on %}
             <section style="text-align: center;">
