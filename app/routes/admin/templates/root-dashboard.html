@@ -83,6 +83,26 @@
         <form action="/upload" method="post" enctype="multipart/form-data">
             <label for="file">Upload:</label>
             <input style="padding: 20px;" type="file" name="file" id="file">
+
+            <div>
+                <select name="month">
+                    {% for month in months %}
+                        <option value="{{ month }}" {% if month==current_month_name %} selected {% endif %}>{{ month }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="year">
+                    {% for year in range(2020, 2031) %}
+                        <option value="{{ year }}" {% if year==current_year %} selected {% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="docs">
+                    {% for doc in documents %}
+                        <option value="{{ doc }}">{{ doc }}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <button type="submit">Enviar</button>
         </form>
     </section>

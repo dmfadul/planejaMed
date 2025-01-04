@@ -50,12 +50,18 @@ def root_dashboard():
     config = Config()
     maintenance_is_on = config.get('maintenance_mode')
 
+    documents = ["document 1", 'document 2', 'document 3']
+
     return render_template('root-dashboard.html',
                            title='Root',
                            doctors_list=doctors_list,
                            open_months=open_months,
                            open_doctors_list=open_doctors_list,
-                           maintenance_is_on=maintenance_is_on)
+                           maintenance_is_on=maintenance_is_on,
+                           months= global_vars.MESES,
+                           current_month_name=current_month.name,
+                           current_year=current_month.year,
+                           documents=documents)
 
 
 @admin_bp.route('/admin/create-month', methods=['GET', 'POST'])
