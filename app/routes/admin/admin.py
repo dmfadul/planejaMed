@@ -269,17 +269,26 @@ def upload_file():
         flash("Nenhum arquivo selecionado", 'danger')
         return redirect(url_for('admin.admin'))
     
-    if '.' not in file.filename or file.filename.rsplit('.', 1)[1].lower() not in ALLOWED_EXTENSIONS:
+    if '.' not in file.filename:
         flash("Extensão de arquivo inválida", 'danger')
         return redirect(url_for('admin.admin'))
     
+    file_ext = file.filename.rsplit('.', 1)[1].lower()
+    if file_ext not in ALLOWED_EXTENSIONS:
+        flash("Extensão de arquivo inválida", 'danger')
+        return redirect(url_for('admin.admin'))
+
     month_name = request.form.get('month')
     year = request.form.get('year')
     document = request.form.get('document')
+    
+    if document == '-':
+        flash("Escolha um tipo de documento", 'danger')
+        return redirect(url_for('admin.admin'))
+    
+    new_filename = f"{document}_{year}-{month_name}.{file_ext}"
 
-    print("t", month_name, year, document)
-
-    filepath = os.path.join(UPLOAD_FOLDER, file.filename)
+    filepath = os.path.join(UPLOAD_FOLDER, new_filename)
     file.save(filepath)
     
     flash(f"Arquivo {file.filename} foi salvo", 'success')
