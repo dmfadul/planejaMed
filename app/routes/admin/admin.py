@@ -23,6 +23,7 @@ def admin():
     
     current_month = Month.get_current()
     doctors_list = sorted([(d.crm, d.full_name) for d in current_month.users], key=lambda x: x[1])
+    documents = ["-", 'COPAN', 'MACKENZIE']
 
     return render_template('admin.html',
                            title='Admin',
@@ -33,7 +34,8 @@ def admin():
                            doctors_list=doctors_list,
                            next_month_name=current_month.next_month_name,
                            next_month_year=current_month.next_month[1],
-                           user_is_root=current_user.is_root)
+                           user_is_root=current_user.is_root,
+                           documents=documents)
 
 @admin_bp.route('/admin/root', methods=['GET', 'POST'])
 @login_required
@@ -51,8 +53,6 @@ def root_dashboard():
     config = Config()
     maintenance_is_on = config.get('maintenance_mode')
 
-    documents = ["document 1", 'document 2', 'document 3']
-
     return render_template('root-dashboard.html',
                            title='Root',
                            doctors_list=doctors_list,
@@ -61,8 +61,7 @@ def root_dashboard():
                            maintenance_is_on=maintenance_is_on,
                            months= global_vars.MESES,
                            current_month_name=current_month.name,
-                           current_year=current_month.year,
-                           documents=documents)
+                           current_year=current_month.year)
 
 
 @admin_bp.route('/admin/create-month', methods=['GET', 'POST'])
@@ -263,19 +262,25 @@ def upload_file():
     
     if 'file' not in request.files:
         flash("Erro no Upload", 'danger')
-        return redirect(url_for('admin.root_dashboard'))
+        return redirect(url_for('admin.admin'))
     
     file = request.files['file']
     if file.filename == '':
         flash("Nenhum arquivo selecionado", 'danger')
-        return redirect(url_for('admin.root_dashboard'))
+        return redirect(url_for('admin.admin'))
     
     if '.' not in file.filename or file.filename.rsplit('.', 1)[1].lower() not in ALLOWED_EXTENSIONS:
         flash("Extensão de arquivo inválida", 'danger')
-        return redirect(url_for('admin.root_dashboard'))
+        return redirect(url_for('admin.admin'))
     
+    month_name = request.form.get('month')
+    year = request.form.get('year')
+    document = request.form.get('document')
+
+    print("t", month_name, year, document)
+
     filepath = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(filepath)
     
     flash(f"Arquivo {file.filename} foi salvo", 'success')
-    return redirect(url_for('admin.root_dashboard'))
+    return redirect(url_for('admin.admin'))
