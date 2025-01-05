@@ -31,6 +31,7 @@ def create_app(config_filename=None):
     from app.routes.login.login import login_bp
     from app.routes.privilege.privilege import privilege_bp
     from app.routes.report.report import report_bp
+    from app.routes.finance.finance import finance_bp
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(dataview_bp)
     app.register_blueprint(calendar_bp)
@@ -38,6 +39,7 @@ def create_app(config_filename=None):
     app.register_blueprint(login_bp)
     app.register_blueprint(privilege_bp)
     app.register_blueprint(report_bp)
+    app.register_blueprint(finance_bp)
 
     @app.context_processor
     def inject_user():
