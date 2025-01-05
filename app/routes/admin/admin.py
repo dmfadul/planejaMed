@@ -32,7 +32,8 @@ def admin():
                            current_year=current_month.year,
                            doctors_list=doctors_list,
                            next_month_name=current_month.next_month_name,
-                           next_month_year=current_month.next_month[1])
+                           next_month_year=current_month.next_month[1],
+                           user_is_root=current_user.is_root)
 
 @admin_bp.route('/admin/root', methods=['GET', 'POST'])
 @login_required

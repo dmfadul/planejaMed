@@ -111,6 +111,7 @@
         </form>
     </section>
 
+    {% if user_is_root %}
     <section>
         <form action="/upload" method="post" enctype="multipart/form-data">
             <label for="file">Upload:</label>
@@ -138,6 +139,7 @@
             <button type="submit">Enviar</button>
         </form>
     </section>
-
+    {% endif %}
+    
     <script type="text/javascript" src="{{ url_for('admin.static', filename='scripts/buttonListeners.js') }}"></script>
 {% endblock %}
