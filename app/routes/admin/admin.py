@@ -289,6 +289,7 @@ def upload_file():
     new_filename = f"{document}_{year}-{month_name}.{file_ext}"
 
     filepath = os.path.join(UPLOAD_FOLDER, new_filename)
+    # add check for existing file
     file.save(filepath)
     
     flash(f"Arquivo {file.filename} foi salvo", 'success')

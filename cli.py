@@ -12,33 +12,40 @@ from timeit import timeit
 import json
 
 
-user_id = 34
-center_id = 1
+with open('instance/uploads/COPAN_2025-JANEIRO.json', 'r', encoding="iso-8859-1") as f:
+    data = json.load(f)
 
-app = create_app()
-with app.app_context():
-    user = User.query.filter_by(id=user_id).first()
+    for entry in data:
+        print(entry)
+        print('---'*10)
 
-    for day_id in range(300, 397):
-        # Define a wrapper for the filtered_appointments method
-        def test_filtered_appointments():
-            return user.filtered_appointments(center_id=center_id, day_id=day_id, unified=False)
+# user_id = 34
+# center_id = 1
 
-        # Define a wrapper for the filtered_appointments_ method
-        def test_filtered_appointments_():
-            return user.filtered_appointments_(center_id=center_id, day_id=day_id, unified=False)
+# app = create_app()
+# with app.app_context():
+#     user = User.query.filter_by(id=user_id).first()
 
-        # Run timeit for both methods
-        time_filtered_appointments = timeit(test_filtered_appointments, number=1000)
-        time_filtered_appointments_ = timeit(test_filtered_appointments_, number=1000)
+#     for day_id in range(300, 397):
+#         # Define a wrapper for the filtered_appointments method
+#         def test_filtered_appointments():
+#             return user.filtered_appointments(center_id=center_id, day_id=day_id, unified=False)
 
-        print(f"Time for filtered_appointments: {time_filtered_appointments} seconds")
-        print(f"Time for filtered_appointments_: {time_filtered_appointments_} seconds")
+#         # Define a wrapper for the filtered_appointments_ method
+#         def test_filtered_appointments_():
+#             return user.filtered_appointments_(center_id=center_id, day_id=day_id, unified=False)
 
-        app = test_filtered_appointments()
-        app_ = test_filtered_appointments_()
+#         # Run timeit for both methods
+#         time_filtered_appointments = timeit(test_filtered_appointments, number=1000)
+#         time_filtered_appointments_ = timeit(test_filtered_appointments_, number=1000)
 
-        print(app == app_)
+#         print(f"Time for filtered_appointments: {time_filtered_appointments} seconds")
+#         print(f"Time for filtered_appointments_: {time_filtered_appointments_} seconds")
+
+#         app = test_filtered_appointments()
+#         app_ = test_filtered_appointments_()
+
+#         print(app == app_)
 
 
 # app = create_app()
