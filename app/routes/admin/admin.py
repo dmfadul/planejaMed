@@ -247,7 +247,9 @@ def rights_report():
     if not current_user.is_admin:
         return "Unauthorized", 401
 
-    rights = []
+    rights = [{'user': u.full_name,
+               'since': u.compliant_since,
+               'history': u.compliance_history} for u in User.query.all()]
     return render_template('rights-report.html', rights=rights)
 
 
