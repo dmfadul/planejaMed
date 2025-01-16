@@ -481,7 +481,7 @@ class Month(db.Model):
         return 0
 
     @classmethod
-    def check_for_vacation_entitlement_loss(cls, month_number, year):
+    def check_for_vacation_entitlement_loss(cls, month_number, year, rm_base=False, rm_rlz=False):
         from app.models import User
         
         no_base_rights, losing_base_rights, no_realized_rights, losing_realized_rights = [], [], [], []
@@ -501,6 +501,7 @@ class Month(db.Model):
                 continue
             if 'Base' in flag and user.compliant_since is not None:
                 losing_base_rights.append(user)
+                # 
                 continue
             if 'não realizou horas suficientes' in flag and user.compliant_since is None:
                 no_realized_rights.append(user)
@@ -516,3 +517,4 @@ class Month(db.Model):
                 "losing_base_rights": losing_base_rights,
                 "no_realized_rights": no_realized_rights,
                 "losing_realized_rights": losing_realized_rights}
+    

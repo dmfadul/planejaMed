@@ -241,6 +241,16 @@ def request_report():
     return render_template('request-report.html', reqs=reqs)
 
 
+@admin_bp.route('/admin/rights-report', methods=['GET'])
+@login_required
+def rights_report():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    rights = []
+    return render_template('rights-report.html', rights=rights)
+
+
 @admin_bp.route('/admin/toggle-maintenance', methods=['POST', 'GET'])
 @login_required
 def toggle_maintenance():
