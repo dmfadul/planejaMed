@@ -12,12 +12,11 @@ from timeit import timeit
 import json
 
 
-with open('instance/uploads/COPAN_2025-JANEIRO.json', 'r', encoding="iso-8859-1") as f:
-    data = json.load(f)
+app = create_app()
+with app.app_context():
+    u = Month.update_vacation_entitlement(12,2024)
+    # print(u)
 
-    for entry in data:
-        print(entry)
-        print('---'*10)
 
 # user_id = 34
 # center_id = 1

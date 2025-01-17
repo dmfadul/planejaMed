@@ -481,7 +481,7 @@ class Month(db.Model):
         return 0
 
     @classmethod
-    def check_for_vacation_entitlement_loss(cls, month_number, year, rm_base=False, rm_rlz=False):
+    def check_for_vacation_entitlement_loss(cls, month_number, year):
         from app.models import User
         
         no_base_rights, losing_base_rights, no_realized_rights, losing_realized_rights = [], [], [], []
@@ -501,7 +501,6 @@ class Month(db.Model):
                 continue
             if 'Base' in flag and user.compliant_since is not None:
                 losing_base_rights.append(user)
-                # 
                 continue
             if 'não realizou horas suficientes' in flag and user.compliant_since is None:
                 no_realized_rights.append(user)
@@ -517,4 +516,33 @@ class Month(db.Model):
                 "losing_base_rights": losing_base_rights,
                 "no_realized_rights": no_realized_rights,
                 "losing_realized_rights": losing_realized_rights}
+    
+
+    @classmethod
+    def update_vacation_entitlement(cls, month_number, year):
+        from app.models import User
+        
+        users = User.query.filter_by(is_active=True, is_visible=True).all()
+        for user in users:
+            if user.pre_approved_vacation:
+                continue
+
+            if user.in_vacation(month_number, year):
+                continue
+
+            flag = cls.check_vacation_entitlement(user.id, month_number, year)
+            if flag == 0 and user.compliant_since is None:
+                # user just became compliant. Compliant_since must be set to present date.
+                continue
+  
+            if 'Base' in flag and user.compliant_since is not None:
+                # user lost base rights. Compliant_since must be set to None.
+                continue
+
+
+            if 'não realizou horas suficientes' in flag and user.compliant_since is not None:
+                # user lost realized rights. Compliant_since must be set to None.
+                continue
+
+            return 0
     
