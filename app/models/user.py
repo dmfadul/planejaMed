@@ -420,7 +420,8 @@ class User(db.Model, UserMixin):
         db.session.commit()
 
     def lose_vacation_entitlement(self):
-        self.compliance_history = self.compliant_since
+        if (datetime.now().date() - self.compliant_since).days > 15:
+            self.compliance_history = self.compliant_since
         self.compliant_since = None
         db.session.commit()
 
