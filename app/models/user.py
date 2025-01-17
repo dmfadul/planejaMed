@@ -416,19 +416,28 @@ class User(db.Model, UserMixin):
         return app_dict
     
     def gain_vacation_entitlement(self):
+        if self.compliant_since is not None:
+            return -1
         self.compliant_since = datetime.now().date()
         db.session.commit()
 
+        return 0
+    
     def lose_vacation_entitlement(self):
         if (datetime.now().date() - self.compliant_since).days > 15:
             self.compliance_history = self.compliant_since
         self.compliant_since = None
         db.session.commit()
+         
+        return 0
 
     def recover_vacation_rights(self):
+        if self.compliance_history is None:
+            return -1
         self.compliant_since = self.compliance_history
         db.session.commit()
 
+        return 0
 
     def in_vacation(self, month_number, year):
         vacations = [vac for vac in self.vacations if vac.status in ['approved', 'ongoing', 'paid', 'completed']]
