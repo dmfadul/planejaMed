@@ -222,11 +222,19 @@ def create_center():
     if not current_user.is_admin:
         return "Unauthorized", 401
 
-    abbreviation = request.form['abbreviation']
-    name = request.form['name']
+    name = request.form['center_name']
+    abbreviation = request.form['center_abbr']
 
-    # flag = Center.create(abbreviation, name)
-    flash(f"Foi criado o centro {abbreviation} - {name}")
+    flag = Center.add_entry(name=name, abbreviation=abbreviation)
+    if flag == -1:
+        flash(f"O centro {name} já existe", 'danger')
+        return redirect(url_for('admin.root_dashboard'))
+    if flag == -2:
+        flash(f"A abreviação {abbreviation} já existe", 'danger')
+        return redirect(url_for('admin.root_dashboard'))
+    
+    if isinstance(flag, Center):
+        flash(f"Foi criado o centro {abbreviation} - {name}", 'success')
 
     return redirect(url_for('admin.root_dashboard'))
 

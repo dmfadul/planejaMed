@@ -19,8 +19,8 @@ class Center(db.Model):
     @classmethod
     def add_entry(cls, name, abbreviation):
         centers = cls.query.all()
-        names = [center.name for center in centers]
-        abbreviations = [center.abbreviation for center in centers]
+        existing_names = [center.name for center in centers]
+        existing_abbr = [center.abbreviation for center in centers]
 
         new_center = cls(
             name = name,
@@ -28,10 +28,10 @@ class Center(db.Model):
         )
 
         db.session.add(new_center)
-        if new_center.name in names:
+        if new_center.name in existing_names:
             db.session.rollback()
             return -1
-        if new_center.abbreviation in abbreviations:
+        if new_center.abbreviation in existing_abbr:
             db.session.rollback()
             return -2
         

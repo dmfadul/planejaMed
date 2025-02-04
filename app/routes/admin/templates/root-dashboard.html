@@ -69,7 +69,7 @@
     </section>
 
     <section>
-        <form method="post" action="">
+        <form method="post" action="{{ url_for('admin.create_center') }}">
               <label for="create-center">Criar Novo Centro:</label>
               <input type="text" id="center_name" name="center_name" placeholder="Nome do Novo Centro" required>
 
