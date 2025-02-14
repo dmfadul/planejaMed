@@ -71,6 +71,11 @@ class Vacation(db.Model):
         db.session.commit()
         return 0
     
+    def unnaprove(self):
+        self.status = "unapproved"
+        db.session.commit()
+        return 0
+
     def defer(self):
         self.status = "defered"
         db.session.commit()
