@@ -480,6 +480,34 @@ class Month(db.Model):
 
         return 0
 
+    def remove_base_entitlements(self):
+        for user in sorted(self.users, key=lambda x: x.first_name):
+            old_status = self.check_vacation_entitlement(user.id, self.number, self.year)
+            if old_status == 0:
+                continue
+
+            remove_ent = "não tem direito Base a férias" in old_status
+            if remove_ent:
+                user.lose_vacation_entitlement()
+                continue
+        
+        return 0
+
+    def update_month_entitlements(self):
+        for user in sorted(self.users, key=lambda x: x.first_name):
+            old_status = self.check_vacation_entitlement(user.id, self.number, self.year)
+            print(user, old_status)
+            # if old_status == 0:
+            #     user.gain_vacation_entitlement()
+            #     continue
+
+            # remove_ent = "não tem direito Base a férias" in old_status
+            # if remove_ent:
+            #     user.lose_vacation_entitlement()
+            #     continue
+        
+        return 0
+
     @classmethod
     def check_for_vacation_entitlement_loss(cls, month_number, year):
         from app.models import User

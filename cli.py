@@ -14,11 +14,10 @@ import json
 
 app = create_app()
 with app.app_context():
-    user = User.query.filter_by(first_name="Victor").first()
-    print(user)
-    # user.lose_vacation_entitlement()
-    user.recover_vacation_rights()
-    # user.gain_vacation_entitlement()
+    month = Month.get_current()
+    month.remove_base_entitlements()
+
+
 
 # user_id = 34
 # center_id = 1
