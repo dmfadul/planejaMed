@@ -44,10 +44,14 @@ def root_dashboard():
         return "Unauthorized", 401
     
     current_month = Month.get_current()
+    next_month = Month.get_next()
     doctors_list = sorted([(d.crm, d.full_name) for d in current_month.users], key=lambda x: x[1])
-
     all_doctors = User.query.filter_by(is_active=True, is_visible=True).all()
-    open_doctors_list = [d for d in all_doctors if d not in current_month.users] or [(0, "Nenhum médico disponível")]
+
+    open_doctors_list = [d for d in all_doctors if d not in current_month.users or d not in next_month.users]
+    open_doctors_list = sorted([(d.crm, d.full_name) for d in open_doctors_list], key=lambda x: x[1])
+    open_doctors_list = open_doctors_list if open_doctors_list else [(0, "Nenhum médico disponível")]
+
     open_months = [current_month.name] if current_month.is_latest else [current_month.name, current_month.next_month_name]
 
     config = Config()
@@ -193,7 +197,12 @@ def include_doctor_month():
     else:
         return "Month not found", 404
 
+    if doctor in month.users:
+        flash(f"O médico {doctor.full_name} - {doctor.crm} já está no mês {month.name}/{month.year}", 'danger')
+        return redirect(url_for('admin.root_dashboard'))
+    
     month.add_user(doctor)
+    flash(f"O médico {doctor.full_name} - {doctor.crm} foi incluído no mês {month.name}/{month.year}", 'success')
     return redirect(url_for('admin.root_dashboard'))
 
 
