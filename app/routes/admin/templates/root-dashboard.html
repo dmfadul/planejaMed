@@ -11,6 +11,28 @@
     </div>
 
     <section>
+        <form method="post" action="{{ url_for('admin.delete_month') }}">
+
+            <label for="option">Apagar Mês:</label>
+            <select name="month">
+                {% for month in months %}
+                    <option value="{{ month }}" {% if month==current_month_name %} selected {% endif %}>{{ month }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="year">
+                {% for year in range(2020, 2031) %}
+                    <option value="{{ year }}" {% if year==current_year %} selected {% endif %}>{{ year }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="hidden" name="action" value="calc">
+
+            <button type="submit">Apagar</button>
+        </form>
+    </section>
+
+    <section>
         <form method="post" action="{{ url_for('admin.exclude_doctor') }}" onsubmit="return confirmExclusion()">
             <label for="exclude-doctor">Excluir Médico do Sistema:</label>
             <select id="exclude-doctor" name="crm">

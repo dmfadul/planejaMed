@@ -136,8 +136,18 @@ def delete_month():
     year = int(request.form['year'])
     month = request.form['month']
 
+    next_month = Month.get_next()
+    if not next_month.name == month or not next_month.year == year:
+        flash(f"O mês {month} de {year} não pode ser apagado. Contacte o sysAdmin.", 'danger')
+        return redirect(url_for('admin.root_dashboard'))
+
+    month_number = global_vars.MESES.index(month) + 1
+    flag = Month.delete(month_number, year)
+    if flag:
+        flash(f"O mês {month} de {year} não foi apagado", 'danger')
+        return redirect(url_for('admin.root_dashboard'))
+    
     for center in Center.query.all():
-        # flag = Month.delete(center, month, year)
         flash(f"Foi deletado o mês {month} de {year} para o centro {center.abbreviation}")
 
     return redirect(url_for('admin.root_dashboard'))
