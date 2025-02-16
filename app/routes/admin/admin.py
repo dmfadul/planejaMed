@@ -101,7 +101,7 @@ def create_month():
         flash(f"O original do mês {next_month_number}/{next_month_year} não foi salvo", 'danger')
         return redirect(url_for('admin.admin'))
     flash(f"O original do mês {next_month_number}/{next_month_year} foi salvo", 'success')
-    # new_month.remove_base_entitlements()
+    new_month.remove_base_entitlements()
 
     return redirect(url_for('admin.admin'))
 

@@ -482,6 +482,8 @@ class Month(db.Model):
 
     def remove_base_entitlements(self):
         for user in sorted(self.users, key=lambda x: x.first_name):
+            if user.pre_approved_vacation:
+                continue
             old_status = self.check_vacation_entitlement(user.id, self.number, self.year)
             if old_status == 0:
                 continue
@@ -495,6 +497,9 @@ class Month(db.Model):
 
     def update_month_entitlements(self):
         for user in sorted(self.users, key=lambda x: x.first_name):
+            if user.pre_approved_vacation:
+                continue
+            
             old_status = self.check_vacation_entitlement(user.id, self.number, self.year)
             print(user, old_status)
             # if old_status == 0:
