@@ -13,19 +13,24 @@ import json
 
 
 app = create_app()
-with app.app_context():
-    user = User.query.filter_by(crm=37668).first()
-    print(user.full_name)
+for rule in app.url_map.iter_rules():
+    if "GET" not in rule.methods:
+        continue
+    print(f"{rule} -- Endpoint: {rule.endpoint}  -- {rule.methods}")
 
-    m = 11
-    output = Month.get_vacation_entitlement_report(user.id, m, 2024)
-    output2 = Month.get_vacation_entitlement_balance(user.id, m, 2024)
-    output3 = Month.check_vacation_entitlement(user.id, m, 2024)
+# with app.app_context():
+#     user = User.query.filter_by(crm=37668).first()
+#     print(user.full_name)
+
+#     m = 11
+#     output = Month.get_vacation_entitlement_report(user.id, m, 2024)
+#     output2 = Month.get_vacation_entitlement_balance(user.id, m, 2024)
+#     output3 = Month.check_vacation_entitlement(user.id, m, 2024)
 
     
-    print(output)
-    print(output2)
-    print(output3)
+#     print(output)
+#     print(output2)
+#     print(output3)
 
 
 
