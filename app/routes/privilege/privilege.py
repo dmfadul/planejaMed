@@ -268,6 +268,7 @@ def change_privilege_status():
 
     return jsonify("success")
 
+
 @privilege_bp.route('/privilege-rights', methods=['GET'])
 @login_required
 def check_privilege_rights():
@@ -286,3 +287,17 @@ def check_privilege_rights():
         output += f"{user} - {user.crm} - {response}</br>"
 
     return output
+
+
+@privilege_bp.route('/manumission', methods=['GET'])
+@login_required
+def manumission():
+    if not current_user.is_admin:
+        return "Unauthorized", 401
+
+    users = User.query.filter_by(is_active=True, is_visible=True).all()
+    users = sorted(users, key=lambda x: x.full_name)
+    return render_template(
+        'manumission.html',
+        users=users
+    )

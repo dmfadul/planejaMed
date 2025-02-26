@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>User List</h1>
+    <ul>
+        {% for user in users %}
+            <li>
+                {{ user.username }}
+                <form method="post" action="{% url 'manumission' user.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Manumission</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
