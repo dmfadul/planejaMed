@@ -14,8 +14,18 @@ import json
 
 app = create_app()
 with app.app_context():
-    month = Month.get_current()
-    month.remove_base_entitlements()
+    user = User.query.filter_by(crm=37668).first()
+    print(user.full_name)
+
+    m = 11
+    output = Month.get_vacation_entitlement_report(user.id, m, 2024)
+    output2 = Month.get_vacation_entitlement_balance(user.id, m, 2024)
+    output3 = Month.check_vacation_entitlement(user.id, m, 2024)
+
+    
+    print(output)
+    print(output2)
+    print(output3)
 
 
 
