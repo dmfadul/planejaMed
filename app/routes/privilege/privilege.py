@@ -289,15 +289,20 @@ def check_privilege_rights():
     return output
 
 
-@privilege_bp.route('/manumission', methods=['GET'])
+@privilege_bp.route('/manumission', methods=['GET', 'POST'])
 @login_required
 def manumission():
     if not current_user.is_admin:
         return "Unauthorized", 401
 
-    users = User.query.filter_by(is_active=True, is_visible=True).all()
-    users = sorted(users, key=lambda x: x.full_name)
-    return render_template(
-        'manumission.html',
-        users=users
-    )
+    if request.method == 'GET':
+        users = User.query.filter_by(is_active=True, is_visible=True).all()
+        users = sorted(users, key=lambda x: x.full_name)
+        return render_template(
+            'manumission.html',
+            users=users
+        )
+
+    else:
+        user_id = request.form.get("user_id")
+        return "OK"
