@@ -45,10 +45,15 @@ def root_dashboard():
     
     current_month = Month.get_current()
     next_month = Month.get_next()
+    
     doctors_list = sorted([(d.crm, d.full_name) for d in current_month.users], key=lambda x: x[1])
     all_doctors = User.query.filter_by(is_active=True, is_visible=True).all()
 
-    open_doctors_list = [d for d in all_doctors if d not in current_month.users or d not in next_month.users]
+    if not next_month:
+        open_doctors_list = [d for d in all_doctors if d not in current_month.users]
+    else:
+        open_doctors_list = [d for d in all_doctors if d not in current_month.users or d not in next_month.users]
+
     open_doctors_list = sorted([(d.crm, d.full_name) for d in open_doctors_list], key=lambda x: x[1])
     open_doctors_list = open_doctors_list if open_doctors_list else [(0, "Nenhum médico disponível")]
 
