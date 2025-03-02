@@ -13,10 +13,11 @@ import json
 
 
 app = create_app()
-for rule in app.url_map.iter_rules():
-    if "GET" not in rule.methods:
-        continue
-    print(f"{rule} -- Endpoint: {rule.endpoint}  -- {rule.methods}")
+with app.app_context():
+    month = Month.get_current()
+    print(month)
+
+    print(month.update_month_entitlements())
 
 # with app.app_context():
 #     user = User.query.filter_by(crm=37668).first()

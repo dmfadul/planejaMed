@@ -132,7 +132,7 @@ def next_month():
     if not flag:
         flash(f"O mês corrente foi avançado para {next_month.name}/{next_month.year} ", 'success')
 
-    # unaprove vacation if user loses realized rights
+    next_month.update_month_entitlements()
     return redirect(url_for('admin.admin'))
 
 

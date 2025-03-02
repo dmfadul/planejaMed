@@ -501,15 +501,15 @@ class Month(db.Model):
                 continue
             
             old_status = self.check_vacation_entitlement(user.id, self.number, self.year)
-            print(user, old_status)
-            # if old_status == 0:
-            #     user.gain_vacation_entitlement()
-            #     continue
+            
+            if old_status == 0:
+                user.gain_vacation_entitlement()
+                continue
 
-            # remove_ent = "não tem direito Base a férias" in old_status
-            # if remove_ent:
-            #     user.lose_vacation_entitlement()
-            #     continue
+            remove_ent = "não tem direito Base a férias" in old_status
+            if remove_ent:
+                user.lose_vacation_entitlement()
+                continue
         
         return 0
 

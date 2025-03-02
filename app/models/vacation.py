@@ -131,6 +131,15 @@ class Vacation(db.Model):
                 db.session.commit()
 
 
+    @classmethod
+    def unapprove_all(cls, user_id):
+        shifting_vacations = cls.query.filter(cls.status.in_(['pending_approval',
+                                                              'approved'])).filter_by(user_id=user_id).all()
+
+        for vacation in shifting_vacations:
+            vacation.status = 'unapproved'
+            db.session.commit()
+
 #=============================== QUERY METHODS ================================================#    
     @classmethod
     def check_vacations_availability(cls, start_date, end_date, user_id):
