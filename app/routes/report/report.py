@@ -107,6 +107,8 @@ def print_table(center_abbr, month_name, year):
     second_header[len(data_table[0])//3] = f"{center.name} - {center.abbreviation}"
     if len(data_table[0]) == 32:
         second_header_index = 21
+    elif len(data_table[0]) == 29:
+        second_header_index = 19
     else:
         second_header_index = 20 
     second_header[second_header_index] = f"COMPETÊNCIA: {month.name}/{month.year}"
