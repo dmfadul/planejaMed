@@ -14,10 +14,13 @@ import json
 
 app = create_app()
 with app.app_context():
-    month = Month.get_current()
-    print(month)
+    month = Month.query.filter_by(year=2025, number=3).first()
+    user = User.query.filter_by(crm=27749).first()
+    print(user.full_name)
+    print(month.get_users_realized_total(user.id))
+    print(month.get_users_original_total(user.crm))
 
-    print(month.update_month_entitlements())
+    # print(month.update_month_entitlements())
 
 # with app.app_context():
 #     user = User.query.filter_by(crm=37668).first()
